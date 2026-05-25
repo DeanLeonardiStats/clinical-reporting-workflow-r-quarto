@@ -8,11 +8,10 @@ editor: visual
 ---
 
 ## Abstract
+A longitudinal analysis for Parkinson’s patient UPDRS scores using reference-based missing data sensitivity analysis and propensity score matching: a non-randomized, observational, simulated data study
 
-A longitudinal analysis for Parkinson’s patient UPDRS scores using copy-reference method for missing data imputation and propensity score matching: a non-randomized, observational, simulated data study
 
 ## Executive Summary
-
 This report demonstrates a reproducible longitudinal clinical reporting workflow using R and Quarto in a simulated Parkinson’s disease observational study. Analyses include:
 
 - longitudinal mixed-effects modeling,
