@@ -4228,7 +4228,7 @@ vertical-align: -.125em;
 <span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a>data<span class="sc">$</span>UPDRS <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(<span class="fu">nrow</span>(data), <span class="at">mean =</span> <span class="dv">35</span> <span class="sc">+</span> <span class="dv">5</span> <span class="sc">*</span> <span class="fu">as.numeric</span>(<span class="fu">as.character</span>(data<span class="sc">$</span>Time)) <span class="sc">+</span> </span>
 <span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a>                      <span class="fu">ifelse</span>(data<span class="sc">$</span>Group <span class="sc">==</span> <span class="st">&quot;Treatment&quot;</span>, <span class="sc">-</span><span class="fl">1.5</span>, <span class="dv">0</span>), <span class="at">sd =</span> <span class="dv">6</span>)</span>
 <span id="cb1-38"><a href="#cb1-38" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-39"><a href="#cb1-39" aria-hidden="true" tabindex="-1"></a><span class="co"># Parameterization of missing data (MAR)</span></span>
+<span id="cb1-39"><a href="#cb1-39" aria-hidden="true" tabindex="-1"></a><span class="co"># Parameterization of missing data</span></span>
 <span id="cb1-40"><a href="#cb1-40" aria-hidden="true" tabindex="-1"></a>data<span class="sc">$</span>UPDRS <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(</span>
 <span id="cb1-41"><a href="#cb1-41" aria-hidden="true" tabindex="-1"></a>  <span class="fu">runif</span>(<span class="fu">nrow</span>(data)) <span class="sc">&lt;</span> params<span class="sc">$</span>missing_rate <span class="sc">&amp;</span></span>
 <span id="cb1-42"><a href="#cb1-42" aria-hidden="true" tabindex="-1"></a>  data<span class="sc">$</span>Time <span class="sc">!=</span> <span class="st">&quot;0&quot;</span>,</span>
@@ -5360,7 +5360,7 @@ height: 0px !important;
 <span id="cb9-26"><a href="#cb9-26" aria-hidden="true" tabindex="-1"></a>new_col2 <span class="ot">=</span> <span class="fu">sample</span>(refval2<span class="sc">$</span>UPDRS, <span class="at">size =</span> n2, <span class="at">replace =</span> <span class="cn">TRUE</span>)</span>
 <span id="cb9-27"><a href="#cb9-27" aria-hidden="true" tabindex="-1"></a>dataII <span class="ot">&lt;-</span> data1 <span class="sc">|&gt;</span> <span class="fu">filter</span>(Time<span class="sc">==</span><span class="dv">2</span>) <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="at">UPDRS=</span>new_col2)</span>
 <span id="cb9-28"><a href="#cb9-28" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-29"><a href="#cb9-29" aria-hidden="true" tabindex="-1"></a><span class="co"># Create final dataset Copy-Reference Method for Missing Data Imputation</span></span>
+<span id="cb9-29"><a href="#cb9-29" aria-hidden="true" tabindex="-1"></a><span class="co"># Create final dataset for reference-based sensitivity imputation</span></span>
 <span id="cb9-30"><a href="#cb9-30" aria-hidden="true" tabindex="-1"></a>dataIII<span class="ot">&lt;-</span> <span class="fu">bind_rows</span>(dataI, dataII) <span class="sc">|&gt;</span><span class="fu">rename</span>(<span class="at">UPDRSf =</span> UPDRS) <span class="sc">|&gt;</span> </span>
 <span id="cb9-31"><a href="#cb9-31" aria-hidden="true" tabindex="-1"></a>        <span class="fu">select</span>(Patient, Time, Group, UPDRSf)</span>
 <span id="cb9-32"><a href="#cb9-32" aria-hidden="true" tabindex="-1"></a>data_final <span class="ot">&lt;-</span> <span class="fu">left_join</span>(data, dataIII, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">&quot;Patient&quot;</span>, <span class="st">&quot;Time&quot;</span>, <span class="st">&quot;Group&quot;</span>))</span>
@@ -7063,7 +7063,7 @@ loaded via a namespace (and not attached):
 <span id="cb22-118"><a href="#cb22-118" aria-hidden="true" tabindex="-1"></a>data<span class="sc">$</span>UPDRS <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(<span class="fu">nrow</span>(data), <span class="at">mean =</span> <span class="dv">35</span> <span class="sc">+</span> <span class="dv">5</span> <span class="sc">*</span> <span class="fu">as.numeric</span>(<span class="fu">as.character</span>(data<span class="sc">$</span>Time)) <span class="sc">+</span> </span>
 <span id="cb22-119"><a href="#cb22-119" aria-hidden="true" tabindex="-1"></a>                      <span class="fu">ifelse</span>(data<span class="sc">$</span>Group <span class="sc">==</span> <span class="st">&quot;Treatment&quot;</span>, <span class="sc">-</span><span class="fl">1.5</span>, <span class="dv">0</span>), <span class="at">sd =</span> <span class="dv">6</span>)</span>
 <span id="cb22-120"><a href="#cb22-120" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-121"><a href="#cb22-121" aria-hidden="true" tabindex="-1"></a><span class="co"># Parameterization of missing data (MAR)</span></span>
+<span id="cb22-121"><a href="#cb22-121" aria-hidden="true" tabindex="-1"></a><span class="co"># Parameterization of missing data</span></span>
 <span id="cb22-122"><a href="#cb22-122" aria-hidden="true" tabindex="-1"></a>data<span class="sc">$</span>UPDRS <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(</span>
 <span id="cb22-123"><a href="#cb22-123" aria-hidden="true" tabindex="-1"></a>  <span class="fu">runif</span>(<span class="fu">nrow</span>(data)) <span class="sc">&lt;</span> params<span class="sc">$</span>missing_rate <span class="sc">&amp;</span></span>
 <span id="cb22-124"><a href="#cb22-124" aria-hidden="true" tabindex="-1"></a>  data<span class="sc">$</span>Time <span class="sc">!=</span> <span class="st">&quot;0&quot;</span>,</span>
@@ -7278,7 +7278,7 @@ loaded via a namespace (and not attached):
 <span id="cb22-343"><a href="#cb22-343" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb22-344"><a href="#cb22-344" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb22-347"><a href="#cb22-347" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb22-348"><a href="#cb22-348" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: lme-mar</span></span>
+<span id="cb22-348"><a href="#cb22-348" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: reference-based-imputation</span></span>
 <span id="cb22-349"><a href="#cb22-349" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb22-350"><a href="#cb22-350" aria-hidden="true" tabindex="-1"></a><span class="co"># Create sample of Control group UPDRS values by time </span></span>
 <span id="cb22-351"><a href="#cb22-351" aria-hidden="true" tabindex="-1"></a>ref_vals <span class="ot">&lt;-</span> data <span class="sc">%&gt;%</span></span>
@@ -7308,7 +7308,7 @@ loaded via a namespace (and not attached):
 <span id="cb22-375"><a href="#cb22-375" aria-hidden="true" tabindex="-1"></a>new_col2 <span class="ot">=</span> <span class="fu">sample</span>(refval2<span class="sc">$</span>UPDRS, <span class="at">size =</span> n2, <span class="at">replace =</span> <span class="cn">TRUE</span>)</span>
 <span id="cb22-376"><a href="#cb22-376" aria-hidden="true" tabindex="-1"></a>dataII <span class="ot">&lt;-</span> data1 <span class="sc">|&gt;</span> <span class="fu">filter</span>(Time<span class="sc">==</span><span class="dv">2</span>) <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="at">UPDRS=</span>new_col2)</span>
 <span id="cb22-377"><a href="#cb22-377" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-378"><a href="#cb22-378" aria-hidden="true" tabindex="-1"></a><span class="co"># Create final dataset Copy-Reference Method for Missing Data Imputation</span></span>
+<span id="cb22-378"><a href="#cb22-378" aria-hidden="true" tabindex="-1"></a><span class="co"># Create final dataset for reference-based sensitivity imputation</span></span>
 <span id="cb22-379"><a href="#cb22-379" aria-hidden="true" tabindex="-1"></a>dataIII<span class="ot">&lt;-</span> <span class="fu">bind_rows</span>(dataI, dataII) <span class="sc">|&gt;</span><span class="fu">rename</span>(<span class="at">UPDRSf =</span> UPDRS) <span class="sc">|&gt;</span> </span>
 <span id="cb22-380"><a href="#cb22-380" aria-hidden="true" tabindex="-1"></a>        <span class="fu">select</span>(Patient, Time, Group, UPDRSf)</span>
 <span id="cb22-381"><a href="#cb22-381" aria-hidden="true" tabindex="-1"></a>data_final <span class="ot">&lt;-</span> <span class="fu">left_join</span>(data, dataIII, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">&quot;Patient&quot;</span>, <span class="st">&quot;Time&quot;</span>, <span class="st">&quot;Group&quot;</span>))</span>

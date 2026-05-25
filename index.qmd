@@ -114,7 +114,7 @@ data <- data %>% left_join(baseline_covariates, by = "Patient")
 data$UPDRS <- rnorm(nrow(data), mean = 35 + 5 * as.numeric(as.character(data$Time)) + 
                       ifelse(data$Group == "Treatment", -1.5, 0), sd = 6)
 
-# Parameterization of missing data (MAR)
+# Parameterization of missing data
 data$UPDRS <- ifelse(
   runif(nrow(data)) < params$missing_rate &
   data$Time != "0",
@@ -329,7 +329,7 @@ ggplot(
 ```
 
 ```{r}
-#| label: lme-mar
+#| label: reference-based-imputation
 
 # Create sample of Control group UPDRS values by time 
 ref_vals <- data %>%
@@ -359,7 +359,7 @@ refval2 <- ref_vals |> filter(Time==2)
 new_col2 = sample(refval2$UPDRS, size = n2, replace = TRUE)
 dataII <- data1 |> filter(Time==2) |> mutate(UPDRS=new_col2)
 
-# Create final dataset Copy-Reference Method for Missing Data Imputation
+# Create final dataset for reference-based sensitivity imputation
 dataIII<- bind_rows(dataI, dataII) |>rename(UPDRSf = UPDRS) |> 
         select(Patient, Time, Group, UPDRSf)
 data_final <- left_join(data, dataIII, by = c("Patient", "Time", "Group"))
