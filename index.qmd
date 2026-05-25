@@ -1,0 +1,515 @@
+---
+title: "Longitudinal Mixed-Effects Modeling and Sensitivity Analyses in Simulated Parkinson’s Disease Data"
+author: "Dean Leonardi, Ph.D."
+date: today
+params:
+  missing_rate: 0.25
+editor: visual
+---
+
+## Abstract
+
+A longitudinal analysis for Parkinson’s patient UPDRS scores using copy-reference method for missing data imputation and propensity score matching: a non-randomized, observational, simulated data study
+
+## Executive Summary
+
+This report demonstrates a reproducible longitudinal clinical reporting workflow using R and Quarto in a simulated Parkinson’s disease observational study. Analyses include:
+
+- longitudinal mixed-effects modeling,
+- reference-based sensitivity analysis,
+- propensity score matching,
+- treatment effect estimation,
+- and automated HTML reporting.
+
+This workflow is intended as a methodological demonstration and does not represent a regulatory submission analysis.
+
+::: callout-note
+## Key Features Demonstrated
+
+- Longitudinal mixed-effects modeling
+- Sensitivity analysis workflows
+- Missing data handling
+- Propensity score matching
+- Automated statistical reporting
+- Interactive HTML reporting with Quarto
+- Reproducible research workflows
+- Clinical-style statistical interpretation
+:::
+
+## Background
+
+We assessed the efficacy of treatment in patients with Parkinson’s disease (PD) using UPDRS (Unified Parkinson’s Disease Rating Scale) scores. In PD research, the UPDRS is the gold standard for measuring motor and non-motor symptoms.
+
+## Methods
+
+This was a non-randomized, observational, 2-arm, simulated data study for adults with ages sampled from a normal distribution with mean 70 and standard deviation 12 years. Sex was sampled from a Bernoulli distribution with probability of being female 0.6. Treatment groups were assigned based on age and sex (non-random, simulating selection bias). We simulated longitudinal data for Parkinson’s patients with UPDRS scores measured at baseline, 1 year, and 2 years. The two groups were control and treatment. Longitudinal analysis was used to track changes in UPDRS scores across multiple time points to determine if treatment slows or accelerates disease progression and identifies symptom trajectories (e.g., motor decline, non-motor worsening) and supports trial design and stratification. The study data was simulated so that older and more females tended to get treatment. The primary endpoint was the differences between treatment groups (treatment - control) in UPDRS scores at year 2. No safety analysis was conducted. The ITT analysis set included all patients in the simulated data set. The copy-reference method for missing data imputation and propensity score matching to balance age and sex were utilized for sensitivity analyses.
+
+## Findings
+
+Four hundred patients were assigned to receive control (n=228), or Treatment (n=172). Treatment reduced UPDRS score versus control (treatment 43.35 vs control 46.27; difference -2.91, 95% CI -4.26 to -1.57).
+
+## Interpretation
+
+In patients with Parkinson’s, treatment reduced the UPDRS score.
+
+## Analysis
+
+We simulate longitudinal data for Parkinson’s patients with UPDRS scores measured at baseline, 1 year, and 2 years. Two groups: Control and Treatment.
+
+```{r}
+#| label: load-packages
+#| include: false
+
+set.seed(456)
+library(tidyverse)
+library(dplyr)
+library(gtsummary)
+library(gt)
+library(lme4)
+library(lmerTest)
+library(emmeans)
+library(tableone)  # Baseline comparison tables (SMD) or Balance checking
+library(MatchIt)   # Performs propensity score matching
+library(cobalt)    # Performs propensity score matching
+library(naniar)    # For missing data plot
+```
+
+```{r}
+#| label: simulate-data
+
+# Non-randomized observational study: older and more females tend to get treatment
+n_patients <- 400
+patients <- 1:n_patients
+times <- c(0, 1, 2)  # baseline, 1 year, 2 years
+
+# Non-random group assignment: function for treatment probability
+prob_treatment <- function(age, sex) {
+  plogis(-1 + 0.05*(age - 65) + 0.6*(sex == "F"))
+}
+
+# Create baseline covariates first
+baseline_covariates <- data.frame(
+  Patient = as.factor(patients),
+  Age = rnorm(n_patients, mean = 70, sd = 12),  # Older population
+  Sex = sample(c("M", "F"), n_patients, replace = TRUE, prob = c(0.4, 0.6))  # More females
+)
+
+# Assign groups based on age and sex (non-random, simulating selection bias)
+baseline_covariates$Group <- as.factor(sapply(1:n_patients, function(i) {
+  if (runif(1) < prob_treatment(baseline_covariates$Age[i], baseline_covariates$Sex[i])) {
+    "Treatment"
+  } else {
+    "Control"
+  }
+}))
+
+# Create longitudinal data frame
+data <- expand.grid(Patient = patients, Time = times)
+data$Patient <- as.factor(data$Patient)
+data$Time <- as.factor(data$Time)
+
+# Merge with baseline covariates
+data <- data %>% left_join(baseline_covariates, by = "Patient")
+
+# Simulate UPDRS scores
+data$UPDRS <- rnorm(nrow(data), mean = 35 + 5 * as.numeric(as.character(data$Time)) + 
+                      ifelse(data$Group == "Treatment", -1.5, 0), sd = 6)
+
+# Parameterization of missing data (MAR)
+data$UPDRS <- ifelse(
+  runif(nrow(data)) < params$missing_rate &
+  data$Time != "0",
+  NA,
+  data$UPDRS
+)
+
+cat("\nSimulated Data Header:\n")
+head(data)
+
+```
+
+### Computational Reproducibility
+Random seeds were pre-specified for all simulation and matching procedures to ensure reproducible analytical outputs.
+
+
+### Demographics
+
+```{r}
+#| label: demo-table
+#| echo: false
+
+#data %>% filter(if_any(everything(), is.na))
+data |> filter(Time == "0") |>
+  tbl_summary(
+    by = Group,
+    include = c(Age, UPDRS),
+    statistic = list(
+      all_continuous() ~ "{mean} ({sd})",
+      all_categorical() ~ "{n} / {N} ({p}%)"
+    ),
+    digits = all_continuous() ~ 2,
+    missing_text = "(Missing)"
+  ) |> 
+  add_overall() |>
+  as_gt() |>
+  tab_header(
+    title = "Table 1. Summary of Demographics and Baseline Characteristics"
+  ) |>
+  gt::tab_source_note(gt::md("*Data is simulated*"))
+```
+
+### Primary Analysis
+
+Fit a linear mixed effects model to estimate least squares means differences between treatment groups at year 2.
+
+```{r}
+#| label: lme-model
+
+data$Group <- factor(data$Group,
+                     levels = c("Control", "Treatment"))
+m1 <- lmer(UPDRS ~ Group*Time + Age + (1|Patient), data=data)
+
+source("R/utils.R")
+
+
+u4 <- extract_emm_table(m1)
+u4 |>
+  gt() |>
+  format_gt_table() |>
+  tab_header(
+    title = "Table 2. Summary of Linear Mixed-Effects Model Predicting UPDRS by Treatment and Age at Year 2"
+  ) |>
+  tab_footnote(
+    footnote = "CI: 95% Confidence Interval; Formula: UPDRS ~ Group * Time + Age + (1 | Patient)"
+  )
+```
+
+The longitudinal mixed-effects model demonstrated lower estimated UPDRS scores in the treatment group at Year 2 relative to control, consistent with simulated treatment benefit.
+
+```{r}
+#| label: residual-diagnostics
+#| fig-cap: "Figure 2. Residual diagnostics for the primary mixed-effects model."
+#| fig-width: 7
+#| fig-height: 5
+
+plot(
+  fitted(m1),
+  resid(m1),
+  xlab = "Fitted Values",
+  ylab = "Residuals",
+  main = "Residuals vs Fitted"
+)
+
+abline(h = 0, lty = 2)
+```
+
+```{r}
+#| label: longitudinal-profile-plot
+#| fig-cap: "Figure 1. Longitudinal mean UPDRS profiles by treatment group."
+#| fig-width: 8
+#| fig-height: 5
+#| warning: false
+#| message: false
+
+# Summary statistics by treatment group and visit
+plot_data <- data %>%
+  group_by(Group, Time) %>%
+  summarize(
+    Mean = mean(UPDRS, na.rm = TRUE),
+    SD = sd(UPDRS, na.rm = TRUE),
+    N = sum(!is.na(UPDRS)),
+    SE = SD / sqrt(N),
+    Lower = Mean - 1.96 * SE,
+    Upper = Mean + 1.96 * SE,
+    .groups = "drop"
+  )
+
+# Convert Time to numeric for plotting
+plot_data$Time <- as.numeric(as.character(plot_data$Time))
+
+# Longitudinal profile plot
+ggplot(plot_data,
+       aes(x = Time,
+           y = Mean,
+           color = Group,
+           group = Group)) +
+
+  geom_line(linewidth = 1.2) +
+
+  geom_point(size = 3) +
+
+  geom_errorbar(
+    aes(ymin = Lower, ymax = Upper),
+    width = 0.08,
+    linewidth = 0.7
+  ) +
+
+  scale_x_continuous(
+    breaks = c(0, 1, 2),
+    labels = c("Baseline", "Year 1", "Year 2")
+  ) +
+
+  labs(
+    title = "Longitudinal Mean UPDRS Profiles by Treatment Group",
+    subtitle = "Observed Mean Scores with 95% Confidence Intervals",
+    x = "Visit",
+    y = "Mean UPDRS Score",
+    color = "Treatment Group"
+  ) +
+
+  theme_minimal(base_size = 13) +
+
+  theme(
+    plot.title = element_text(face = "bold"),
+    legend.position = "top"
+  )
+```
+
+### Missing Data Analysis
+
+Reference-based imputation was implemented as a sensitivity analysis by sampling observed control-group values at corresponding visits to impute missing treatment observations.
+
+```{r}
+#| label: missingness-plot
+#| fig-cap: "Figure 2. Missingness patterns across study visits."
+#| fig-width: 8
+#| fig-height: 5
+#| warning: false
+#| message: false
+
+# Create missingness summary dataset
+missing_plot_data <- data %>%
+  mutate(
+    Missing = ifelse(is.na(UPDRS), "Missing", "Observed"),
+    Time = factor(
+      Time,
+      levels = c("0", "1", "2"),
+      labels = c("Baseline", "Year 1", "Year 2")
+    )
+  ) %>%
+  group_by(Group, Time, Missing) %>%
+  summarize(
+    Count = n(),
+    .groups = "drop"
+  ) %>%
+  group_by(Group, Time) %>%
+  mutate(
+    Percent = 100 * Count / sum(Count)
+  )
+
+# Missingness bar plot
+ggplot(
+  missing_plot_data,
+  aes(
+    x = Time,
+    y = Percent,
+    fill = Missing
+  )
+) +
+
+  geom_col(position = "stack") +
+
+  facet_wrap(~ Group) +
+
+  labs(
+    title = "Missingness Pattern for UPDRS Scores by Visit",
+    subtitle = "Percentage of Observed and Missing Assessments",
+    x = "Visit",
+    y = "Percent",
+    fill = "UPDRS Status"
+  ) +
+
+  scale_y_continuous(labels = scales::label_number(suffix = "%")) +
+
+  theme_minimal(base_size = 13) +
+
+  theme(
+    plot.title = element_text(face = "bold"),
+    legend.position = "top"
+  )
+```
+
+```{r}
+#| label: lme-mar
+
+# Create sample of Control group UPDRS values by time 
+ref_vals <- data %>%
+  group_by(Time) %>%
+  filter(Group == "Control") |>
+  select(Time, UPDRS) |>
+  na.omit()
+
+# Find missing UPDRS values for Treatment group UPDRS
+data1 <- data |>
+          filter(Group=="Treatment") |>
+          filter(is.na(UPDRS))
+
+length <- data1 %>% 
+        group_by(Time) %>% 
+        summarise(n = n())
+
+# For time = 1, sample with replacement Control group UPDRS values & impute into missing Treatment values
+n1 <- length$n[1]
+refval1 <- ref_vals |> filter(Time==1)
+new_col1 = sample(refval1$UPDRS, size = n1, replace = TRUE)
+dataI <- data1 |> filter(Time==1) |> mutate(UPDRS=new_col1)
+
+# For time = 2, sample with replacement Control group UPDRS values & impute into missing Treatment values
+n2 <- length$n[2]
+refval2 <- ref_vals |> filter(Time==2)
+new_col2 = sample(refval2$UPDRS, size = n2, replace = TRUE)
+dataII <- data1 |> filter(Time==2) |> mutate(UPDRS=new_col2)
+
+# Create final dataset Copy-Reference Method for Missing Data Imputation
+dataIII<- bind_rows(dataI, dataII) |>rename(UPDRSf = UPDRS) |> 
+        select(Patient, Time, Group, UPDRSf)
+data_final <- left_join(data, dataIII, by = c("Patient", "Time", "Group"))
+data_MAR <- data_final |> 
+    mutate(UPDRSff = if_else(Group=="Treatment" & is.na(UPDRS), UPDRSf, UPDRS)) |>
+    select(Patient, Time, Age, Sex, Group, UPDRSff) |>
+    rename(UPDRS = UPDRSff)
+
+# Generate linear mixed effects model on imputed data
+data_MAR$Group <- factor(
+  data_MAR$Group,
+  levels = c("Control", "Treatment")
+)
+
+data %>%
+  group_by(Time) %>%
+  summarize(
+    Missing = mean(is.na(UPDRS))*100
+  )
+
+m2 <- lmer(UPDRS ~ Group*Time + Age + (1|Patient), data=data_MAR)
+
+
+# Compute Time=2 lsmeans estimates and 95% CIs and produce final table for output 
+v4 <- extract_emm_table(m2)
+v4 |>
+  gt() |>
+  format_gt_table() |>
+  tab_header(
+    title = "Table 3. Summary of Linear Mixed-Effects Model Predicting UPDRS by Treatment and Age at Year 2",
+    subtitle = "Copy-Reference Method for Missing Data Imputation"
+  ) |>
+  tab_footnote(
+    footnote = "CI: 95% Confidence Interval; Formula: UPDRS ~ Group * Time + Age + (1 | Patient)"
+  )
+
+```
+
+Results from the reference-based imputation sensitivity analysis were generally consistent with the primary analysis, suggesting robustness to missing outcome data assumptions.
+
+### Propensity Score Matching
+
+Assuming the groups are not randomized, use propensity score matching to balance covariates of age and sex. Based on the matched data, fit the longitudinal mixed-effects model and estimate least squares means differences between treatment groups at year 2.
+
+```{r}
+#| label: lme-psm
+set.seed(2026)
+
+# Propensity score matching and evaluation
+vars <- c("Age", "Sex")
+table_before <- CreateTableOne(vars = vars,
+                               strata = "Group",
+                               data = baseline_covariates,
+                               test = FALSE)
+
+print(table_before, smd = TRUE)
+
+
+match_model2 <- matchit(Group ~ Age + Sex,
+                        data = baseline_covariates,
+                        method = "nearest",
+                        link="logit",
+                        distance="glm")
+
+matched_data2 <- match.data(match_model2)
+table(matched_data2$Group)
+
+
+table_after <- CreateTableOne(vars = vars,
+                              strata = "Group",
+                              data = matched_data2,
+                              test = FALSE)
+
+print(table_after, smd = TRUE)
+
+# Subset orginal data based on patients identified by Propensity score matching
+matched_pid <- matched_data2 |> select(Patient)
+matched_data_final <- left_join(matched_pid, data, by = "Patient")
+
+
+# Generate linear mixed effects model on matched population
+matched_data_final$Group <- factor(
+    matched_data_final$Group, 
+    levels = c("Control", "Treatment"))
+
+m3 <- lmer(UPDRS ~ Group*Time + Age + (1|Patient), data=matched_data_final)
+
+w4 <- extract_emm_table(m3)
+w4 |>
+  gt() |>
+  format_gt_table() |>
+  tab_header(
+    title = "Table 4. Summary of Linear Mixed-Effects Model Predicting UPDRS by Treatment and Age at Year 2",
+    subtitle = "Propensity Score Matching"
+  ) |>
+  tab_footnote(
+    footnote = "CI: 95% Confidence Interval; Formula: UPDRS ~ Group * Time + Age + (1 | Patient)"
+  )
+```
+
+Propensity score matching improved baseline covariate balance between treatment groups while preserving estimated treatment differences at Year 2.
+
+```{r}
+#| label: covbal-plot
+#| fig-cap: "Figure 3. Covariate balance before and after propensity score matching."
+#| fig-width: 8
+#| fig-height: 5
+#| warning: false
+#| message: false
+# Love Plot
+love.plot(
+  match_model2,
+  binary = "std",
+  thresholds = c(m = 0.1),
+  abs = TRUE,
+  var.order = "unadjusted",
+  stars = "raw"
+)
+```
+
+## Conclusions
+
+This report demonstrates a reproducible and automated longitudinal clinical reporting workflow using modern R and Quarto methodologies. The analysis integrates mixed-effects modeling, missing data sensitivity analyses, and propensity score matching within a publication-style HTML reporting framework suitable for exploratory clinical and real-world evidence applications.
+
+The workflow illustrates approaches commonly used in pharmaceutical and biotechnology clinical development environments for statistical analysis, reproducibility, and reporting automation.
+
+## Limitations
+
+This report uses simulated observational data for methodological demonstration purposes. Results should not be interpreted clinically. The missing data strategy is illustrative and does not fully implement regulatory-grade multiple imputation procedures.
+
+## Reproducibility
+
+This report was generated using a reproducible Quarto workflow in R.\
+All analyses, figures, tables, and statistical outputs were generated programmatically from simulated source data.
+
+Key components include:
+
+- automated data simulation,
+- longitudinal mixed-effects modeling,
+- reference-based missing data imputation,
+- propensity score matching,
+- reproducible statistical reporting,
+- and parameterized report generation.
+
+The workflow is designed to reflect modern clinical reporting and real-world evidence analysis practices used in pharmaceutical and biotechnology settings.
+
+## Appendix
+
+```{r}
+#| label: appendix
+sessionInfo()
+```

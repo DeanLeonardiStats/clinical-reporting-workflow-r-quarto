@@ -1,0 +1,29 @@
+project:
+  type: website
+  output-dir: docs
+
+website:
+  title: "Reproducible Clinical Reporting Workflow"
+  
+  navbar:
+    left:
+      - href: index.qmd
+        text: Clinical Reporting Example
+
+format:
+  html:
+    theme: cosmo
+    toc: true
+    toc-depth: 3
+    toc-location: left
+    number-sections: true
+    code-fold: true
+    code-summary: "Show code"
+    code-tools: true
+    embed-resources: true
+    smooth-scroll: true
+
+execute:
+  freeze: auto
+  warning: false
+  message: false
