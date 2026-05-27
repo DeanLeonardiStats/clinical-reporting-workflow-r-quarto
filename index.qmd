@@ -8,14 +8,14 @@ editor: visual
 ---
 
 ## Abstract
-A longitudinal analysis for Parkinson’s patient UPDRS scores using reference-based missing data sensitivity analysis and propensity score matching: a non-randomized, observational, simulated data study
+A longitudinal analysis for Parkinson’s patient UPDRS scores using MAR multiple imputation (MICE) sensitivity analysis and propensity score matching: a non-randomized, observational, simulated data study
 
 
 ## Executive Summary
 This report demonstrates a reproducible longitudinal clinical reporting workflow using R and Quarto in a simulated Parkinson’s disease observational study. Analyses include:
 
 - longitudinal mixed-effects modeling,
-- reference-based sensitivity analysis,
+- MAR multiple imputation sensitivity analysis (MICE),
 - propensity score matching,
 - treatment effect estimation,
 - and automated HTML reporting.
@@ -41,15 +41,8 @@ We assessed the efficacy of treatment in patients with Parkinson’s disease (PD
 
 ## Methods
 
-This was a non-randomized, observational, 2-arm, simulated data study for adults with ages sampled from a normal distribution with mean 70 and standard deviation 12 years. Sex was sampled from a Bernoulli distribution with probability of being female 0.6. Treatment groups were assigned based on age and sex (non-random, simulating selection bias). We simulated longitudinal data for Parkinson’s patients with UPDRS scores measured at baseline, 1 year, and 2 years. The two groups were control and treatment. Longitudinal analysis was used to track changes in UPDRS scores across multiple time points to determine if treatment slows or accelerates disease progression and identifies symptom trajectories (e.g., motor decline, non-motor worsening) and supports trial design and stratification. The study data was simulated so that older and more females tended to get treatment. The primary endpoint was the differences between treatment groups (treatment - control) in UPDRS scores at year 2. No safety analysis was conducted. The ITT analysis set included all patients in the simulated data set. The copy-reference method for missing data imputation and propensity score matching to balance age and sex were utilized for sensitivity analyses.
+This was a non-randomized, observational, 2-arm, simulated data study for adults with ages sampled from a normal distribution with mean 70 and standard deviation 12 years. Sex was sampled from a Bernoulli distribution with probability of being female 0.6. Treatment groups were assigned based on age and sex (non-random, simulating selection bias). We simulated longitudinal data for Parkinson’s patients with UPDRS scores measured at baseline, 1 year, and 2 years. The two groups were control and treatment. Longitudinal analysis was used to track changes in UPDRS scores across multiple time points to determine if treatment slows or accelerates disease progression and identifies symptom trajectories (e.g., motor decline, non-motor worsening) and supports trial design and stratification. The study data was simulated so that older and more females tended to get treatment. The primary endpoint was the differences between treatment groups (treatment - control) in UPDRS scores at year 2. No safety analysis was conducted. The ITT analysis set included all patients in the simulated data set. Multiple imputation by chained equations (MICE) under a missing-at-random (MAR) assumption, with M = 25 completed datasets pooled via Rubin's Rules, and propensity score matching to balance age and sex were utilized for sensitivity analyses.
 
-## Findings
-
-Four hundred patients were assigned to receive control (n=228), or Treatment (n=172). Treatment reduced UPDRS score versus control (treatment 43.35 vs control 46.27; difference -2.91, 95% CI -4.26 to -1.57).
-
-## Interpretation
-
-In patients with Parkinson’s, treatment reduced the UPDRS score.
 
 ## Analysis
 
@@ -59,7 +52,7 @@ We simulate longitudinal data for Parkinson’s patients with UPDRS scores measu
 #| label: load-packages
 #| include: false
 
-set.seed(456)
+
 library(tidyverse)
 library(dplyr)
 library(gtsummary)
@@ -70,12 +63,14 @@ library(emmeans)
 library(tableone)  # Baseline comparison tables (SMD) or Balance checking
 library(MatchIt)   # Performs propensity score matching
 library(cobalt)    # Performs propensity score matching
-library(naniar)    # For missing data plot
+library(mice)        # multiple imputation
+library(broom.mixed) # required for mice::pool() to work with lmer models
+library(naniar)
 ```
 
 ```{r}
 #| label: simulate-data
-
+set.seed(456)
 # Non-randomized observational study: older and more females tend to get treatment
 n_patients <- 400
 patients <- 1:n_patients
@@ -122,8 +117,21 @@ data$UPDRS <- ifelse(
   data$UPDRS
 )
 
-cat("\nSimulated Data Header:\n")
-head(data)
+data |>
+  head() |>
+  gt() |>
+  tab_header(title = "Simulated Data — First Six Rows") |>
+  tab_options(table.font.size = px(12))
+
+# Add at the bottom of the simulate-data chunk
+data_wide <- data |>
+  select(Patient, Time, Age, Sex, Group, UPDRS) |>
+  pivot_wider(
+    id_cols      = c(Patient, Age, Sex, Group),
+    names_from   = Time,
+    values_from  = UPDRS,
+    names_prefix = "UPDRS_t"
+  )
 
 ```
 
@@ -137,11 +145,10 @@ Random seeds were pre-specified for all simulation and matching procedures to en
 #| label: demo-table
 #| echo: false
 
-#data %>% filter(if_any(everything(), is.na))
 data |> filter(Time == "0") |>
   tbl_summary(
     by = Group,
-    include = c(Age, UPDRS),
+    include = c(Age, Sex, UPDRS),
     statistic = list(
       all_continuous() ~ "{mean} ({sd})",
       all_categorical() ~ "{n} / {N} ({p}%)"
@@ -181,26 +188,16 @@ u4 |>
   tab_footnote(
     footnote = "CI: 95% Confidence Interval; Formula: UPDRS ~ Group * Time + Age + (1 | Patient)"
   )
+
+# emmeans estimates
+est_yr2 <- u4 |> filter(grepl("Treatment - Control", Group)) |> pull(Estimate)
+ci_yr2  <- u4 |> filter(grepl("Treatment - Control", Group)) |> pull(CI)
+
 ```
 
 The longitudinal mixed-effects model demonstrated lower estimated UPDRS scores in the treatment group at Year 2 relative to control, consistent with simulated treatment benefit.
 
-```{r}
-#| label: residual-diagnostics
-#| fig-cap: "Figure 2. Residual diagnostics for the primary mixed-effects model."
-#| fig-width: 7
-#| fig-height: 5
 
-plot(
-  fitted(m1),
-  resid(m1),
-  xlab = "Fitted Values",
-  ylab = "Residuals",
-  main = "Residuals vs Fitted"
-)
-
-abline(h = 0, lty = 2)
-```
 
 ```{r}
 #| label: longitudinal-profile-plot
@@ -264,141 +261,354 @@ ggplot(plot_data,
   )
 ```
 
-### Missing Data Analysis
-
-Reference-based imputation was implemented as a sensitivity analysis by sampling observed control-group values at corresponding visits to impute missing treatment observations.
 
 ```{r}
-#| label: missingness-plot
-#| fig-cap: "Figure 2. Missingness patterns across study visits."
-#| fig-width: 8
+#| label: residual-diagnostics
+#| fig-cap: "Figure 2. Residual diagnostics for the primary mixed-effects model."
+#| fig-width: 7
 #| fig-height: 5
-#| warning: false
-#| message: false
 
-# Create missingness summary dataset
-missing_plot_data <- data %>%
-  mutate(
-    Missing = ifelse(is.na(UPDRS), "Missing", "Observed"),
-    Time = factor(
-      Time,
-      levels = c("0", "1", "2"),
-      labels = c("Baseline", "Year 1", "Year 2")
-    )
-  ) %>%
-  group_by(Group, Time, Missing) %>%
-  summarize(
-    Count = n(),
-    .groups = "drop"
-  ) %>%
-  group_by(Group, Time) %>%
-  mutate(
-    Percent = 100 * Count / sum(Count)
-  )
-
-# Missingness bar plot
-ggplot(
-  missing_plot_data,
-  aes(
-    x = Time,
-    y = Percent,
-    fill = Missing
-  )
-) +
-
-  geom_col(position = "stack") +
-
-  facet_wrap(~ Group) +
-
-  labs(
-    title = "Missingness Pattern for UPDRS Scores by Visit",
-    subtitle = "Percentage of Observed and Missing Assessments",
-    x = "Visit",
-    y = "Percent",
-    fill = "UPDRS Status"
-  ) +
-
-  scale_y_continuous(labels = scales::label_number(suffix = "%")) +
-
-  theme_minimal(base_size = 13) +
-
-  theme(
-    plot.title = element_text(face = "bold"),
-    legend.position = "top"
-  )
-```
-
-```{r}
-#| label: reference-based-imputation
-
-# Create sample of Control group UPDRS values by time 
-ref_vals <- data %>%
-  group_by(Time) %>%
-  filter(Group == "Control") |>
-  select(Time, UPDRS) |>
-  na.omit()
-
-# Find missing UPDRS values for Treatment group UPDRS
-data1 <- data |>
-          filter(Group=="Treatment") |>
-          filter(is.na(UPDRS))
-
-length <- data1 %>% 
-        group_by(Time) %>% 
-        summarise(n = n())
-
-# For time = 1, sample with replacement Control group UPDRS values & impute into missing Treatment values
-n1 <- length$n[1]
-refval1 <- ref_vals |> filter(Time==1)
-new_col1 = sample(refval1$UPDRS, size = n1, replace = TRUE)
-dataI <- data1 |> filter(Time==1) |> mutate(UPDRS=new_col1)
-
-# For time = 2, sample with replacement Control group UPDRS values & impute into missing Treatment values
-n2 <- length$n[2]
-refval2 <- ref_vals |> filter(Time==2)
-new_col2 = sample(refval2$UPDRS, size = n2, replace = TRUE)
-dataII <- data1 |> filter(Time==2) |> mutate(UPDRS=new_col2)
-
-# Create final dataset for reference-based sensitivity imputation
-dataIII<- bind_rows(dataI, dataII) |>rename(UPDRSf = UPDRS) |> 
-        select(Patient, Time, Group, UPDRSf)
-data_final <- left_join(data, dataIII, by = c("Patient", "Time", "Group"))
-data_MAR <- data_final |> 
-    mutate(UPDRSff = if_else(Group=="Treatment" & is.na(UPDRS), UPDRSf, UPDRS)) |>
-    select(Patient, Time, Age, Sex, Group, UPDRSff) |>
-    rename(UPDRS = UPDRSff)
-
-# Generate linear mixed effects model on imputed data
-data_MAR$Group <- factor(
-  data_MAR$Group,
-  levels = c("Control", "Treatment")
+plot(
+  fitted(m1),
+  resid(m1),
+  xlab = "Fitted Values",
+  ylab = "Residuals",
+  main = "Residuals vs Fitted"
 )
 
-data %>%
-  group_by(Time) %>%
-  summarize(
-    Missing = mean(is.na(UPDRS))*100
-  )
-
-m2 <- lmer(UPDRS ~ Group*Time + Age + (1|Patient), data=data_MAR)
-
-
-# Compute Time=2 lsmeans estimates and 95% CIs and produce final table for output 
-v4 <- extract_emm_table(m2)
-v4 |>
-  gt() |>
-  format_gt_table() |>
-  tab_header(
-    title = "Table 3. Summary of Linear Mixed-Effects Model Predicting UPDRS by Treatment and Age at Year 2",
-    subtitle = "Copy-Reference Method for Missing Data Imputation"
-  ) |>
-  tab_footnote(
-    footnote = "CI: 95% Confidence Interval; Formula: UPDRS ~ Group * Time + Age + (1 | Patient)"
-  )
-
+abline(h = 0, lty = 2)
 ```
 
-Results from the reference-based imputation sensitivity analysis were generally consistent with the primary analysis, suggesting robustness to missing outcome data assumptions.
+
+## Findings
+
+Four hundred patients were assigned to receive control (n=`r sum(baseline_covariates$Group=="Control")`), or Treatment 
+(n=`r sum(baseline_covariates$Group=="Treatment")`). Treatment reduced UPDRS score versus control (treatment 43.35 vs control 46.27; difference `r round(est_yr2, 2)`, 95% CI `r ci_yr2`).
+
+## Interpretation
+
+In patients with Parkinson's disease, treatment reduced the UPDRS score at Year 2. These findings are based on simulated data and are intended as a methodological demonstration only.
+
+
+
+### Missing Data Analysis
+
+Under a Missing At Random (MAR) assumption, missing UPDRS outcomes are
+predicted by observed covariates (Age, Sex, Group) and observed UPDRS
+values at other timepoints. Multiple imputation by chained equations
+(MICE) with predictive mean matching was used to generate M = 25
+completed datasets. Fixed-effect estimates from each dataset were
+combined using Rubin's Rules to produce a single pooled estimate and
+standard error that properly accounts for within- and between-imputation
+uncertainty.
+
+
+#### Table 3a. Missingness Summary Prior to Imputation
+
+```{r}
+#| label: missingness-summary
+#| echo: false
+#| message: false
+#| warning: false
+
+# Missingness summary table
+data_wide |>
+  summarise(
+    `N patients`           = n(),
+    `Missing — Year 1 (n)` = sum(is.na(UPDRS_t1)),
+    `Missing — Year 2 (n)` = sum(is.na(UPDRS_t2)),
+    `% Missing — Year 1`   = paste0(round(100 * mean(is.na(UPDRS_t1)), 1), "%"),
+    `% Missing — Year 2`   = paste0(round(100 * mean(is.na(UPDRS_t2)), 1), "%")
+  ) |>
+  gt() |>
+  tab_header(
+    title    = "Table 3a. Missingness Summary Prior to Imputation",
+    subtitle = "UPDRS_t0 (baseline) is fully observed by design"
+  ) |>
+  tab_options(
+    table.font.size           = px(13),
+    heading.title.font.size   = px(14),
+    heading.title.font.weight = "bold",
+    table.width               = pct(100)
+  )
+```
+
+#### Figure 3a
+
+
+```{r}
+#| label: missingness-pattern
+#| echo: false
+#| message: false
+#| warning: false
+#| fig-cap: "Figure 3a. Missing data pattern across patients and visits."
+#| fig-width: 10
+#| fig-height: 5
+#| out-width: "90%"
+#| fig-align: center
+
+naniar::vis_miss(
+  data_wide |> dplyr::select(-Patient),
+  warn_large_data = FALSE
+) +
+  theme(
+    axis.text.x.top = element_text(angle = -45, hjust = 0, vjust = 0, size = 9),
+    plot.margin     = margin(t = 20, r = 10, b = 10, l = 10, unit = "pt")
+  )
+```
+
+```{r}
+#| label: mice-imputation
+#| message: false
+#| warning: false
+#| cache: true
+#| cache.extra: !expr list(nrow(data_wide), ncol(data_wide))
+
+# ── 1. Prepare data for mice ──────────────────────────────────────────────────
+# Remove Patient ID before passing to mice (high-cardinality ID should not
+# be a predictor). Store IDs separately and re-attach after completion.
+
+patient_ids <- data_wide |> pull(Patient)
+
+data_mice <- data_wide |>
+  select(-Patient) |>
+  mutate(
+    Sex   = factor(Sex,   levels = c("M", "F")),
+    Group = factor(Group, levels = c("Control", "Treatment"))
+  )
+
+# ── 2. Configure predictor matrix and imputation methods ──────────────────────
+ini  <- mice(data_mice, maxit = 0, print = FALSE)
+meth <- ini$method
+pred <- ini$predictorMatrix
+
+# Baseline UPDRS is fully observed — exclude from imputation target
+# but retain as a predictor for Year 1 and Year 2 imputation
+meth["UPDRS_t0"] <- ""
+pred["UPDRS_t0", ] <- 0
+
+# pmm (predictive mean matching) is appropriate for bounded continuous scores:
+# it draws observed values close to the linear prediction, preserving the
+# empirical distribution and avoiding impossible out-of-range imputations
+meth[c("UPDRS_t1", "UPDRS_t2")] <- "pmm"
+
+# ── 3. Run mice ────────────────────────────────────────────────────────────────
+set.seed(2026)
+imp_mar <- mice(
+  data_mice,
+  m               = 25,    # 25 datasets: adequate for ~25% missingness
+  method          = meth,
+  predictorMatrix = pred,
+  maxit           = 15,    # iterations per dataset until convergence
+  print           = FALSE
+)
+```
+
+```{r}
+#| label: mice-convergence
+#| fig-cap: "Figure 3b. Convergence diagnostics for mice imputation. Mean and SD of imputed values should mix well (no trend) across iterations."
+#| fig-width: 8
+#| fig-height: 4
+#| message: false
+#| warning: false
+
+# Trace plots: flat, well-mixed chains indicate convergence
+plot(imp_mar, c("UPDRS_t1", "UPDRS_t2"), layout = c(2, 2))
+```
+
+```{r}
+#| label: mice-fit-pool
+#| message: false
+#| warning: false
+
+# ── 4. Fit LMER on each completed dataset ─────────────────────────────────────
+# For each of the M imputed wide datasets:
+#   (a) re-attach Patient IDs
+#   (b) reshape wide → long
+#   (c) fit the same LMER specification as the primary analysis
+
+fit_on_completed <- function(i) {
+  
+  wide_i <- mice::complete(imp_mar, action = i) |>
+    mutate(Patient = patient_ids)                  # restore patient ID
+  
+  long_i <- wide_i |>
+    pivot_longer(
+      cols         = starts_with("UPDRS_t"),
+      names_to     = "Time",
+      names_prefix = "UPDRS_t",
+      values_to    = "UPDRS"
+    ) |>
+    mutate(
+      Time  = factor(Time,  levels = c("0", "1", "2")),
+      Group = factor(Group, levels = c("Control", "Treatment"))
+    )
+  
+  lmer(UPDRS ~ Group * Time + Age + (1 | Patient), data = long_i)
+}
+
+models_mar <- lapply(seq_len(imp_mar$m), fit_on_completed)
+
+# ── 5. Pool fixed effects via Rubin's Rules ───────────────────────────────────
+# mice::pool() uses broom.mixed::tidy() to extract estimates from each lmerMod
+pooled_mar  <- mice::as.mira(models_mar) |> mice::pool()
+pooled_summ <- summary(pooled_mar, conf.int = TRUE)
+
+# ── 6. Display pooled fixed effects table ─────────────────────────────────────
+pooled_summ |>
+  as_tibble() |>
+  rename(
+    Parameter = term,
+    Estimate  = estimate,
+    SE        = std.error,
+    df        = df,
+    p         = p.value,
+    Lower     = `2.5 %`,
+    Upper     = `97.5 %`
+  ) |>
+  mutate(
+    across(c(Estimate, SE, Lower, Upper), \(x) round(x, 3)),
+    CI = paste0("(", round(Lower, 2), ", ", round(Upper, 2), ")"),
+    p  = case_when(
+           p < 0.001 ~ "< 0.001",
+           TRUE      ~ as.character(round(p, 3))
+         )
+  ) |>
+  select(Parameter, Estimate, SE, CI, df, p) |>
+  gt() |>
+  tab_header(
+    title    = "Table 3b. Pooled Fixed Effects — MAR Sensitivity Analysis",
+    subtitle = "MICE with Predictive Mean Matching; m = 25; Rubin's Rules"
+  ) |>
+  cols_label(
+    Parameter = "Parameter",
+    Estimate  = "Estimate",
+    SE        = "Std. Error",
+    CI        = "95% CI",
+    df        = "Pooled df",
+    p         = "p-value"
+  ) |>
+  tab_style(
+    style     = cell_text(weight = "bold"),
+    locations = cells_column_labels()
+  ) |>
+  tab_footnote(
+    footnote = "Pooled using Rubin's Rules. Formula: UPDRS ~ Group × Time + Age + (1 | Patient). FMI reported in Table 3c."
+  ) |>
+  tab_options(
+    table.font.size           = px(13),
+    heading.title.font.size   = px(14),
+    heading.title.font.weight = "bold",
+    table.width               = pct(100)
+  )
+```
+
+```{r}
+#| label: mice-emmeans-pool
+#| message: false
+#| warning: false
+
+# ── 7. Pooled treatment effect at Year 2 formatted like primary analysis ──────
+# emmeans is computed for each imputed model, then estimates and SEs are
+# combined using Rubin's Rules. The Satterthwaite df from emmeans is used
+# in the Barnard-Rubin (1999) degrees-of-freedom approximation.
+
+pool_emmeans_contrast <- function(models, time_level = "2") {
+  
+  # Extract Treatment - Control contrast at the requested timepoint
+  extract_one <- function(mod) {
+    em  <- emmeans(mod, ~ Group | Time)
+    ct  <- contrast(em, method = "trt.vs.ctrl", ref = "Control")
+    row <- as.data.frame(ct) |> filter(Time == time_level)
+    list(
+      est = row$estimate,
+      se  = row$SE,
+      df  = row$df      # Satterthwaite df
+    )
+  }
+  
+  res   <- lapply(models, extract_one)
+  M     <- length(res)
+  ests  <- sapply(res, `[[`, "est")
+  ses   <- sapply(res, `[[`, "se")
+  dfs   <- sapply(res, `[[`, "df")
+  
+  # Rubin's Rules
+  Q_bar <- mean(ests)                          # pooled estimate
+  U_bar <- mean(ses^2)                         # average within-imputation variance
+  B     <- var(ests)                           # between-imputation variance
+  T_var <- U_bar + (1 + 1 / M) * B            # total variance
+  SE_p  <- sqrt(T_var)
+  
+  # Fraction of missing information (FMI)
+  r   <- (1 + 1 / M) * B / U_bar
+  fmi <- r / (1 + r)
+  
+  # Barnard-Rubin (1999) pooled degrees of freedom
+  df_old <- mean(dfs)
+  df_m   <- (M - 1) / r^2
+  df_obs <- (df_old + 1) / (df_old + 3) * df_old * (1 - r)
+  df_p   <- 1 / (1 / df_m + 1 / df_obs)
+  
+  ci <- Q_bar + qt(c(0.025, 0.975), df = df_p) * SE_p
+  
+  tibble(
+    Contrast    = "Treatment \u2212 Control",
+    Time        = paste0("Year ", time_level),
+    Estimate    = round(Q_bar, 3),
+    SE          = round(SE_p,  3),
+    CI          = paste0("(", round(ci[1], 2), ", ", round(ci[2], 2), ")"),
+    FMI         = round(fmi, 3)
+  )
+}
+
+contrast_pooled <- pool_emmeans_contrast(models_mar, time_level = "2")
+
+contrast_pooled |>
+  gt() |>
+  tab_header(
+    title    = "Table 3c. Pooled Treatment Effect at Year 2 — MAR Sensitivity Analysis",
+    subtitle = "MICE / Predictive Mean Matching; m = 25; Rubin's Rules"
+  ) |>
+  cols_label(
+    Contrast = "Contrast",
+    Time     = "Timepoint",
+    Estimate = "Estimate",
+    SE       = "Std. Error",
+    CI       = "95% CI",
+    FMI      = "FMI"
+  ) |>
+  tab_style(
+    style     = cell_text(weight = "bold"),
+    locations = cells_column_labels()
+  ) |>
+  tab_footnote(
+    footnote = paste0(
+      "FMI: Fraction of Missing Information \u2014 proportion of total variance ",
+      "attributable to missing data. Higher values indicate stronger sensitivity ",
+      "to the MAR assumption. df computed via Barnard-Rubin (1999) approximation."
+    )
+  ) |>
+  tab_options(
+    table.font.size           = px(13),
+    heading.title.font.size   = px(14),
+    heading.title.font.weight = "bold",
+    table.width               = pct(100)
+  )
+```
+
+Results from the MAR multiple imputation sensitivity analysis are presented
+in Tables 3b and 3c. Consistency with the primary analysis estimates would
+support robustness of the primary findings to the missing-at-random assumption.
+The Fraction of Missing Information (FMI) quantifies the proportion of
+uncertainty attributable to missing data; values below 0.10 are generally
+considered low.
+
+
+
+
+
+
 
 ### Propensity Score Matching
 
@@ -415,7 +625,16 @@ table_before <- CreateTableOne(vars = vars,
                                data = baseline_covariates,
                                test = FALSE)
 
-print(table_before, smd = TRUE)
+#print(table_before, smd = TRUE)
+
+print(table_before, smd = TRUE, printToggle = FALSE) |>
+  as.data.frame() |>
+  tibble::rownames_to_column("Characteristic") |>
+  gt() |>
+  format_gt_table() |>           # your existing utility
+  tab_header(title = "Table 4. Balance Before Matching") |>
+  tab_footnote("SMD < 0.10 indicates acceptable balance.")
+
 
 
 match_model2 <- matchit(Group ~ Age + Sex,
@@ -425,7 +644,7 @@ match_model2 <- matchit(Group ~ Age + Sex,
                         distance="glm")
 
 matched_data2 <- match.data(match_model2)
-table(matched_data2$Group)
+#table(matched_data2$Group)
 
 
 table_after <- CreateTableOne(vars = vars,
@@ -433,7 +652,15 @@ table_after <- CreateTableOne(vars = vars,
                               data = matched_data2,
                               test = FALSE)
 
-print(table_after, smd = TRUE)
+#print(table_after, smd = TRUE)
+
+print(table_after, smd = TRUE, printToggle = FALSE) |>
+  as.data.frame() |>
+  tibble::rownames_to_column("Characteristic") |>
+  gt() |>
+  format_gt_table() |>           # your existing utility
+  tab_header(title = "Table 5. Balance After Matching") |>
+  tab_footnote("SMD < 0.10 indicates acceptable balance.")
 
 # Subset orginal data based on patients identified by Propensity score matching
 matched_pid <- matched_data2 |> select(Patient)
@@ -452,7 +679,7 @@ w4 |>
   gt() |>
   format_gt_table() |>
   tab_header(
-    title = "Table 4. Summary of Linear Mixed-Effects Model Predicting UPDRS by Treatment and Age at Year 2",
+    title = "Table 6. Summary of Linear Mixed-Effects Model Predicting UPDRS by Treatment and Age at Year 2",
     subtitle = "Propensity Score Matching"
   ) |>
   tab_footnote(
@@ -464,7 +691,7 @@ Propensity score matching improved baseline covariate balance between treatment 
 
 ```{r}
 #| label: covbal-plot
-#| fig-cap: "Figure 3. Covariate balance before and after propensity score matching."
+#| fig-cap: "Figure 4. Covariate balance before and after propensity score matching."
 #| fig-width: 8
 #| fig-height: 5
 #| warning: false
@@ -488,7 +715,7 @@ The workflow illustrates approaches commonly used in pharmaceutical and biotechn
 
 ## Limitations
 
-This report uses simulated observational data for methodological demonstration purposes. Results should not be interpreted clinically. The missing data strategy is illustrative and does not fully implement regulatory-grade multiple imputation procedures.
+This report uses simulated observational data for methodological demonstration purposes. Results should not be interpreted clinically. Missing data sensitivity analyses use MICE with predictive mean matching under a missing-at-random (MAR) assumption. Whether the MAR assumption holds cannot be verified from the observed data alone; MNAR sensitivity analyses (e.g., reference-based methods using the rbmi package) would be required for regulatory-grade submissions.
 
 ## Reproducibility
 
@@ -499,7 +726,7 @@ Key components include:
 
 - automated data simulation,
 - longitudinal mixed-effects modeling,
-- reference-based missing data imputation,
+- MAR multiple imputation using MICE (m = 25, Rubin's Rules),
 - propensity score matching,
 - reproducible statistical reporting,
 - and parameterized report generation.

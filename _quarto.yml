@@ -4,24 +4,55 @@ project:
 
 website:
   title: "Reproducible Clinical Reporting Workflow"
-  
+
   navbar:
     left:
       - href: index.qmd
         text: Clinical Reporting Example
+    right:
+      - icon: github
+        href: https://github.com/DeanLeonardiStats/clinical-reporting-workflow-r-quarto
+        aria-label: GitHub Repository
+
+  page-footer:
+    left: "Dean Leonardi, Ph.D. — Biostatistician"
+    right:
+      - text: "GitHub"
+        href: https://github.com/DeanLeonardiStats
+      - text: "LinkedIn"
+        href: https://www.linkedin.com/in/dean-leonardi-b0b50b10/
+    border: true
+
+  back-to-top-navigation: true
 
 format:
   html:
-    theme: cosmo
+    theme: flatly
     toc: true
     toc-depth: 3
     toc-location: left
+    toc-title: "Contents"
     number-sections: true
     code-fold: true
     code-summary: "Show code"
     code-tools: true
-    embed-resources: true
+    code-line-numbers: true
+    highlight-style: github
     smooth-scroll: true
+    anchor-sections: true
+    link-external-newwindow: true
+    link-external-icon: true
+    fig-align: center
+    fig-dpi: 150
+    fig-cap-location: bottom
+    tbl-cap-location: top
+    title-block-banner: "#1F3864"
+    title-block-banner-color: "white"
+    linestretch: 1.6
+    grid:
+      sidebar-width: 250px
+      body-width: 920px
+      margin-width: 180px
 
 execute:
   freeze: auto
