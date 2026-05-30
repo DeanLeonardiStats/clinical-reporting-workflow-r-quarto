@@ -8,7 +8,11 @@ website:
   navbar:
     left:
       - href: index.qmd
-        text: Clinical Reporting Example
+        text: Clinical Reporting (CNS/Parkinson's)
+      - href: oncology_rwe.qmd
+        text: Oncology RWE Vignette    
+    
+    
     right:
       - icon: github
         href: https://github.com/DeanLeonardiStats/clinical-reporting-workflow-r-quarto

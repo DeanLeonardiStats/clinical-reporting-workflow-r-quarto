@@ -8,10 +8,11 @@ editor: visual
 ---
 
 ## Abstract
+
 A longitudinal analysis for Parkinson’s patient UPDRS scores using MAR multiple imputation (MICE) sensitivity analysis and propensity score matching: a non-randomized, observational, simulated data study
 
-
 ## Executive Summary
+
 This report demonstrates a reproducible longitudinal clinical reporting workflow using R and Quarto in a simulated Parkinson’s disease observational study. Analyses include:
 
 - longitudinal mixed-effects modeling,
@@ -42,7 +43,6 @@ We assessed the efficacy of treatment in patients with Parkinson’s disease (PD
 ## Methods
 
 This was a non-randomized, observational, 2-arm, simulated data study for adults with ages sampled from a normal distribution with mean 70 and standard deviation 12 years. Sex was sampled from a Bernoulli distribution with probability of being female 0.6. Treatment groups were assigned based on age and sex (non-random, simulating selection bias). We simulated longitudinal data for Parkinson’s patients with UPDRS scores measured at baseline, 1 year, and 2 years. The two groups were control and treatment. Longitudinal analysis was used to track changes in UPDRS scores across multiple time points to determine if treatment slows or accelerates disease progression and identifies symptom trajectories (e.g., motor decline, non-motor worsening) and supports trial design and stratification. The study data was simulated so that older and more females tended to get treatment. The primary endpoint was the differences between treatment groups (treatment - control) in UPDRS scores at year 2. No safety analysis was conducted. The ITT analysis set included all patients in the simulated data set. Multiple imputation by chained equations (MICE) under a missing-at-random (MAR) assumption, with M = 25 completed datasets pooled via Rubin's Rules, and propensity score matching to balance age and sex were utilized for sensitivity analyses.
-
 
 ## Analysis
 
@@ -136,8 +136,8 @@ data_wide <- data |>
 ```
 
 ### Computational Reproducibility
-Random seeds were pre-specified for all simulation and matching procedures to ensure reproducible analytical outputs.
 
+Random seeds were pre-specified for all simulation and matching procedures to ensure reproducible analytical outputs.
 
 ### Demographics
 
@@ -196,8 +196,6 @@ ci_yr2  <- u4 |> filter(grepl("Treatment - Control", Group)) |> pull(CI)
 ```
 
 The longitudinal mixed-effects model demonstrated lower estimated UPDRS scores in the treatment group at Year 2 relative to control, consistent with simulated treatment benefit.
-
-
 
 ```{r}
 #| label: longitudinal-profile-plot
@@ -261,7 +259,6 @@ ggplot(plot_data,
   )
 ```
 
-
 ```{r}
 #| label: residual-diagnostics
 #| fig-cap: "Figure 2. Residual diagnostics for the primary mixed-effects model."
@@ -279,29 +276,17 @@ plot(
 abline(h = 0, lty = 2)
 ```
 
-
 ## Findings
 
-Four hundred patients were assigned to receive control (n=`r sum(baseline_covariates$Group=="Control")`), or Treatment 
-(n=`r sum(baseline_covariates$Group=="Treatment")`). Treatment reduced UPDRS score versus control (treatment 43.35 vs control 46.27; difference `r round(est_yr2, 2)`, 95% CI `r ci_yr2`).
+Four hundred patients were assigned to receive control (n=`r sum(baseline_covariates$Group=="Control")`), or Treatment (n=`r sum(baseline_covariates$Group=="Treatment")`). Treatment reduced UPDRS score versus control (treatment 43.35 vs control 46.27; difference `r round(est_yr2, 2)`, 95% CI `r ci_yr2`).
 
 ## Interpretation
 
 In patients with Parkinson's disease, treatment reduced the UPDRS score at Year 2. These findings are based on simulated data and are intended as a methodological demonstration only.
 
-
-
 ### Missing Data Analysis
 
-Under a Missing At Random (MAR) assumption, missing UPDRS outcomes are
-predicted by observed covariates (Age, Sex, Group) and observed UPDRS
-values at other timepoints. Multiple imputation by chained equations
-(MICE) with predictive mean matching was used to generate M = 25
-completed datasets. Fixed-effect estimates from each dataset were
-combined using Rubin's Rules to produce a single pooled estimate and
-standard error that properly accounts for within- and between-imputation
-uncertainty.
-
+Under a Missing At Random (MAR) assumption, missing UPDRS outcomes are predicted by observed covariates (Age, Sex, Group) and observed UPDRS values at other timepoints. Multiple imputation by chained equations (MICE) with predictive mean matching was used to generate M = 25 completed datasets. Fixed-effect estimates from each dataset were combined using Rubin's Rules to produce a single pooled estimate and standard error that properly accounts for within- and between-imputation uncertainty.
 
 #### Table 3a. Missingness Summary Prior to Imputation
 
@@ -334,7 +319,6 @@ data_wide |>
 ```
 
 #### Figure 3a
-
 
 ```{r}
 #| label: missingness-pattern
@@ -597,18 +581,7 @@ contrast_pooled |>
   )
 ```
 
-Results from the MAR multiple imputation sensitivity analysis are presented
-in Tables 3b and 3c. Consistency with the primary analysis estimates would
-support robustness of the primary findings to the missing-at-random assumption.
-The Fraction of Missing Information (FMI) quantifies the proportion of
-uncertainty attributable to missing data; values below 0.10 are generally
-considered low.
-
-
-
-
-
-
+Results from the MAR multiple imputation sensitivity analysis are presented in Tables 3b and 3c. Consistency with the primary analysis estimates would support robustness of the primary findings to the missing-at-random assumption. The Fraction of Missing Information (FMI) quantifies the proportion of uncertainty attributable to missing data; values below 0.10 are generally considered low.
 
 ### Propensity Score Matching
 

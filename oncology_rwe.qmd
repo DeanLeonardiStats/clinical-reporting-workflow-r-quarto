@@ -1,0 +1,167 @@
+---
+title: "Time-to-Event Endpoints — Simulated Oncology RWE"
+subtitle: "Risk-Set Adjusted KM, Cox PH, IPW/AIPW, and E-value Sensitivity"
+author: "Dean Leonardi"
+date: today
+---
+
+```{r}
+#| label: setup
+#| include: false
+
+library(tidyverse)
+library(survival)
+library(survminer)
+library(simsurv)
+library(ggsurvfit)
+library(gt)
+library(gtsummary)
+library(WeightIt)
+library(sandwich)
+library(lmtest)
+library(EValue)
+
+source("R/simulate_oncology.R")
+```
+
+This vignette demonstrates a reproducible RWE survival analysis pipeline applied to a simulated oncology RCT (n = 400) with overall survival (OS) as the primary endpoint. Methods progress from descriptive Kaplan–Meier estimation through multivariable Cox regression, inverse probability weighting (IPW) for the average treatment effect (ATE), and E-value sensitivity analysis for unmeasured confounding — mirroring regulatory RWE practice for oncology submissions.
+
+## Risk-Set Adjusted Kaplan–Meier
+
+```{r}
+#| label: km-plot
+#| fig-cap: "Figure 1. Kaplan–Meier Overall Survival by Treatment Arm."
+#| fig-width: 8
+#| fig-height: 6
+#| warning: false
+#| message: false
+
+fit <- survfit(Surv(os_time, os_event) ~ trt, data = data_onc)
+ggsurvfit(fit) +
+  add_confidence_interval() +
+  add_risktable() +
+  add_pvalue(caption = "Log-rank {p.value}") +
+  scale_color_manual(values = c("0" = "#E34234", "1" = "#2E5F8A"),
+                     labels = c("Control", "Treatment")) +
+  labs(title = "Overall Survival by Treatment Arm",
+       x = "Time (months)", y = "Survival Probability")
+```
+
+## Cox Proportional Hazards Model
+
+```{r}
+#| label: cox-model
+#| tbl-cap: "Table 1. Multivariable Cox Proportional Hazards Model."
+#| warning: false
+#| message: false
+
+cox_os <- coxph(
+  Surv(os_time, os_event) ~ trt + age + ecog + stage,
+  data = data_onc, ties = "efron"
+)
+
+broom::tidy(cox_os, exponentiate = TRUE, conf.int = TRUE) |>
+  gt() |>
+  fmt_number(columns = c(estimate, conf.low, conf.high), decimals = 2) |>
+  tab_header(title = "Cox Proportional Hazards Model") |>
+  tab_style(
+    style     = cell_text(weight = "bold"),
+    locations = cells_column_labels()
+  ) |>
+  tab_footnote(footnote = "Multivariable Cox model (trt + age + stage + ecog).") |>
+  tab_options(
+    table.font.size           = px(13),
+    heading.title.font.size   = px(14),
+    heading.title.font.weight = "bold",
+    table.width               = pct(100)
+  )
+```
+
+```{r}
+#| label: schoenfeld-residuals
+#| fig-cap: "Figure 2. Schoenfeld residuals test for PH assumption."
+#| fig-width: 8
+#| fig-height: 5
+#| warning: false
+#| message: false
+
+ph_test <- cox.zph(cox_os)
+ggcoxzph(ph_test)
+```
+
+```{r}
+#| label: forest-plot
+#| fig-cap: "Figure 3. Forest Plot — HRs with 95% CIs for all covariates."
+#| fig-width: 8
+#| fig-height: 5
+#| warning: false
+#| message: false
+
+ggforest(cox_os, data = data_onc,
+         main     = "Forest Plot — OS",
+         fontsize = 0.85)
+```
+
+The adjusted HR for treatment = `r round(exp(coef(cox_os)["trt"]), 2)` (95% CI: `r round(exp(confint(cox_os)["trt", 1]), 2)`, `r round(exp(confint(cox_os)["trt", 2]), 2)`). A HR \< 1 favors treatment (reduced hazard of death); a HR \> 1 favors control. The Schoenfeld residuals plot above assesses the proportional hazards assumption — non-random trends over time would indicate a PH violation requiring model extension (e.g., time-varying coefficients or stratification).
+
+## IPW / AIPW for ATE with Robust SE
+
+Doubly robust estimation on oncology data.
+
+- WeightIt: propensity score model (trt \~ age + stage + ecog), estimand="ATE"
+- IPW-weighted Cox model for ATE with sandwich SE (regulatory practice)
+- E-value for the primary IPW HR (unmeasured confounding sensitivity)
+
+```{r}
+#| label: ipw-aipw
+#| tbl-cap: "Table 2. IPW-Weighted Cox Model with E-value Sensitivity Analysis."
+#| warning: false
+#| message: false
+
+# IPTW model
+w_out   <- weightit(trt ~ age + stage + ecog, data = data_onc,
+                    method = "glm", estimand = "ATE")
+cox_ipw <- coxph(Surv(os_time, os_event) ~ trt,
+                 data = data_onc, weights = w_out$weights, robust = TRUE)
+
+# Robust HR and CI
+s    <- summary(cox_ipw)
+beta <- coef(cox_ipw)["trt"]
+se   <- s$coefficients["trt", "robust se"]
+hr   <- exp(beta)
+lo   <- exp(beta - qnorm(0.975) * se)
+hi   <- exp(beta + qnorm(0.975) * se)
+
+# E-values — evalues.HR() returns a matrix; extract numerically before building tibble
+ev_mat <- evalues.HR(est = hr, lo = lo, hi = hi, rare = FALSE)
+e_est  <- as.numeric(ev_mat[1, 1])
+e_ci   <- as.numeric(ev_mat[1, 2])
+
+results_tbl <- tibble(
+  Covariate       = "trt",
+  HR              = hr,
+  Lower95CI       = lo,
+  Upper95CI       = hi,
+  EValue_Estimate = e_est,
+  EValue_CI_Limit = e_ci
+)
+
+results_tbl |>
+  gt() |>
+  fmt_number(
+    columns  = c(HR, Lower95CI, Upper95CI, EValue_Estimate, EValue_CI_Limit),
+    decimals = 2
+  ) |>
+  cols_label(
+    Covariate       = "Treatment",
+    HR              = "Hazard Ratio",
+    Lower95CI       = "95% CI Lower",
+    Upper95CI       = "95% CI Upper",
+    EValue_Estimate = "E-value",
+    EValue_CI_Limit = "E-value (CI Limit)"
+  ) |>
+  tab_header(title = "IPW-Weighted Cox Model with E-value Sensitivity Analysis") |>
+  tab_footnote(footnote = "ATE IPTW model using age, stage, and ECOG score.")
+```
+
+IPW-weighted Cox model for ATE with sandwich SE resulted in a HR = `r round(hr, 2)` (95% CI: `r round(lo, 2)`, `r round(hi, 2)`). The E-value quantifies the minimum strength of association an unmeasured confounder would need with both treatment and outcome to explain away the observed effect — larger values indicate greater robustness to unmeasured confounding.
