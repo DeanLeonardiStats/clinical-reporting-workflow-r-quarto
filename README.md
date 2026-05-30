@@ -2,15 +2,11 @@
 
 ## Overview
 
-This repository demonstrates a reproducible longitudinal clinical reporting workflow implemented in R and Quarto using simulated Parkinson's disease observational data.
+This repository demonstrates a two-module reproducible clinical reporting workflow implemented in R and Quarto, spanning longitudinal CNS trial methodology and oncology real-world evidence (RWE) survival analysis.
 
-The project illustrates modern statistical reporting methodologies used in pharmaceutical, biotechnology, and real-world evidence (RWE) environments, including:
+**Module 1 — Longitudinal Clinical Trials (CNS/Parkinson's):** Linear mixed-effects modeling, MAR multiple imputation with Rubin's Rules, and propensity score matching applied to simulated Parkinson's disease observational data.
 
-- longitudinal mixed-effects modeling with estimated marginal means,
-- multiple imputation by chained equations (MICE) under a missing-at-random (MAR) assumption with Rubin's Rules pooling,
-- propensity score matching with covariate balance diagnostics,
-- automated and reproducible statistical table and figure generation,
-- and parameterized HTML reporting via Quarto.
+**Module 2 — Oncology RWE + Causal Inference:** Risk-set adjusted Kaplan–Meier estimation, multivariable Cox PH with Schoenfeld diagnostics, inverse probability weighting (IPW) for the average treatment effect (ATE) with sandwich SE, and E-value sensitivity analysis for unmeasured confounding — applied to a simulated oncology RCT with overall survival as the primary endpoint.
 
 The workflow integrates rigorous statistical methodology, reporting automation, and reproducibility principles within a publication-style Quarto framework.
 
@@ -18,14 +14,16 @@ The workflow integrates rigorous statistical methodology, reporting automation, 
 
 ## Methodologies Demonstrated
 
-### Longitudinal Modeling
+### Module 1 — Longitudinal Modeling (CNS/Parkinson's)
+
+#### Mixed-Effects Modeling
 
 - Linear mixed-effects models using `lme4` and `lmerTest`
 - Repeated measures analysis with treatment-by-time interaction
 - Estimated marginal means and treatment contrasts at Year 2 using `emmeans`
 - Residual diagnostics for model assessment
 
-### Missing Data — MAR Multiple Imputation (MICE)
+#### Missing Data — MAR Multiple Imputation (MICE)
 
 - Multiple imputation by chained equations (MICE) using the `mice` package
 - Predictive mean matching (PMM) as the imputation method, preserving the empirical distribution of UPDRS scores and avoiding out-of-range imputed values
@@ -37,7 +35,7 @@ The workflow integrates rigorous statistical methodology, reporting automation, 
 - Fraction of Missing Information (FMI) reported to quantify uncertainty attributable to missing data
 - Missingness patterns visualized using `naniar::vis_miss()`
 
-### Propensity Score Methodology
+#### Propensity Score Methodology
 
 - Propensity score estimation using logistic regression
 - Nearest-neighbor 1:1 matching using `MatchIt`
@@ -45,27 +43,37 @@ The workflow integrates rigorous statistical methodology, reporting automation, 
 - Love plots for visual balance diagnostics using `cobalt`
 - LMER model re-fitted on matched cohort with estimated marginal means at Year 2
 
-### Automated Reporting
+#### Automated Reporting
 
 - Automated HTML report generation using Quarto
 - Reproducible statistical tables using `gt` and `gtsummary`
-- Inline R expressions for dynamically rendered key results (treatment effect estimates, sample sizes)
+- Inline R expressions for dynamically rendered key results
 - Parameterized `missing_rate` in YAML header enabling re-render under alternative missingness scenarios
 - Programmatic figure generation with `ggplot2`
 
-### Reproducibility
+---
 
-- Fully scripted analytical workflow — no manual steps
-- Pre-specified random seeds for simulation (`set.seed(456)`) and propensity score matching (`set.seed(2026)`)
-- Quarto chunk caching with cache invalidation tied to upstream data dimensions
-- Environment and package version management using `renv`
-- Version-controlled project architecture
+### Module 2 — Oncology RWE + Causal Inference
+
+#### Survival Analysis
+
+- Risk-set adjusted Kaplan–Meier curves by treatment arm with 95% CI ribbons using `ggsurvfit`
+- At-risk table and log-rank test with p-value annotation
+- Multivariable Cox PH model (trt + age + stage + ecog) using `survival`; ties handled via Efron approximation
+- Schoenfeld residuals test for proportional hazards assumption (`cox.zph`, `ggcoxzph`)
+- Forest plot of HRs with 95% CIs across all covariates (`ggforest`)
+
+#### Causal Inference — IPW for ATE
+
+- Inverse probability of treatment weighting (IPTW) via `WeightIt`; propensity score model (trt ~ age + stage + ecog), estimand = ATE
+- IPW-weighted Cox model with sandwich (robust) standard errors via `sandwich` and `lmtest` — consistent with regulatory RWE practice
+- E-value sensitivity analysis for unmeasured confounding via `EValue`; quantifies the minimum confounder association strength required to explain away the observed treatment effect
 
 ---
 
 ## Statistical Output
 
-The report produces the following tables and figures:
+### Module 1
 
 | Output | Description |
 |--------|-------------|
@@ -83,6 +91,16 @@ The report produces the following tables and figures:
 | Figure 3b | MICE convergence trace plots |
 | Figure 4 | Love plot — covariate balance before and after matching |
 
+### Module 2
+
+| Output | Description |
+|--------|-------------|
+| Figure 1 | Kaplan–Meier OS curves with at-risk table and log-rank p-value |
+| Table 1 | Multivariable Cox PH model coefficients (exponentiated) |
+| Figure 2 | Schoenfeld residuals — PH assumption diagnostic |
+| Figure 3 | Forest plot — HRs with 95% CIs for all covariates |
+| Table 2 | IPW-weighted Cox model HR with sandwich SE and E-value sensitivity |
+
 ---
 
 ## Technologies
@@ -95,13 +113,19 @@ The report produces the following tables and figures:
 - `lme4` — linear mixed-effects models
 - `lmerTest` — Satterthwaite degrees of freedom and p-values for LMER
 - `emmeans` — estimated marginal means and contrasts
+- `survival` — Cox PH and Kaplan–Meier estimation
+- `survminer` — survival plot utilities including `ggcoxzph` and `ggforest`
+- `ggsurvfit` — risk-set adjusted KM curves with at-risk tables
 
 **Missing Data**
 - `mice` — multiple imputation by chained equations
 - `broom.mixed` — tidy model extraction enabling `mice::pool()` with LMER objects
 - `naniar` — missing data visualization
 
-**Propensity Score & Balance**
+**Causal Inference & Propensity Score**
+- `WeightIt` — IPTW propensity score weighting
+- `sandwich` / `lmtest` — robust (sandwich) standard errors for IPW-weighted models
+- `EValue` — E-value sensitivity analysis for unmeasured confounding
 - `MatchIt` — propensity score estimation and nearest-neighbor matching
 - `cobalt` — standardized mean differences and Love plots
 - `tableone` — covariate balance tables with SMD
@@ -120,12 +144,14 @@ clinical-reporting-workflow-r-quarto/
 │
 ├── README.md
 ├── _quarto.yml
-├── index.qmd              # Main analysis document
+├── index.qmd              # Module 1 — Longitudinal Clinical Trials (CNS/Parkinson's)
+├── oncology_rwe.qmd       # Module 2 — Oncology RWE + Causal Inference
 ├── renv.lock              # Locked package versions
 ├── .gitignore
 │
 ├── R/
-│   └── utils.R            # Reusable functions: extract_emm_table(), format_gt_table()
+│   ├── utils.R            # Reusable functions: extract_emm_table(), format_gt_table()
+│   └── simulate_oncology.R  # Simulated oncology RCT dataset (n=400)
 │
 ├── _freeze/               # Quarto frozen computation cache
 │
@@ -142,9 +168,10 @@ Key reproducibility features:
 
 - Random seeds pre-specified for simulation and matching
 - `mice` imputation seeded separately (`set.seed(2026)`) to isolate the matching and imputation stages
+- Oncology dataset seeded via `set.seed(42)` in `R/simulate_oncology.R`
 - Quarto chunk caching with upstream cache invalidation prevents stale cached results
 - `renv.lock` records the exact package versions used at time of rendering
-- Parameterized `missing_rate` (default 0.25) allows re-rendering under alternative missingness assumptions without editing code
+- Parameterized `missing_rate` (default 0.25) in Module 1 allows re-rendering under alternative missingness assumptions without editing code
 - Rendered as a standard multi-asset GitHub Pages site (`embed-resources: false`); figures, tables, and supporting assets are served as separate files rather than inlined into a single HTML document, keeping the rendered output lightweight and compatible with GitHub Pages hosting
 
 ---
@@ -155,6 +182,7 @@ Key reproducibility features:
 - This repository does not contain real clinical trial data.
 - The project is intended as a statistical workflow demonstration and does not represent a regulatory submission analysis.
 - MICE with predictive mean matching implements proper MAR multiple imputation with Rubin's Rules pooling. The MAR assumption itself — that missingness depends only on observed data — cannot be verified from the observed data. MNAR sensitivity analyses (e.g., reference-based methods via the `rbmi` package) would be required for regulatory-grade submissions.
+- The IPW-weighted Cox model uses stabilized IPTW weights with sandwich SE, consistent with current regulatory RWE guidance. Formal AIPW (doubly robust) estimation via `AIPW` or `drtmle` would provide additional robustness for regulatory submissions.
 
 ---
 
@@ -167,7 +195,7 @@ This repository reflects analytical and reporting approaches used in pharmaceuti
 - regulatory statistical reporting (FDA/EMA submission environments),
 - statistical computing and reproducible research infrastructure.
 
-The project demonstrates proficiency in the full statistical programming stack: mixed-effects modeling, missing data methodology (MICE/Rubin's Rules), causal adjustment (propensity score matching), and automated reproducible reporting — implemented within a modern Quarto/R workflow consistent with current pharmaceutical industry practice.
+The project demonstrates proficiency in the full statistical programming stack: mixed-effects modeling, missing data methodology (MICE/Rubin's Rules), survival analysis, causal adjustment (propensity score matching and IPTW), E-value sensitivity analysis, and automated reproducible reporting — implemented within a modern Quarto/R workflow consistent with current pharmaceutical and RWE industry practice.
 
 ---
 
