@@ -85,6 +85,32 @@
       "Maintainer": "Serguei Sokol <sokol@insa-toulouse.fr>",
       "Repository": "CRAN"
     },
+    "DiceKriging": {
+      "Package": "DiceKriging",
+      "Version": "1.6.1",
+      "Source": "Repository",
+      "Title": "Kriging Methods for Computer Experiments",
+      "Date": "2025-10-20",
+      "Encoding": "UTF-8",
+      "Authors@R": "c(person(given = \"Olivier\", family = \"Roustant\", role = c(\"aut\", \"cre\"), email = \"roustant@insa-toulouse.fr\", comment = c(ORCID = \"0009-0004-4709-7177\")), person(given = \"David\", family = \"Ginsbourger\", role = \"aut\",  comment = c(ORCID = \"0000-0003-2724-2678\")), person(given = \"Yves\",  family = \"Deville\",  role = \"aut\",  comment = c(ORCID = \"0000-0002-1233-488X\")), person(given = \"Clément\", family = \"Chevalier\", role = \"ctb\"), person(given = \"Yann\", family = \"Richet\", role = \"ctb\", comment = c(ORCID = \"0000-0002-5677-8458\")))",
+      "Description": "Estimation, validation and prediction of kriging models. Important functions : km, print.km, plot.km, predict.km.",
+      "Depends": [
+        "methods"
+      ],
+      "Suggests": [
+        "rgenoud (>= 5.8-2.0)",
+        "foreach",
+        "doParallel",
+        "testthat",
+        "numDeriv"
+      ],
+      "License": "GPL-2 | GPL-3",
+      "URL": "https://dicekrigingclub.github.io/www/",
+      "NeedsCompilation": "yes",
+      "Author": "Olivier Roustant [aut, cre] (ORCID: <https://orcid.org/0009-0004-4709-7177>), David Ginsbourger [aut] (ORCID: <https://orcid.org/0000-0003-2724-2678>), Yves Deville [aut] (ORCID: <https://orcid.org/0000-0002-1233-488X>), Clément Chevalier [ctb], Yann Richet [ctb] (ORCID: <https://orcid.org/0000-0002-5677-8458>)",
+      "Maintainer": "Olivier Roustant <roustant@insa-toulouse.fr>",
+      "Repository": "CRAN"
+    },
     "EValue": {
       "Package": "EValue",
       "Version": "4.1.4",
@@ -3613,6 +3639,51 @@
       "NeedsCompilation": "no",
       "Author": "Jennifer Bryan [cre, aut] (ORCID: <https://orcid.org/0000-0002-6983-2759>), Posit Software, PBC [cph, fnd]",
       "Maintainer": "Jennifer Bryan <jenny@posit.co>",
+      "Repository": "CRAN"
+    },
+    "grf": {
+      "Package": "grf",
+      "Version": "2.6.1",
+      "Source": "Repository",
+      "Title": "Generalized Random Forests",
+      "Authors@R": "c( person(\"Julie\", \"Tibshirani\", role = \"aut\", email = \"jtibs@cs.stanford.edu\"), person(\"Susan\", \"Athey\", role = \"aut\"), person(\"Rina\", \"Friedberg\", role = \"ctb\"), person(\"Vitor\", \"Hadad\", role = \"ctb\"), person(\"David\", \"Hirshberg\", role = \"ctb\"), person(\"Luke\", \"Miner\", role = \"ctb\"), person(\"Erik\", \"Sverdrup\", role = c(\"aut\", \"cre\"), email = \"erik.sverdrup@monash.edu\"), person(\"Stefan\", \"Wager\", role = \"aut\"), person(\"Marvin\", \"Wright\", role = \"ctb\") )",
+      "BugReports": "https://github.com/grf-labs/grf/issues",
+      "Description": "Forest-based statistical estimation and inference. GRF provides non-parametric methods for heterogeneous treatment effects estimation (optionally using right-censored outcomes, multiple treatment arms or outcomes, or instrumental variables), as well as least-squares regression, quantile regression, and survival regression, all with support for missing covariates.",
+      "Depends": [
+        "R (>= 3.5.0)"
+      ],
+      "License": "GPL-3",
+      "LinkingTo": [
+        "Rcpp",
+        "RcppEigen"
+      ],
+      "Imports": [
+        "DiceKriging",
+        "lmtest",
+        "Matrix",
+        "methods",
+        "Rcpp (>= 0.12.15)",
+        "sandwich (>= 2.4-0)"
+      ],
+      "RoxygenNote": "7.3.3",
+      "Suggests": [
+        "DiagrammeR",
+        "MASS",
+        "policytree",
+        "rdrobust",
+        "survival (>= 3.2-8)",
+        "testthat (>= 3.0.4)",
+        "knitr",
+        "rmarkdown"
+      ],
+      "SystemRequirements": "C++17, GNU make",
+      "URL": "https://github.com/grf-labs/grf",
+      "Encoding": "UTF-8",
+      "VignetteBuilder": "knitr",
+      "LazyData": "true",
+      "NeedsCompilation": "yes",
+      "Author": "Julie Tibshirani [aut], Susan Athey [aut], Rina Friedberg [ctb], Vitor Hadad [ctb], David Hirshberg [ctb], Luke Miner [ctb], Erik Sverdrup [aut, cre], Stefan Wager [aut], Marvin Wright [ctb]",
+      "Maintainer": "Erik Sverdrup <erik.sverdrup@monash.edu>",
       "Repository": "CRAN"
     },
     "gridExtra": {

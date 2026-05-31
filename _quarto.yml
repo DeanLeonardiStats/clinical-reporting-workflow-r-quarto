@@ -10,7 +10,7 @@ website:
       - href: index.qmd
         text: Clinical Reporting (CNS/Parkinson's)
       - href: oncology_rwe.qmd
-        text: Oncology RWE Vignette    
+        text: Oncology RWE + Causal Forest    
     
     
     right:

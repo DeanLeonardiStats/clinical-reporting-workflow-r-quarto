@@ -6,7 +6,7 @@ This repository demonstrates a two-module reproducible clinical reporting workfl
 
 **Module 1 — Longitudinal Clinical Trials (CNS/Parkinson's):** Linear mixed-effects modeling, MAR multiple imputation with Rubin's Rules, and propensity score matching applied to simulated Parkinson's disease observational data.
 
-**Module 2 — Oncology RWE + Causal Inference:** Risk-set adjusted Kaplan–Meier estimation, multivariable Cox PH with Schoenfeld diagnostics, inverse probability weighting (IPW) for the average treatment effect (ATE) with sandwich SE, and E-value sensitivity analysis for unmeasured confounding — applied to a simulated oncology RCT with overall survival as the primary endpoint.
+**Module 2 — Oncology RWE + Causal Forest:** Risk-set adjusted Kaplan–Meier estimation with median OS table, multivariable Cox PH with Schoenfeld diagnostics and forest plot, inverse probability weighting (IPW) for the ATE with sandwich SE, doubly robust AIPW estimation, E-value sensitivity analysis for unmeasured confounding, and causal forest for heterogeneous treatment effects (individual CATEs, calibration, variable importance) — applied to a simulated oncology RCT with overall survival as the primary endpoint.
 
 The workflow integrates rigorous statistical methodology, reporting automation, and reproducibility principles within a publication-style Quarto framework.
 
@@ -53,7 +53,7 @@ The workflow integrates rigorous statistical methodology, reporting automation, 
 
 ---
 
-### Module 2 — Oncology RWE + Causal Inference
+### Module 2 — Oncology RWE + Causal Forest
 
 #### Survival Analysis
 
@@ -63,11 +63,18 @@ The workflow integrates rigorous statistical methodology, reporting automation, 
 - Schoenfeld residuals test for proportional hazards assumption (`cox.zph`, `ggcoxzph`)
 - Forest plot of HRs with 95% CIs across all covariates (`ggforest`)
 
-#### Causal Inference — IPW for ATE
+#### Causal Inference — IPW, AIPW, and Causal Forest
 
 - Inverse probability of treatment weighting (IPTW) via `WeightIt`; propensity score model (trt ~ age + stage + ecog), estimand = ATE
 - IPW-weighted Cox model with sandwich (robust) standard errors via `sandwich` and `lmtest` — consistent with regulatory RWE practice
 - E-value sensitivity analysis for unmeasured confounding via `EValue`; quantifies the minimum confounder association strength required to explain away the observed treatment effect
+- Doubly robust AIPW estimation: outcome models fit separately by treatment arm (OLS on RMST at 24 months) combined with propensity scores via the AIPW influence function; consistent if either the outcome or propensity score model is correctly specified
+- Causal forest for heterogeneous treatment effects (HTE) via `grf`; covariates: age, stage, ECOG PS; num.trees = 2000; honest splitting enforced
+- Individual conditional average treatment effects (CATEs) extracted via `predict(cf)$predictions`
+- Precision medicine visualization: CATEs vs. age, colored by disease stage
+- Average treatment effect (ATE) via `average_treatment_effect(cf, target.sample = "all")` — cross-validated against IPW and AIPW estimates
+- Causal forest goodness-of-fit: `test_calibration(cf)` (regulatory awareness)
+- Covariate importance: `variable_importance(cf)` — identifies which baseline factor drives treatment effect heterogeneity
 
 ---
 
@@ -96,10 +103,16 @@ The workflow integrates rigorous statistical methodology, reporting automation, 
 | Output | Description |
 |--------|-------------|
 | Figure 1 | Kaplan–Meier OS curves with at-risk table and log-rank p-value |
+| Table 0 | Median OS with 95% CIs by treatment arm (Brookmeyer-Crowley) |
 | Table 1 | Multivariable Cox PH model coefficients (exponentiated) |
 | Figure 2 | Schoenfeld residuals — PH assumption diagnostic |
 | Figure 3 | Forest plot — HRs with 95% CIs for all covariates |
 | Table 2 | IPW-weighted Cox model HR with sandwich SE and E-value sensitivity |
+| Table 2b | Doubly robust AIPW estimate — RMST difference at 24 months |
+| Figure 4 | CATEs vs. age by stage — precision medicine scatter plot |
+| Table 4 | Average treatment effect (causal forest) — RMST difference at 24 months |
+| Table 5 | Causal forest calibration test |
+| Table 6 | Causal forest variable importance |
 
 ---
 
@@ -126,6 +139,7 @@ The workflow integrates rigorous statistical methodology, reporting automation, 
 - `WeightIt` — IPTW propensity score weighting
 - `sandwich` / `lmtest` — robust (sandwich) standard errors for IPW-weighted models
 - `EValue` — E-value sensitivity analysis for unmeasured confounding
+- `grf` — generalized random forests; causal forest for heterogeneous treatment effects (HTE), individual CATEs, calibration, variable importance
 - `MatchIt` — propensity score estimation and nearest-neighbor matching
 - `cobalt` — standardized mean differences and Love plots
 - `tableone` — covariate balance tables with SMD
@@ -195,7 +209,7 @@ This repository reflects analytical and reporting approaches used in pharmaceuti
 - regulatory statistical reporting (FDA/EMA submission environments),
 - statistical computing and reproducible research infrastructure.
 
-The project demonstrates proficiency in the full statistical programming stack: mixed-effects modeling, missing data methodology (MICE/Rubin's Rules), survival analysis, causal adjustment (propensity score matching and IPTW), E-value sensitivity analysis, and automated reproducible reporting — implemented within a modern Quarto/R workflow consistent with current pharmaceutical and RWE industry practice.
+The project demonstrates proficiency in the full statistical programming stack: mixed-effects modeling, missing data methodology (MICE/Rubin's Rules), survival analysis, causal adjustment (propensity score matching, IPTW, and doubly robust AIPW), E-value sensitivity analysis, causal forest for heterogeneous treatment effects (grf), and automated reproducible reporting — implemented within a modern Quarto/R workflow consistent with current pharmaceutical and RWE industry practice.
 
 ---
 

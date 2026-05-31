@@ -20,6 +20,8 @@ library(WeightIt)
 library(sandwich)
 library(lmtest)
 library(EValue)
+library(grf)
+library(ggplot2)
 
 source("R/simulate_oncology.R")
 ```
@@ -45,6 +47,32 @@ ggsurvfit(fit) +
                      labels = c("Control", "Treatment")) +
   labs(title = "Overall Survival by Treatment Arm",
        x = "Time (months)", y = "Survival Probability")
+```
+
+
+```{r}
+#| label: km-median-os
+#| tbl-cap: "Table 0. Median Overall Survival with 95% Confidence Intervals by Treatment Arm."
+#| warning: false
+#| message: false
+
+survfit(Surv(os_time, os_event) ~ trt, data = data_onc) |>
+  tbl_survfit(
+    probs    = 0.5,
+    label    = list(trt ~ "Treatment Arm"),
+    label_header = "**Median OS (95% CI)**"
+  ) |>
+  modify_header(label ~ "**Treatment Arm**") |>
+  bold_labels() |>
+  as_gt() |>
+  tab_header(title = "Median Overall Survival by Treatment Arm") |>
+  tab_footnote(footnote = "Kaplan–Meier estimate. CI: 95% confidence interval (Brookmeyer-Crowley method).") |>
+  tab_options(
+    table.font.size           = px(13),
+    heading.title.font.size   = px(14),
+    heading.title.font.weight = "bold",
+    table.width               = pct(100)
+  )
 ```
 
 ## Cox Proportional Hazards Model
@@ -165,3 +193,273 @@ results_tbl |>
 ```
 
 IPW-weighted Cox model for ATE with sandwich SE resulted in a HR = `r round(hr, 2)` (95% CI: `r round(lo, 2)`, `r round(hi, 2)`). The E-value quantifies the minimum strength of association an unmeasured confounder would need with both treatment and outcome to explain away the observed effect — larger values indicate greater robustness to unmeasured confounding.
+
+
+## Doubly Robust AIPW for RMST Difference
+
+Augmented IPW (AIPW) combines an outcome model with the propensity score to achieve double robustness — consistent even if one model is misspecified.
+
+```{r}
+#| label: aipw-dr
+#| tbl-cap: "Table 2b. Doubly Robust AIPW Estimate — RMST Difference at 24 Months."
+#| warning: false
+#| message: false
+
+# Outcome models: E[RMST24 | X, A=1] and E[RMST24 | X, A=0]
+data_onc$rmst24_tmp <- pmin(data_onc$os_time, 24)
+mu1 <- predict(lm(rmst24_tmp ~ age + stage + ecog,
+                  data = data_onc[data_onc$trt == 1, ]),
+               newdata = data_onc)
+mu0 <- predict(lm(rmst24_tmp ~ age + stage + ecog,
+                  data = data_onc[data_onc$trt == 0, ]),
+               newdata = data_onc)
+
+# Propensity scores from WeightIt object
+ps  <- w_out$ps
+A   <- data_onc$trt
+Y   <- data_onc$rmst24_tmp
+
+# AIPW influence function
+phi <- (A / ps) * (Y - mu1) + mu1 -
+       ((1 - A) / (1 - ps)) * (Y - mu0) - mu0
+
+aipw_est <- mean(phi)
+aipw_se  <- sd(phi) / sqrt(length(phi))
+aipw_lo  <- aipw_est - qnorm(0.975) * aipw_se
+aipw_hi  <- aipw_est + qnorm(0.975) * aipw_se
+aipw_z   <- aipw_est / aipw_se
+aipw_p   <- 2 * pnorm(-abs(aipw_z))
+
+tibble(
+  Analysis  = "AIPW — RMST Difference at 24 Months",
+  Estimate  = aipw_est,
+  SE        = aipw_se,
+  `95% CI Lower` = aipw_lo,
+  `95% CI Upper` = aipw_hi,
+  `P-value` = aipw_p
+) |>
+  gt() |>
+  fmt_number(columns = c(Estimate, SE, `95% CI Lower`, `95% CI Upper`), decimals = 3) |>
+  fmt_scientific(columns = `P-value`, decimals = 2) |>
+  tab_header(title = "Doubly Robust AIPW Estimator") |>
+  tab_footnote(
+    footnote = "Augmented IPW using outcome models fit separately by treatment arm (OLS on RMST24) and propensity scores from WeightIt. Doubly robust: consistent if either the outcome model or propensity score model is correctly specified."
+  ) |>
+  tab_options(
+    table.font.size           = px(13),
+    heading.title.font.size   = px(14),
+    heading.title.font.weight = "bold",
+    table.width               = pct(100)
+  )
+```
+
+## Causal Forest for Heterogeneous Treatment Effects
+
+```{r}
+#| label: causal-forest
+#| warning: false
+#| message: false
+
+
+
+# RMST at month 24 as continuous outcome
+data_onc$rmst24 <- pmin(data_onc$os_time, 24)
+
+
+# Covariate Matrix
+X <- model.matrix(
+  ~ age + stage + ecog,
+  data = data_onc
+)[,-1]
+
+
+# Fit Causal Forest
+W <- data_onc$trt
+Y <- data_onc$rmst24
+
+set.seed(42)
+
+cf <- causal_forest(
+  X,
+  Y,
+  W,
+  num.trees = 2000,
+  honesty = TRUE
+)
+
+
+
+# Individual Treatment Effects (CATEs)
+tau_hat <- predict(cf)$predictions
+data_onc$tau_hat <- tau_hat
+
+
+```
+
+Interpretation:
+- Positive τ̂ → treatment increases RMST
+- Negative τ̂ → treatment decreases RMST
+
+
+## Precision Medicine Visualization
+
+```{r}
+#| label: premed-visual
+#| fig-cap: "Figure 4. Conditional Average Treatment Effects (CATEs) vs. Age by Stage."
+#| fig-width: 8
+#| fig-height: 5
+#| warning: false
+#| message: false
+
+ggplot(
+  data_onc,
+  aes(
+    x = age,
+    y = tau_hat,
+    color = factor(stage)
+  )
+) +
+  geom_point(alpha = 0.7) +
+  geom_smooth(se = FALSE) +
+  labs(
+    x = "Age",
+    y = "Estimated Individual Treatment Effect (Months RMST)",
+    color = "Stage"
+  ) +
+  theme_bw()
+```
+
+## Average Treatment Effect (RMST Difference at 24 Months)
+
+```{r}
+#| label: avgte-forest
+#| tbl-cap: "Table 4. RMST Difference at 24 Months."
+#| warning: false
+#| message: false
+
+# Estimates E[Y(1) - Y(0)]
+ate_cf <- average_treatment_effect(cf, target.sample="all")
+est <- ate_cf[1]
+se  <- ate_cf[2]
+
+z <- est / se
+p <- 2 * pnorm(-abs(z))
+
+tibble(
+  Analysis = "RMST Difference at 24 Months",
+  Estimate = est,
+  SE = se,
+  `95% CI Lower` = est - 1.96 * se,
+  `95% CI Upper` = est + 1.96 * se,
+  `P-value` = p
+) |>
+  gt() |>
+  fmt_number(
+    columns = c(Estimate, SE, `95% CI Lower`, `95% CI Upper`),
+    decimals = 3
+  ) |>
+  fmt_scientific(
+    columns = `P-value`,
+    decimals = 2
+  ) |>
+  tab_header(
+    title = "Average Treatment Effect (Causal Forest)"
+  )
+
+```
+
+
+The causal forest ATE of `r round(est, 3)` months RMST difference (SE: `r round(se, 3)`; 95% CI: `r round(est - 1.96*se, 2)`, `r round(est + 1.96*se, 2)`) is directionally consistent with both the IPW-adjusted Cox HR = `r round(hr, 2)` and the AIPW RMST estimate above, providing cross-method validation of the treatment signal. Convergence across estimators — parametric Cox PH, semiparametric IPW, doubly robust AIPW, and nonparametric causal forest — strengthens confidence in the direction and magnitude of the treatment effect.
+
+## Causal Forest Calibration Test
+
+```{r}
+#| label: calibration-test
+#| tbl-cap: "Table 5. Causal Forest Calibration Test."
+#| warning: false
+#| message: false
+
+cal <- test_calibration(cf)
+
+# Extract directly from the matrix by position — avoids as.data.frame() column
+# name instability across grf versions
+cal_tbl <- tibble(
+  Term     = rownames(cal),
+  Estimate = cal[, 1],
+  SE       = cal[, 2]
+) |>
+  mutate(
+    CI_Lower = Estimate - 1.96 * SE,
+    CI_Upper = Estimate + 1.96 * SE,
+    `P-value` = 2 * pnorm(-abs(Estimate / SE))
+  )
+
+cal_tbl |>
+  gt() |>
+  fmt_number(
+    columns = c(Estimate, SE, CI_Lower, CI_Upper),
+    decimals = 3
+  ) |>
+  fmt_scientific(
+    columns = `P-value`,
+    decimals = 2
+  ) |>
+  cols_label(
+    Term = "Calibration Component",
+    Estimate = "Estimate",
+    SE = "SE",
+    CI_Lower = "95% CI Lower",
+    CI_Upper = "95% CI Upper"
+  ) |>
+  tab_header(
+    title = "Causal Forest Calibration Test"
+  )
+```
+
+The calibration test assesses whether the causal forest's predicted CATEs (τ̂) are meaningful signals rather than noise. Two components are reported. The **mean forest prediction** tests whether the average predicted CATE differs from zero — a significant estimate (p < 0.05) confirms that the forest detects a non-zero average treatment effect, consistent with the IPW and AIPW estimates above. The **differential forest prediction** is the more diagnostic quantity: it tests whether variation in τ̂ across individuals predicts variation in actual outcomes after accounting for the mean. An estimate near 1.0 with a significant p-value indicates well-calibrated heterogeneity — the forest's rankings of who benefits most are trustworthy. An estimate near 0 suggests the predicted heterogeneity is not supported by the data and individual CATEs should be interpreted with caution.
+
+## Causal Forest Variable Importance
+
+```{r}
+#| label: variable-importance
+#| tbl-cap: "Table 6. Causal Forest Variable Importance."
+#| warning: false
+#| message: false
+
+vi_tbl <-
+  tibble(
+    Variable = colnames(X),
+    Importance = variable_importance(cf)
+  ) |>
+  arrange(desc(Importance)) |>
+  mutate(
+    Rank = row_number(),
+    Relative_Importance =
+      Importance / max(Importance)
+  )
+
+vi_tbl |>
+  select(
+    Rank,
+    Variable,
+    Importance,
+    Relative_Importance
+  ) |>
+  gt() |>
+  fmt_number(
+    columns = c(Importance, Relative_Importance),
+    decimals = 3
+  ) |>
+  cols_label(
+    Rank = "Rank",
+    Variable = "Covariate",
+    Importance = "Variable Importance",
+    Relative_Importance = "Relative Importance"
+  ) |>
+  tab_header(
+    title = "Causal Forest Variable Importance"
+  )
+
+```
+
+Variable importance in a causal forest measures how frequently each covariate is used as a splitting variable across trees, weighted by the depth at which splits occur — earlier splits receive higher weight because they partition the largest portions of the data. The **top-ranked covariate** is the primary driver of treatment effect heterogeneity in this simulation: patients differ most in their RMST benefit along that dimension. **Relative importance** rescales each score to the maximum, making cross-covariate comparisons straightforward — a value of 1.0 is the most influential, values near 0 contribute minimally to heterogeneity. In a precision medicine context, the highest-importance covariate is the natural candidate for subgroup stratification: patients in the upper versus lower quantiles of that variable represent the population segment with the most divergent treatment responses. These importance scores should be interpreted as measures of predictive splitting activity, not as causal effect estimates for the covariates themselves.
