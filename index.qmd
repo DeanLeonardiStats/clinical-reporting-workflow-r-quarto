@@ -9,7 +9,7 @@ editor: visual
 
 ## Abstract
 
-A longitudinal analysis for Parkinson's patient UPDRS scores using MAR multiple imputation (MICE) sensitivity analysis and propensity score matching: a non-randomized, observational, simulated data study
+A longitudinal analysis for Parkinson's patient UPDRS scores using MAR multiple imputation (MICE) sensitivity analysis and propensity score matching: a non-randomized, observational, simulated data study.
 
 ## Executive Summary
 
