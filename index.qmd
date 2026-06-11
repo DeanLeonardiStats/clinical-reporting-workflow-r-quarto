@@ -9,7 +9,7 @@ editor: visual
 
 ## Abstract
 
-A longitudinal analysis for Parkinson's patient UPDRS scores using MAR multiple imputation (MICE) sensitivity analysis and propensity score matching: a non-randomized, observational, simulated data study.
+A longitudinal analysis for Parkinson's patient UPDRS scores using MAR multiple imputation (MICE) sensitivity analysis and propensity score matching: a non-randomized, observational, simulated data study
 
 ## Executive Summary
 
@@ -105,9 +105,18 @@ data$Time <- as.factor(data$Time)
 # Merge with baseline covariates
 data <- data %>% left_join(baseline_covariates, by = "Patient")
 
-# Simulate UPDRS scores
-data$UPDRS <- rnorm(nrow(data), mean = 35 + 5 * as.numeric(as.character(data$Time)) +
-                      ifelse(data$Group == "Treatment", -1.5, 0), sd = 6)
+# Patient-level random intercepts — generates realistic between-patient variance
+# SD_u = 5 (between-patient), SD_eps = 5 (within-patient) → ICC ≈ 0.50
+# Without this, lme4 estimates σ²_u ≈ 0 and the mixed model offers no advantage
+# over standard regression, undermining the methodological rationale.
+patient_re <- rnorm(n_patients, mean = 0, sd = 5)
+
+# Simulate UPDRS scores with patient random intercepts
+data$UPDRS <- rnorm(nrow(data),
+  mean = 35 + 5 * as.numeric(as.character(data$Time)) +
+         ifelse(data$Group == "Treatment", -1.5, 0) +
+         patient_re[as.numeric(data$Patient)],
+  sd = 5)
 
 # Parameterization of missing data
 data$UPDRS <- ifelse(

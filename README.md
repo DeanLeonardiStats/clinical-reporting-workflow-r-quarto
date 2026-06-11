@@ -21,6 +21,7 @@ The workflow integrates rigorous statistical methodology, reporting automation, 
 - Linear mixed-effects models using `lme4` and `lmerTest`
 - Repeated measures analysis with treatment-by-time interaction
 - Estimated marginal means and treatment contrasts at Year 2 using `emmeans`
+- Simulation includes patient-level random intercepts (σ_u = 5, σ_ε = 5) generating realistic between-patient variance; expected ICC ≈ 0.50, consistent with moderate-to-strong longitudinal dependence in Parkinson's disease
 - Intraclass correlation coefficient (ICC) computed from variance components (`VarCorr`) to quantify between-patient vs. within-patient variance and validate the mixed-model specification
 - Convergence diagnostics: optimizer warnings surfaced in rendered output via `@optinfo$conv$lme4$messages`
 - Four-panel residual diagnostics: residuals vs. fitted, Q-Q plot of marginal residuals, Q-Q plot of random-intercept BLUPs, and scale-location plot with loess smoother
@@ -183,7 +184,8 @@ All analyses, figures, tables, and statistical outputs are generated programmati
 
 Key reproducibility features:
 
-- Random seeds pre-specified for simulation and matching
+- Random seeds pre-specified for simulation, matching, and imputation (`set.seed(456)` for data simulation, `set.seed(2026)` for MICE and matching, `set.seed(42)` for causal forest)
+- Module 1 simulation generates patient-level random intercepts to produce a realistic ICC; `set.seed(456)` ensures the between-patient variance structure is reproducible across renders
 - `mice` imputation seeded separately (`set.seed(2026)`) to isolate the matching and imputation stages
 - Oncology dataset seeded via `set.seed(42)` in `R/simulate_oncology.R`
 - Quarto chunk caching with upstream cache invalidation prevents stale cached results
