@@ -209,8 +209,10 @@ u4 |>
   )
 
 # emmeans estimates
-est_yr2 <- u4 |> filter(grepl("Treatment - Control", Group)) |> pull(Estimate)
-ci_yr2  <- u4 |> filter(grepl("Treatment - Control", Group)) |> pull(CI)
+est_yr2      <- u4 |> filter(grepl("Treatment - Control", Group)) |> pull(Estimate)
+ci_yr2       <- u4 |> filter(grepl("Treatment - Control", Group)) |> pull(CI)
+emm_ctrl_yr2 <- u4 |> filter(Group == "Control",   Time == "2") |> pull(Estimate)
+emm_trt_yr2  <- u4 |> filter(Group == "Treatment", Time == "2") |> pull(Estimate)
 
 ```
 
@@ -388,7 +390,7 @@ Residual diagnostics show no systematic violations of model assumptions. The Q-Q
 
 ## Findings
 
-Four hundred patients were assigned to receive control (n=`r sum(baseline_covariates$Group=="Control")`), or Treatment (n=`r sum(baseline_covariates$Group=="Treatment")`). Treatment reduced UPDRS score versus control (treatment 43.35 vs control 46.27; difference `r round(est_yr2, 2)`, 95% CI `r ci_yr2`).
+Four hundred patients were assigned to receive control (n=`r sum(baseline_covariates$Group=="Control")`), or Treatment (n=`r sum(baseline_covariates$Group=="Treatment")`). Treatment reduced UPDRS score versus control (treatment `r round(emm_trt_yr2, 2)` vs control `r round(emm_ctrl_yr2, 2)`; difference `r round(est_yr2, 2)`, 95% CI `r ci_yr2`).
 
 ## Interpretation
 

@@ -1941,8 +1941,10 @@ N = 166<span class="gt_footnote_marks" style="white-space:nowrap;font-style:ital
 <details class="code-fold">
 <summary>Show code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a><span class="co"># emmeans estimates</span></span>
-<span id="cb4-2"><a href="#cb4-2"></a>est_yr2 <span class="ot">&lt;-</span> u4 <span class="sc">|&gt;</span> <span class="fu">filter</span>(<span class="fu">grepl</span>(<span class="st">"Treatment - Control"</span>, Group)) <span class="sc">|&gt;</span> <span class="fu">pull</span>(Estimate)</span>
-<span id="cb4-3"><a href="#cb4-3"></a>ci_yr2  <span class="ot">&lt;-</span> u4 <span class="sc">|&gt;</span> <span class="fu">filter</span>(<span class="fu">grepl</span>(<span class="st">"Treatment - Control"</span>, Group)) <span class="sc">|&gt;</span> <span class="fu">pull</span>(CI)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb4-2"><a href="#cb4-2"></a>est_yr2      <span class="ot">&lt;-</span> u4 <span class="sc">|&gt;</span> <span class="fu">filter</span>(<span class="fu">grepl</span>(<span class="st">"Treatment - Control"</span>, Group)) <span class="sc">|&gt;</span> <span class="fu">pull</span>(Estimate)</span>
+<span id="cb4-3"><a href="#cb4-3"></a>ci_yr2       <span class="ot">&lt;-</span> u4 <span class="sc">|&gt;</span> <span class="fu">filter</span>(<span class="fu">grepl</span>(<span class="st">"Treatment - Control"</span>, Group)) <span class="sc">|&gt;</span> <span class="fu">pull</span>(CI)</span>
+<span id="cb4-4"><a href="#cb4-4"></a>emm_ctrl_yr2 <span class="ot">&lt;-</span> u4 <span class="sc">|&gt;</span> <span class="fu">filter</span>(Group <span class="sc">==</span> <span class="st">"Control"</span>,   Time <span class="sc">==</span> <span class="st">"2"</span>) <span class="sc">|&gt;</span> <span class="fu">pull</span>(Estimate)</span>
+<span id="cb4-5"><a href="#cb4-5"></a>emm_trt_yr2  <span class="ot">&lt;-</span> u4 <span class="sc">|&gt;</span> <span class="fu">filter</span>(Group <span class="sc">==</span> <span class="st">"Treatment"</span>, Time <span class="sc">==</span> <span class="st">"2"</span>) <span class="sc">|&gt;</span> <span class="fu">pull</span>(Estimate)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 <div class="cell">
@@ -2617,7 +2619,7 @@ N = 166<span class="gt_footnote_marks" style="white-space:nowrap;font-style:ital
 </section>
 <section id="findings" class="level2" data-number="6">
 <h2 data-number="6" class="anchored" data-anchor-id="findings"><span class="header-section-number">6</span> Findings</h2>
-<p>Four hundred patients were assigned to receive control (n=234), or Treatment (n=166). Treatment reduced UPDRS score versus control (treatment 43.35 vs control 46.27; difference -2.26, 95% CI (-3.797, -0.718)).</p>
+<p>Four hundred patients were assigned to receive control (n=234), or Treatment (n=166). Treatment reduced UPDRS score versus control (treatment 42.98 vs control 45.24; difference -2.26, 95% CI (-3.797, -0.718)).</p>
 </section>
 <section id="interpretation" class="level2" data-number="7">
 <h2 data-number="7" class="anchored" data-anchor-id="interpretation"><span class="header-section-number">7</span> Interpretation</h2>
@@ -6738,619 +6740,621 @@ loaded via a namespace (and not attached):
 <span id="cb19-217"><a href="#cb19-217"></a>  )</span>
 <span id="cb19-218"><a href="#cb19-218"></a></span>
 <span id="cb19-219"><a href="#cb19-219"></a><span class="co"># emmeans estimates</span></span>
-<span id="cb19-220"><a href="#cb19-220"></a>est_yr2 <span class="ot">&lt;-</span> u4 <span class="sc">|&gt;</span> <span class="fu">filter</span>(<span class="fu">grepl</span>(<span class="st">"Treatment - Control"</span>, Group)) <span class="sc">|&gt;</span> <span class="fu">pull</span>(Estimate)</span>
-<span id="cb19-221"><a href="#cb19-221"></a>ci_yr2  <span class="ot">&lt;-</span> u4 <span class="sc">|&gt;</span> <span class="fu">filter</span>(<span class="fu">grepl</span>(<span class="st">"Treatment - Control"</span>, Group)) <span class="sc">|&gt;</span> <span class="fu">pull</span>(CI)</span>
-<span id="cb19-222"><a href="#cb19-222"></a></span>
-<span id="cb19-223"><a href="#cb19-223"></a><span class="in">```</span></span>
+<span id="cb19-220"><a href="#cb19-220"></a>est_yr2      <span class="ot">&lt;-</span> u4 <span class="sc">|&gt;</span> <span class="fu">filter</span>(<span class="fu">grepl</span>(<span class="st">"Treatment - Control"</span>, Group)) <span class="sc">|&gt;</span> <span class="fu">pull</span>(Estimate)</span>
+<span id="cb19-221"><a href="#cb19-221"></a>ci_yr2       <span class="ot">&lt;-</span> u4 <span class="sc">|&gt;</span> <span class="fu">filter</span>(<span class="fu">grepl</span>(<span class="st">"Treatment - Control"</span>, Group)) <span class="sc">|&gt;</span> <span class="fu">pull</span>(CI)</span>
+<span id="cb19-222"><a href="#cb19-222"></a>emm_ctrl_yr2 <span class="ot">&lt;-</span> u4 <span class="sc">|&gt;</span> <span class="fu">filter</span>(Group <span class="sc">==</span> <span class="st">"Control"</span>,   Time <span class="sc">==</span> <span class="st">"2"</span>) <span class="sc">|&gt;</span> <span class="fu">pull</span>(Estimate)</span>
+<span id="cb19-223"><a href="#cb19-223"></a>emm_trt_yr2  <span class="ot">&lt;-</span> u4 <span class="sc">|&gt;</span> <span class="fu">filter</span>(Group <span class="sc">==</span> <span class="st">"Treatment"</span>, Time <span class="sc">==</span> <span class="st">"2"</span>) <span class="sc">|&gt;</span> <span class="fu">pull</span>(Estimate)</span>
 <span id="cb19-224"><a href="#cb19-224"></a></span>
-<span id="cb19-227"><a href="#cb19-227"></a><span class="in">```{r}</span></span>
-<span id="cb19-228"><a href="#cb19-228"></a><span class="co">#| label: icc</span></span>
-<span id="cb19-229"><a href="#cb19-229"></a><span class="co">#| echo: true</span></span>
-<span id="cb19-230"><a href="#cb19-230"></a></span>
-<span id="cb19-231"><a href="#cb19-231"></a><span class="co"># ── Intraclass Correlation Coefficient (ICC) ──────────────────────────────────</span></span>
-<span id="cb19-232"><a href="#cb19-232"></a><span class="co"># ICC = σ²_u / (σ²_u + σ²): proportion of total variance attributable to</span></span>
-<span id="cb19-233"><a href="#cb19-233"></a><span class="co"># between-patient differences. A high ICC (&gt; 0.5) confirms that patients differ</span></span>
-<span id="cb19-234"><a href="#cb19-234"></a><span class="co"># substantially at baseline and validates the need for a mixed model — standard</span></span>
-<span id="cb19-235"><a href="#cb19-235"></a><span class="co"># regression would underestimate standard errors by treating within-person</span></span>
-<span id="cb19-236"><a href="#cb19-236"></a><span class="co"># observations as independent.</span></span>
-<span id="cb19-237"><a href="#cb19-237"></a></span>
-<span id="cb19-238"><a href="#cb19-238"></a>vc       <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(<span class="fu">VarCorr</span>(m1))</span>
-<span id="cb19-239"><a href="#cb19-239"></a>var_u    <span class="ot">&lt;-</span> vc<span class="sc">$</span>vcov[vc<span class="sc">$</span>grp <span class="sc">==</span> <span class="st">"Patient"</span>]   <span class="co"># between-patient variance</span></span>
-<span id="cb19-240"><a href="#cb19-240"></a>var_eps  <span class="ot">&lt;-</span> vc<span class="sc">$</span>vcov[vc<span class="sc">$</span>grp <span class="sc">==</span> <span class="st">"Residual"</span>]  <span class="co"># within-patient (residual) variance</span></span>
-<span id="cb19-241"><a href="#cb19-241"></a>icc_val  <span class="ot">&lt;-</span> var_u <span class="sc">/</span> (var_u <span class="sc">+</span> var_eps)</span>
-<span id="cb19-242"><a href="#cb19-242"></a></span>
-<span id="cb19-243"><a href="#cb19-243"></a><span class="fu">tibble</span>(</span>
-<span id="cb19-244"><a href="#cb19-244"></a>  <span class="at">Component              =</span> <span class="fu">c</span>(<span class="st">"Between-patient (σ²_u)"</span>, <span class="st">"Within-patient / Residual (σ²)"</span>, <span class="st">"ICC"</span>),</span>
-<span id="cb19-245"><a href="#cb19-245"></a>  <span class="at">Variance               =</span> <span class="fu">c</span>(<span class="fu">round</span>(var_u, <span class="dv">3</span>), <span class="fu">round</span>(var_eps, <span class="dv">3</span>), <span class="cn">NA_real_</span>),</span>
-<span id="cb19-246"><a href="#cb19-246"></a>  <span class="at">Value                  =</span> <span class="fu">c</span>(<span class="cn">NA_character_</span>, <span class="cn">NA_character_</span>, <span class="fu">round</span>(icc_val, <span class="dv">3</span>))</span>
-<span id="cb19-247"><a href="#cb19-247"></a>) <span class="sc">|&gt;</span></span>
-<span id="cb19-248"><a href="#cb19-248"></a>  <span class="fu">gt</span>() <span class="sc">|&gt;</span></span>
-<span id="cb19-249"><a href="#cb19-249"></a>  <span class="fu">tab_header</span>(</span>
-<span id="cb19-250"><a href="#cb19-250"></a>    <span class="at">title    =</span> <span class="st">"Table 2b. Variance Components and Intraclass Correlation Coefficient"</span>,</span>
-<span id="cb19-251"><a href="#cb19-251"></a>    <span class="at">subtitle =</span> <span class="st">"Random-intercept LME — UPDRS ~ Group * Time + Age + (1 | Patient)"</span></span>
-<span id="cb19-252"><a href="#cb19-252"></a>  ) <span class="sc">|&gt;</span></span>
-<span id="cb19-253"><a href="#cb19-253"></a>  <span class="fu">cols_label</span>(</span>
-<span id="cb19-254"><a href="#cb19-254"></a>    <span class="at">Component =</span> <span class="st">"Variance Component"</span>,</span>
-<span id="cb19-255"><a href="#cb19-255"></a>    <span class="at">Variance  =</span> <span class="st">"Estimated Variance"</span>,</span>
-<span id="cb19-256"><a href="#cb19-256"></a>    <span class="at">Value     =</span> <span class="st">"ICC"</span></span>
-<span id="cb19-257"><a href="#cb19-257"></a>  ) <span class="sc">|&gt;</span></span>
-<span id="cb19-258"><a href="#cb19-258"></a>  <span class="fu">tab_footnote</span>(</span>
-<span id="cb19-259"><a href="#cb19-259"></a>    <span class="at">footnote =</span> <span class="fu">paste0</span>(</span>
-<span id="cb19-260"><a href="#cb19-260"></a>      <span class="st">"ICC = σ²_u / (σ²_u + σ²). "</span>,</span>
-<span id="cb19-261"><a href="#cb19-261"></a>      <span class="st">"ICC ≈ 0.1: weak within-patient correlation. "</span>,</span>
-<span id="cb19-262"><a href="#cb19-262"></a>      <span class="st">"ICC ≈ 0.3: moderate. "</span>,</span>
-<span id="cb19-263"><a href="#cb19-263"></a>      <span class="st">"ICC &gt; 0.5: strong longitudinal dependence — standard regression would substantially underestimate SEs."</span></span>
-<span id="cb19-264"><a href="#cb19-264"></a>    )</span>
-<span id="cb19-265"><a href="#cb19-265"></a>  ) <span class="sc">|&gt;</span></span>
-<span id="cb19-266"><a href="#cb19-266"></a>  <span class="fu">tab_style</span>(</span>
-<span id="cb19-267"><a href="#cb19-267"></a>    <span class="at">style     =</span> <span class="fu">cell_text</span>(<span class="at">weight =</span> <span class="st">"bold"</span>),</span>
-<span id="cb19-268"><a href="#cb19-268"></a>    <span class="at">locations =</span> <span class="fu">cells_column_labels</span>()</span>
-<span id="cb19-269"><a href="#cb19-269"></a>  ) <span class="sc">|&gt;</span></span>
-<span id="cb19-270"><a href="#cb19-270"></a>  <span class="fu">tab_options</span>(</span>
-<span id="cb19-271"><a href="#cb19-271"></a>    <span class="at">table.font.size           =</span> <span class="fu">px</span>(<span class="dv">13</span>),</span>
-<span id="cb19-272"><a href="#cb19-272"></a>    <span class="at">heading.title.font.size   =</span> <span class="fu">px</span>(<span class="dv">14</span>),</span>
-<span id="cb19-273"><a href="#cb19-273"></a>    <span class="at">heading.title.font.weight =</span> <span class="st">"bold"</span>,</span>
-<span id="cb19-274"><a href="#cb19-274"></a>    <span class="at">table.width               =</span> <span class="fu">pct</span>(<span class="dv">100</span>)</span>
-<span id="cb19-275"><a href="#cb19-275"></a>  )</span>
-<span id="cb19-276"><a href="#cb19-276"></a><span class="in">```</span></span>
-<span id="cb19-277"><a href="#cb19-277"></a></span>
-<span id="cb19-278"><a href="#cb19-278"></a>The longitudinal mixed-effects model demonstrated lower estimated UPDRS scores in the treatment group at Year 2 relative to control, consistent with simulated treatment benefit.</span>
+<span id="cb19-225"><a href="#cb19-225"></a><span class="in">```</span></span>
+<span id="cb19-226"><a href="#cb19-226"></a></span>
+<span id="cb19-229"><a href="#cb19-229"></a><span class="in">```{r}</span></span>
+<span id="cb19-230"><a href="#cb19-230"></a><span class="co">#| label: icc</span></span>
+<span id="cb19-231"><a href="#cb19-231"></a><span class="co">#| echo: true</span></span>
+<span id="cb19-232"><a href="#cb19-232"></a></span>
+<span id="cb19-233"><a href="#cb19-233"></a><span class="co"># ── Intraclass Correlation Coefficient (ICC) ──────────────────────────────────</span></span>
+<span id="cb19-234"><a href="#cb19-234"></a><span class="co"># ICC = σ²_u / (σ²_u + σ²): proportion of total variance attributable to</span></span>
+<span id="cb19-235"><a href="#cb19-235"></a><span class="co"># between-patient differences. A high ICC (&gt; 0.5) confirms that patients differ</span></span>
+<span id="cb19-236"><a href="#cb19-236"></a><span class="co"># substantially at baseline and validates the need for a mixed model — standard</span></span>
+<span id="cb19-237"><a href="#cb19-237"></a><span class="co"># regression would underestimate standard errors by treating within-person</span></span>
+<span id="cb19-238"><a href="#cb19-238"></a><span class="co"># observations as independent.</span></span>
+<span id="cb19-239"><a href="#cb19-239"></a></span>
+<span id="cb19-240"><a href="#cb19-240"></a>vc       <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(<span class="fu">VarCorr</span>(m1))</span>
+<span id="cb19-241"><a href="#cb19-241"></a>var_u    <span class="ot">&lt;-</span> vc<span class="sc">$</span>vcov[vc<span class="sc">$</span>grp <span class="sc">==</span> <span class="st">"Patient"</span>]   <span class="co"># between-patient variance</span></span>
+<span id="cb19-242"><a href="#cb19-242"></a>var_eps  <span class="ot">&lt;-</span> vc<span class="sc">$</span>vcov[vc<span class="sc">$</span>grp <span class="sc">==</span> <span class="st">"Residual"</span>]  <span class="co"># within-patient (residual) variance</span></span>
+<span id="cb19-243"><a href="#cb19-243"></a>icc_val  <span class="ot">&lt;-</span> var_u <span class="sc">/</span> (var_u <span class="sc">+</span> var_eps)</span>
+<span id="cb19-244"><a href="#cb19-244"></a></span>
+<span id="cb19-245"><a href="#cb19-245"></a><span class="fu">tibble</span>(</span>
+<span id="cb19-246"><a href="#cb19-246"></a>  <span class="at">Component              =</span> <span class="fu">c</span>(<span class="st">"Between-patient (σ²_u)"</span>, <span class="st">"Within-patient / Residual (σ²)"</span>, <span class="st">"ICC"</span>),</span>
+<span id="cb19-247"><a href="#cb19-247"></a>  <span class="at">Variance               =</span> <span class="fu">c</span>(<span class="fu">round</span>(var_u, <span class="dv">3</span>), <span class="fu">round</span>(var_eps, <span class="dv">3</span>), <span class="cn">NA_real_</span>),</span>
+<span id="cb19-248"><a href="#cb19-248"></a>  <span class="at">Value                  =</span> <span class="fu">c</span>(<span class="cn">NA_character_</span>, <span class="cn">NA_character_</span>, <span class="fu">round</span>(icc_val, <span class="dv">3</span>))</span>
+<span id="cb19-249"><a href="#cb19-249"></a>) <span class="sc">|&gt;</span></span>
+<span id="cb19-250"><a href="#cb19-250"></a>  <span class="fu">gt</span>() <span class="sc">|&gt;</span></span>
+<span id="cb19-251"><a href="#cb19-251"></a>  <span class="fu">tab_header</span>(</span>
+<span id="cb19-252"><a href="#cb19-252"></a>    <span class="at">title    =</span> <span class="st">"Table 2b. Variance Components and Intraclass Correlation Coefficient"</span>,</span>
+<span id="cb19-253"><a href="#cb19-253"></a>    <span class="at">subtitle =</span> <span class="st">"Random-intercept LME — UPDRS ~ Group * Time + Age + (1 | Patient)"</span></span>
+<span id="cb19-254"><a href="#cb19-254"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb19-255"><a href="#cb19-255"></a>  <span class="fu">cols_label</span>(</span>
+<span id="cb19-256"><a href="#cb19-256"></a>    <span class="at">Component =</span> <span class="st">"Variance Component"</span>,</span>
+<span id="cb19-257"><a href="#cb19-257"></a>    <span class="at">Variance  =</span> <span class="st">"Estimated Variance"</span>,</span>
+<span id="cb19-258"><a href="#cb19-258"></a>    <span class="at">Value     =</span> <span class="st">"ICC"</span></span>
+<span id="cb19-259"><a href="#cb19-259"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb19-260"><a href="#cb19-260"></a>  <span class="fu">tab_footnote</span>(</span>
+<span id="cb19-261"><a href="#cb19-261"></a>    <span class="at">footnote =</span> <span class="fu">paste0</span>(</span>
+<span id="cb19-262"><a href="#cb19-262"></a>      <span class="st">"ICC = σ²_u / (σ²_u + σ²). "</span>,</span>
+<span id="cb19-263"><a href="#cb19-263"></a>      <span class="st">"ICC ≈ 0.1: weak within-patient correlation. "</span>,</span>
+<span id="cb19-264"><a href="#cb19-264"></a>      <span class="st">"ICC ≈ 0.3: moderate. "</span>,</span>
+<span id="cb19-265"><a href="#cb19-265"></a>      <span class="st">"ICC &gt; 0.5: strong longitudinal dependence — standard regression would substantially underestimate SEs."</span></span>
+<span id="cb19-266"><a href="#cb19-266"></a>    )</span>
+<span id="cb19-267"><a href="#cb19-267"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb19-268"><a href="#cb19-268"></a>  <span class="fu">tab_style</span>(</span>
+<span id="cb19-269"><a href="#cb19-269"></a>    <span class="at">style     =</span> <span class="fu">cell_text</span>(<span class="at">weight =</span> <span class="st">"bold"</span>),</span>
+<span id="cb19-270"><a href="#cb19-270"></a>    <span class="at">locations =</span> <span class="fu">cells_column_labels</span>()</span>
+<span id="cb19-271"><a href="#cb19-271"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb19-272"><a href="#cb19-272"></a>  <span class="fu">tab_options</span>(</span>
+<span id="cb19-273"><a href="#cb19-273"></a>    <span class="at">table.font.size           =</span> <span class="fu">px</span>(<span class="dv">13</span>),</span>
+<span id="cb19-274"><a href="#cb19-274"></a>    <span class="at">heading.title.font.size   =</span> <span class="fu">px</span>(<span class="dv">14</span>),</span>
+<span id="cb19-275"><a href="#cb19-275"></a>    <span class="at">heading.title.font.weight =</span> <span class="st">"bold"</span>,</span>
+<span id="cb19-276"><a href="#cb19-276"></a>    <span class="at">table.width               =</span> <span class="fu">pct</span>(<span class="dv">100</span>)</span>
+<span id="cb19-277"><a href="#cb19-277"></a>  )</span>
+<span id="cb19-278"><a href="#cb19-278"></a><span class="in">```</span></span>
 <span id="cb19-279"><a href="#cb19-279"></a></span>
-<span id="cb19-282"><a href="#cb19-282"></a><span class="in">```{r}</span></span>
-<span id="cb19-283"><a href="#cb19-283"></a><span class="co">#| label: longitudinal-profile-plot</span></span>
-<span id="cb19-284"><a href="#cb19-284"></a><span class="co">#| fig-cap: "Figure 1. Longitudinal mean UPDRS profiles by treatment group."</span></span>
-<span id="cb19-285"><a href="#cb19-285"></a><span class="co">#| fig-width: 8</span></span>
-<span id="cb19-286"><a href="#cb19-286"></a><span class="co">#| fig-height: 5</span></span>
-<span id="cb19-287"><a href="#cb19-287"></a><span class="co">#| warning: false</span></span>
-<span id="cb19-288"><a href="#cb19-288"></a><span class="co">#| message: false</span></span>
-<span id="cb19-289"><a href="#cb19-289"></a></span>
-<span id="cb19-290"><a href="#cb19-290"></a><span class="co"># Summary statistics by treatment group and visit</span></span>
-<span id="cb19-291"><a href="#cb19-291"></a>plot_data <span class="ot">&lt;-</span> data <span class="sc">%&gt;%</span></span>
-<span id="cb19-292"><a href="#cb19-292"></a>  <span class="fu">group_by</span>(Group, Time) <span class="sc">%&gt;%</span></span>
-<span id="cb19-293"><a href="#cb19-293"></a>  <span class="fu">summarize</span>(</span>
-<span id="cb19-294"><a href="#cb19-294"></a>    <span class="at">Mean =</span> <span class="fu">mean</span>(UPDRS, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb19-295"><a href="#cb19-295"></a>    <span class="at">SD =</span> <span class="fu">sd</span>(UPDRS, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb19-296"><a href="#cb19-296"></a>    <span class="at">N =</span> <span class="fu">sum</span>(<span class="sc">!</span><span class="fu">is.na</span>(UPDRS)),</span>
-<span id="cb19-297"><a href="#cb19-297"></a>    <span class="at">SE =</span> SD <span class="sc">/</span> <span class="fu">sqrt</span>(N),</span>
-<span id="cb19-298"><a href="#cb19-298"></a>    <span class="at">Lower =</span> Mean <span class="sc">-</span> <span class="fl">1.96</span> <span class="sc">*</span> SE,</span>
-<span id="cb19-299"><a href="#cb19-299"></a>    <span class="at">Upper =</span> Mean <span class="sc">+</span> <span class="fl">1.96</span> <span class="sc">*</span> SE,</span>
-<span id="cb19-300"><a href="#cb19-300"></a>    <span class="at">.groups =</span> <span class="st">"drop"</span></span>
-<span id="cb19-301"><a href="#cb19-301"></a>  )</span>
-<span id="cb19-302"><a href="#cb19-302"></a></span>
-<span id="cb19-303"><a href="#cb19-303"></a><span class="co"># Convert Time to numeric for plotting</span></span>
-<span id="cb19-304"><a href="#cb19-304"></a>plot_data<span class="sc">$</span>Time <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(<span class="fu">as.character</span>(plot_data<span class="sc">$</span>Time))</span>
-<span id="cb19-305"><a href="#cb19-305"></a></span>
-<span id="cb19-306"><a href="#cb19-306"></a><span class="co"># Longitudinal profile plot</span></span>
-<span id="cb19-307"><a href="#cb19-307"></a><span class="fu">ggplot</span>(plot_data,</span>
-<span id="cb19-308"><a href="#cb19-308"></a>       <span class="fu">aes</span>(<span class="at">x =</span> Time,</span>
-<span id="cb19-309"><a href="#cb19-309"></a>           <span class="at">y =</span> Mean,</span>
-<span id="cb19-310"><a href="#cb19-310"></a>           <span class="at">color =</span> Group,</span>
-<span id="cb19-311"><a href="#cb19-311"></a>           <span class="at">group =</span> Group)) <span class="sc">+</span></span>
-<span id="cb19-312"><a href="#cb19-312"></a></span>
-<span id="cb19-313"><a href="#cb19-313"></a>  <span class="fu">geom_line</span>(<span class="at">linewidth =</span> <span class="fl">1.2</span>) <span class="sc">+</span></span>
+<span id="cb19-280"><a href="#cb19-280"></a>The longitudinal mixed-effects model demonstrated lower estimated UPDRS scores in the treatment group at Year 2 relative to control, consistent with simulated treatment benefit.</span>
+<span id="cb19-281"><a href="#cb19-281"></a></span>
+<span id="cb19-284"><a href="#cb19-284"></a><span class="in">```{r}</span></span>
+<span id="cb19-285"><a href="#cb19-285"></a><span class="co">#| label: longitudinal-profile-plot</span></span>
+<span id="cb19-286"><a href="#cb19-286"></a><span class="co">#| fig-cap: "Figure 1. Longitudinal mean UPDRS profiles by treatment group."</span></span>
+<span id="cb19-287"><a href="#cb19-287"></a><span class="co">#| fig-width: 8</span></span>
+<span id="cb19-288"><a href="#cb19-288"></a><span class="co">#| fig-height: 5</span></span>
+<span id="cb19-289"><a href="#cb19-289"></a><span class="co">#| warning: false</span></span>
+<span id="cb19-290"><a href="#cb19-290"></a><span class="co">#| message: false</span></span>
+<span id="cb19-291"><a href="#cb19-291"></a></span>
+<span id="cb19-292"><a href="#cb19-292"></a><span class="co"># Summary statistics by treatment group and visit</span></span>
+<span id="cb19-293"><a href="#cb19-293"></a>plot_data <span class="ot">&lt;-</span> data <span class="sc">%&gt;%</span></span>
+<span id="cb19-294"><a href="#cb19-294"></a>  <span class="fu">group_by</span>(Group, Time) <span class="sc">%&gt;%</span></span>
+<span id="cb19-295"><a href="#cb19-295"></a>  <span class="fu">summarize</span>(</span>
+<span id="cb19-296"><a href="#cb19-296"></a>    <span class="at">Mean =</span> <span class="fu">mean</span>(UPDRS, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb19-297"><a href="#cb19-297"></a>    <span class="at">SD =</span> <span class="fu">sd</span>(UPDRS, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb19-298"><a href="#cb19-298"></a>    <span class="at">N =</span> <span class="fu">sum</span>(<span class="sc">!</span><span class="fu">is.na</span>(UPDRS)),</span>
+<span id="cb19-299"><a href="#cb19-299"></a>    <span class="at">SE =</span> SD <span class="sc">/</span> <span class="fu">sqrt</span>(N),</span>
+<span id="cb19-300"><a href="#cb19-300"></a>    <span class="at">Lower =</span> Mean <span class="sc">-</span> <span class="fl">1.96</span> <span class="sc">*</span> SE,</span>
+<span id="cb19-301"><a href="#cb19-301"></a>    <span class="at">Upper =</span> Mean <span class="sc">+</span> <span class="fl">1.96</span> <span class="sc">*</span> SE,</span>
+<span id="cb19-302"><a href="#cb19-302"></a>    <span class="at">.groups =</span> <span class="st">"drop"</span></span>
+<span id="cb19-303"><a href="#cb19-303"></a>  )</span>
+<span id="cb19-304"><a href="#cb19-304"></a></span>
+<span id="cb19-305"><a href="#cb19-305"></a><span class="co"># Convert Time to numeric for plotting</span></span>
+<span id="cb19-306"><a href="#cb19-306"></a>plot_data<span class="sc">$</span>Time <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(<span class="fu">as.character</span>(plot_data<span class="sc">$</span>Time))</span>
+<span id="cb19-307"><a href="#cb19-307"></a></span>
+<span id="cb19-308"><a href="#cb19-308"></a><span class="co"># Longitudinal profile plot</span></span>
+<span id="cb19-309"><a href="#cb19-309"></a><span class="fu">ggplot</span>(plot_data,</span>
+<span id="cb19-310"><a href="#cb19-310"></a>       <span class="fu">aes</span>(<span class="at">x =</span> Time,</span>
+<span id="cb19-311"><a href="#cb19-311"></a>           <span class="at">y =</span> Mean,</span>
+<span id="cb19-312"><a href="#cb19-312"></a>           <span class="at">color =</span> Group,</span>
+<span id="cb19-313"><a href="#cb19-313"></a>           <span class="at">group =</span> Group)) <span class="sc">+</span></span>
 <span id="cb19-314"><a href="#cb19-314"></a></span>
-<span id="cb19-315"><a href="#cb19-315"></a>  <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="dv">3</span>) <span class="sc">+</span></span>
+<span id="cb19-315"><a href="#cb19-315"></a>  <span class="fu">geom_line</span>(<span class="at">linewidth =</span> <span class="fl">1.2</span>) <span class="sc">+</span></span>
 <span id="cb19-316"><a href="#cb19-316"></a></span>
-<span id="cb19-317"><a href="#cb19-317"></a>  <span class="fu">geom_errorbar</span>(</span>
-<span id="cb19-318"><a href="#cb19-318"></a>    <span class="fu">aes</span>(<span class="at">ymin =</span> Lower, <span class="at">ymax =</span> Upper),</span>
-<span id="cb19-319"><a href="#cb19-319"></a>    <span class="at">width =</span> <span class="fl">0.08</span>,</span>
-<span id="cb19-320"><a href="#cb19-320"></a>    <span class="at">linewidth =</span> <span class="fl">0.7</span></span>
-<span id="cb19-321"><a href="#cb19-321"></a>  ) <span class="sc">+</span></span>
-<span id="cb19-322"><a href="#cb19-322"></a></span>
-<span id="cb19-323"><a href="#cb19-323"></a>  <span class="fu">scale_x_continuous</span>(</span>
-<span id="cb19-324"><a href="#cb19-324"></a>    <span class="at">breaks =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">2</span>),</span>
-<span id="cb19-325"><a href="#cb19-325"></a>    <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"Baseline"</span>, <span class="st">"Year 1"</span>, <span class="st">"Year 2"</span>)</span>
-<span id="cb19-326"><a href="#cb19-326"></a>  ) <span class="sc">+</span></span>
-<span id="cb19-327"><a href="#cb19-327"></a></span>
-<span id="cb19-328"><a href="#cb19-328"></a>  <span class="fu">labs</span>(</span>
-<span id="cb19-329"><a href="#cb19-329"></a>    <span class="at">title =</span> <span class="st">"Longitudinal Mean UPDRS Profiles by Treatment Group"</span>,</span>
-<span id="cb19-330"><a href="#cb19-330"></a>    <span class="at">subtitle =</span> <span class="st">"Observed Mean Scores with 95% Confidence Intervals"</span>,</span>
-<span id="cb19-331"><a href="#cb19-331"></a>    <span class="at">x =</span> <span class="st">"Visit"</span>,</span>
-<span id="cb19-332"><a href="#cb19-332"></a>    <span class="at">y =</span> <span class="st">"Mean UPDRS Score"</span>,</span>
-<span id="cb19-333"><a href="#cb19-333"></a>    <span class="at">color =</span> <span class="st">"Treatment Group"</span></span>
-<span id="cb19-334"><a href="#cb19-334"></a>  ) <span class="sc">+</span></span>
-<span id="cb19-335"><a href="#cb19-335"></a></span>
-<span id="cb19-336"><a href="#cb19-336"></a>  <span class="fu">theme_minimal</span>(<span class="at">base_size =</span> <span class="dv">13</span>) <span class="sc">+</span></span>
+<span id="cb19-317"><a href="#cb19-317"></a>  <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="dv">3</span>) <span class="sc">+</span></span>
+<span id="cb19-318"><a href="#cb19-318"></a></span>
+<span id="cb19-319"><a href="#cb19-319"></a>  <span class="fu">geom_errorbar</span>(</span>
+<span id="cb19-320"><a href="#cb19-320"></a>    <span class="fu">aes</span>(<span class="at">ymin =</span> Lower, <span class="at">ymax =</span> Upper),</span>
+<span id="cb19-321"><a href="#cb19-321"></a>    <span class="at">width =</span> <span class="fl">0.08</span>,</span>
+<span id="cb19-322"><a href="#cb19-322"></a>    <span class="at">linewidth =</span> <span class="fl">0.7</span></span>
+<span id="cb19-323"><a href="#cb19-323"></a>  ) <span class="sc">+</span></span>
+<span id="cb19-324"><a href="#cb19-324"></a></span>
+<span id="cb19-325"><a href="#cb19-325"></a>  <span class="fu">scale_x_continuous</span>(</span>
+<span id="cb19-326"><a href="#cb19-326"></a>    <span class="at">breaks =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">2</span>),</span>
+<span id="cb19-327"><a href="#cb19-327"></a>    <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"Baseline"</span>, <span class="st">"Year 1"</span>, <span class="st">"Year 2"</span>)</span>
+<span id="cb19-328"><a href="#cb19-328"></a>  ) <span class="sc">+</span></span>
+<span id="cb19-329"><a href="#cb19-329"></a></span>
+<span id="cb19-330"><a href="#cb19-330"></a>  <span class="fu">labs</span>(</span>
+<span id="cb19-331"><a href="#cb19-331"></a>    <span class="at">title =</span> <span class="st">"Longitudinal Mean UPDRS Profiles by Treatment Group"</span>,</span>
+<span id="cb19-332"><a href="#cb19-332"></a>    <span class="at">subtitle =</span> <span class="st">"Observed Mean Scores with 95% Confidence Intervals"</span>,</span>
+<span id="cb19-333"><a href="#cb19-333"></a>    <span class="at">x =</span> <span class="st">"Visit"</span>,</span>
+<span id="cb19-334"><a href="#cb19-334"></a>    <span class="at">y =</span> <span class="st">"Mean UPDRS Score"</span>,</span>
+<span id="cb19-335"><a href="#cb19-335"></a>    <span class="at">color =</span> <span class="st">"Treatment Group"</span></span>
+<span id="cb19-336"><a href="#cb19-336"></a>  ) <span class="sc">+</span></span>
 <span id="cb19-337"><a href="#cb19-337"></a></span>
-<span id="cb19-338"><a href="#cb19-338"></a>  <span class="fu">theme</span>(</span>
-<span id="cb19-339"><a href="#cb19-339"></a>    <span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">face =</span> <span class="st">"bold"</span>),</span>
-<span id="cb19-340"><a href="#cb19-340"></a>    <span class="at">legend.position =</span> <span class="st">"top"</span></span>
-<span id="cb19-341"><a href="#cb19-341"></a>  )</span>
-<span id="cb19-342"><a href="#cb19-342"></a><span class="in">```</span></span>
-<span id="cb19-343"><a href="#cb19-343"></a></span>
-<span id="cb19-346"><a href="#cb19-346"></a><span class="in">```{r}</span></span>
-<span id="cb19-347"><a href="#cb19-347"></a><span class="co">#| label: residual-diagnostics</span></span>
-<span id="cb19-348"><a href="#cb19-348"></a><span class="co">#| fig-cap: "Figure 2. Residual diagnostics for the primary mixed-effects model."</span></span>
-<span id="cb19-349"><a href="#cb19-349"></a><span class="co">#| fig-width: 10</span></span>
-<span id="cb19-350"><a href="#cb19-350"></a><span class="co">#| fig-height: 8</span></span>
-<span id="cb19-351"><a href="#cb19-351"></a><span class="co">#| warning: false</span></span>
-<span id="cb19-352"><a href="#cb19-352"></a><span class="co">#| message: false</span></span>
-<span id="cb19-353"><a href="#cb19-353"></a></span>
-<span id="cb19-354"><a href="#cb19-354"></a><span class="co"># ── Four-panel diagnostic layout ─────────────────────────────────────────────</span></span>
-<span id="cb19-355"><a href="#cb19-355"></a><span class="co"># (1) Residuals vs Fitted   — checks linearity and homoscedasticity</span></span>
-<span id="cb19-356"><a href="#cb19-356"></a><span class="co"># (2) Q-Q plot of residuals — checks normality of marginal residuals</span></span>
-<span id="cb19-357"><a href="#cb19-357"></a><span class="co"># (3) Q-Q plot of BLUPs     — checks normality of random-intercept estimates</span></span>
-<span id="cb19-358"><a href="#cb19-358"></a><span class="co"># (4) Scale-Location        — checks homoscedasticity (sqrt |residuals| vs fitted)</span></span>
-<span id="cb19-359"><a href="#cb19-359"></a></span>
-<span id="cb19-360"><a href="#cb19-360"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">2</span>), <span class="at">mar =</span> <span class="fu">c</span>(<span class="dv">4</span>, <span class="dv">4</span>, <span class="dv">3</span>, <span class="dv">1</span>))</span>
+<span id="cb19-338"><a href="#cb19-338"></a>  <span class="fu">theme_minimal</span>(<span class="at">base_size =</span> <span class="dv">13</span>) <span class="sc">+</span></span>
+<span id="cb19-339"><a href="#cb19-339"></a></span>
+<span id="cb19-340"><a href="#cb19-340"></a>  <span class="fu">theme</span>(</span>
+<span id="cb19-341"><a href="#cb19-341"></a>    <span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">face =</span> <span class="st">"bold"</span>),</span>
+<span id="cb19-342"><a href="#cb19-342"></a>    <span class="at">legend.position =</span> <span class="st">"top"</span></span>
+<span id="cb19-343"><a href="#cb19-343"></a>  )</span>
+<span id="cb19-344"><a href="#cb19-344"></a><span class="in">```</span></span>
+<span id="cb19-345"><a href="#cb19-345"></a></span>
+<span id="cb19-348"><a href="#cb19-348"></a><span class="in">```{r}</span></span>
+<span id="cb19-349"><a href="#cb19-349"></a><span class="co">#| label: residual-diagnostics</span></span>
+<span id="cb19-350"><a href="#cb19-350"></a><span class="co">#| fig-cap: "Figure 2. Residual diagnostics for the primary mixed-effects model."</span></span>
+<span id="cb19-351"><a href="#cb19-351"></a><span class="co">#| fig-width: 10</span></span>
+<span id="cb19-352"><a href="#cb19-352"></a><span class="co">#| fig-height: 8</span></span>
+<span id="cb19-353"><a href="#cb19-353"></a><span class="co">#| warning: false</span></span>
+<span id="cb19-354"><a href="#cb19-354"></a><span class="co">#| message: false</span></span>
+<span id="cb19-355"><a href="#cb19-355"></a></span>
+<span id="cb19-356"><a href="#cb19-356"></a><span class="co"># ── Four-panel diagnostic layout ─────────────────────────────────────────────</span></span>
+<span id="cb19-357"><a href="#cb19-357"></a><span class="co"># (1) Residuals vs Fitted   — checks linearity and homoscedasticity</span></span>
+<span id="cb19-358"><a href="#cb19-358"></a><span class="co"># (2) Q-Q plot of residuals — checks normality of marginal residuals</span></span>
+<span id="cb19-359"><a href="#cb19-359"></a><span class="co"># (3) Q-Q plot of BLUPs     — checks normality of random-intercept estimates</span></span>
+<span id="cb19-360"><a href="#cb19-360"></a><span class="co"># (4) Scale-Location        — checks homoscedasticity (sqrt |residuals| vs fitted)</span></span>
 <span id="cb19-361"><a href="#cb19-361"></a></span>
-<span id="cb19-362"><a href="#cb19-362"></a><span class="co"># Panel 1: Residuals vs Fitted</span></span>
-<span id="cb19-363"><a href="#cb19-363"></a><span class="fu">plot</span>(</span>
-<span id="cb19-364"><a href="#cb19-364"></a>  <span class="fu">fitted</span>(m1), <span class="fu">resid</span>(m1),</span>
-<span id="cb19-365"><a href="#cb19-365"></a>  <span class="at">xlab =</span> <span class="st">"Fitted Values"</span>, <span class="at">ylab =</span> <span class="st">"Residuals"</span>,</span>
-<span id="cb19-366"><a href="#cb19-366"></a>  <span class="at">main =</span> <span class="st">"Residuals vs Fitted"</span>,</span>
-<span id="cb19-367"><a href="#cb19-367"></a>  <span class="at">pch  =</span> <span class="dv">16</span>, <span class="at">cex =</span> <span class="fl">0.6</span>, <span class="at">col =</span> <span class="st">"steelblue"</span></span>
-<span id="cb19-368"><a href="#cb19-368"></a>)</span>
-<span id="cb19-369"><a href="#cb19-369"></a><span class="fu">abline</span>(<span class="at">h =</span> <span class="dv">0</span>, <span class="at">lty =</span> <span class="dv">2</span>, <span class="at">col =</span> <span class="st">"grey40"</span>)</span>
-<span id="cb19-370"><a href="#cb19-370"></a><span class="fu">lines</span>(<span class="fu">lowess</span>(<span class="fu">fitted</span>(m1), <span class="fu">resid</span>(m1)), <span class="at">col =</span> <span class="st">"tomato"</span>, <span class="at">lwd =</span> <span class="fl">1.5</span>)</span>
-<span id="cb19-371"><a href="#cb19-371"></a></span>
-<span id="cb19-372"><a href="#cb19-372"></a><span class="co"># Panel 2: Q-Q plot of marginal residuals</span></span>
-<span id="cb19-373"><a href="#cb19-373"></a><span class="fu">qqnorm</span>(</span>
-<span id="cb19-374"><a href="#cb19-374"></a>  <span class="fu">resid</span>(m1),</span>
-<span id="cb19-375"><a href="#cb19-375"></a>  <span class="at">main =</span> <span class="st">"Q-Q Plot: Marginal Residuals"</span>,</span>
-<span id="cb19-376"><a href="#cb19-376"></a>  <span class="at">pch  =</span> <span class="dv">16</span>, <span class="at">cex =</span> <span class="fl">0.6</span>, <span class="at">col =</span> <span class="st">"steelblue"</span></span>
-<span id="cb19-377"><a href="#cb19-377"></a>)</span>
-<span id="cb19-378"><a href="#cb19-378"></a><span class="fu">qqline</span>(<span class="fu">resid</span>(m1), <span class="at">col =</span> <span class="st">"tomato"</span>, <span class="at">lwd =</span> <span class="fl">1.5</span>)</span>
-<span id="cb19-379"><a href="#cb19-379"></a></span>
-<span id="cb19-380"><a href="#cb19-380"></a><span class="co"># Panel 3: Q-Q plot of random effects (BLUPs)</span></span>
-<span id="cb19-381"><a href="#cb19-381"></a>blups <span class="ot">&lt;-</span> <span class="fu">ranef</span>(m1)<span class="sc">$</span>Patient[, <span class="dv">1</span>]</span>
-<span id="cb19-382"><a href="#cb19-382"></a><span class="fu">qqnorm</span>(</span>
-<span id="cb19-383"><a href="#cb19-383"></a>  blups,</span>
-<span id="cb19-384"><a href="#cb19-384"></a>  <span class="at">main =</span> <span class="st">"Q-Q Plot: Random Intercepts (BLUPs)"</span>,</span>
-<span id="cb19-385"><a href="#cb19-385"></a>  <span class="at">pch  =</span> <span class="dv">16</span>, <span class="at">cex =</span> <span class="fl">0.7</span>, <span class="at">col =</span> <span class="st">"steelblue"</span></span>
-<span id="cb19-386"><a href="#cb19-386"></a>)</span>
-<span id="cb19-387"><a href="#cb19-387"></a><span class="fu">qqline</span>(blups, <span class="at">col =</span> <span class="st">"tomato"</span>, <span class="at">lwd =</span> <span class="fl">1.5</span>)</span>
-<span id="cb19-388"><a href="#cb19-388"></a></span>
-<span id="cb19-389"><a href="#cb19-389"></a><span class="co"># Panel 4: Scale-Location</span></span>
-<span id="cb19-390"><a href="#cb19-390"></a><span class="fu">plot</span>(</span>
-<span id="cb19-391"><a href="#cb19-391"></a>  <span class="fu">fitted</span>(m1), <span class="fu">sqrt</span>(<span class="fu">abs</span>(<span class="fu">resid</span>(m1))),</span>
-<span id="cb19-392"><a href="#cb19-392"></a>  <span class="at">xlab =</span> <span class="st">"Fitted Values"</span>, <span class="at">ylab =</span> <span class="fu">expression</span>(<span class="fu">sqrt</span>(<span class="st">"|Residuals|"</span>)),</span>
-<span id="cb19-393"><a href="#cb19-393"></a>  <span class="at">main =</span> <span class="st">"Scale-Location"</span>,</span>
-<span id="cb19-394"><a href="#cb19-394"></a>  <span class="at">pch  =</span> <span class="dv">16</span>, <span class="at">cex =</span> <span class="fl">0.6</span>, <span class="at">col =</span> <span class="st">"steelblue"</span></span>
-<span id="cb19-395"><a href="#cb19-395"></a>)</span>
-<span id="cb19-396"><a href="#cb19-396"></a><span class="fu">lines</span>(<span class="fu">lowess</span>(<span class="fu">fitted</span>(m1), <span class="fu">sqrt</span>(<span class="fu">abs</span>(<span class="fu">resid</span>(m1)))), <span class="at">col =</span> <span class="st">"tomato"</span>, <span class="at">lwd =</span> <span class="fl">1.5</span>)</span>
-<span id="cb19-397"><a href="#cb19-397"></a></span>
-<span id="cb19-398"><a href="#cb19-398"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">1</span>))</span>
-<span id="cb19-399"><a href="#cb19-399"></a><span class="in">```</span></span>
-<span id="cb19-400"><a href="#cb19-400"></a></span>
-<span id="cb19-401"><a href="#cb19-401"></a>Residual diagnostics show no systematic violations of model assumptions. The Q-Q plots assess normality of marginal residuals (Panel 2) and random-intercept BLUPs (Panel 3); departures from the reference line would suggest distributional misspecification. The residuals vs. fitted and scale-location plots (Panels 1 and 4) assess linearity and homoscedasticity; the loess smoother should track near zero with no fan-shaped pattern.</span>
+<span id="cb19-362"><a href="#cb19-362"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">2</span>), <span class="at">mar =</span> <span class="fu">c</span>(<span class="dv">4</span>, <span class="dv">4</span>, <span class="dv">3</span>, <span class="dv">1</span>))</span>
+<span id="cb19-363"><a href="#cb19-363"></a></span>
+<span id="cb19-364"><a href="#cb19-364"></a><span class="co"># Panel 1: Residuals vs Fitted</span></span>
+<span id="cb19-365"><a href="#cb19-365"></a><span class="fu">plot</span>(</span>
+<span id="cb19-366"><a href="#cb19-366"></a>  <span class="fu">fitted</span>(m1), <span class="fu">resid</span>(m1),</span>
+<span id="cb19-367"><a href="#cb19-367"></a>  <span class="at">xlab =</span> <span class="st">"Fitted Values"</span>, <span class="at">ylab =</span> <span class="st">"Residuals"</span>,</span>
+<span id="cb19-368"><a href="#cb19-368"></a>  <span class="at">main =</span> <span class="st">"Residuals vs Fitted"</span>,</span>
+<span id="cb19-369"><a href="#cb19-369"></a>  <span class="at">pch  =</span> <span class="dv">16</span>, <span class="at">cex =</span> <span class="fl">0.6</span>, <span class="at">col =</span> <span class="st">"steelblue"</span></span>
+<span id="cb19-370"><a href="#cb19-370"></a>)</span>
+<span id="cb19-371"><a href="#cb19-371"></a><span class="fu">abline</span>(<span class="at">h =</span> <span class="dv">0</span>, <span class="at">lty =</span> <span class="dv">2</span>, <span class="at">col =</span> <span class="st">"grey40"</span>)</span>
+<span id="cb19-372"><a href="#cb19-372"></a><span class="fu">lines</span>(<span class="fu">lowess</span>(<span class="fu">fitted</span>(m1), <span class="fu">resid</span>(m1)), <span class="at">col =</span> <span class="st">"tomato"</span>, <span class="at">lwd =</span> <span class="fl">1.5</span>)</span>
+<span id="cb19-373"><a href="#cb19-373"></a></span>
+<span id="cb19-374"><a href="#cb19-374"></a><span class="co"># Panel 2: Q-Q plot of marginal residuals</span></span>
+<span id="cb19-375"><a href="#cb19-375"></a><span class="fu">qqnorm</span>(</span>
+<span id="cb19-376"><a href="#cb19-376"></a>  <span class="fu">resid</span>(m1),</span>
+<span id="cb19-377"><a href="#cb19-377"></a>  <span class="at">main =</span> <span class="st">"Q-Q Plot: Marginal Residuals"</span>,</span>
+<span id="cb19-378"><a href="#cb19-378"></a>  <span class="at">pch  =</span> <span class="dv">16</span>, <span class="at">cex =</span> <span class="fl">0.6</span>, <span class="at">col =</span> <span class="st">"steelblue"</span></span>
+<span id="cb19-379"><a href="#cb19-379"></a>)</span>
+<span id="cb19-380"><a href="#cb19-380"></a><span class="fu">qqline</span>(<span class="fu">resid</span>(m1), <span class="at">col =</span> <span class="st">"tomato"</span>, <span class="at">lwd =</span> <span class="fl">1.5</span>)</span>
+<span id="cb19-381"><a href="#cb19-381"></a></span>
+<span id="cb19-382"><a href="#cb19-382"></a><span class="co"># Panel 3: Q-Q plot of random effects (BLUPs)</span></span>
+<span id="cb19-383"><a href="#cb19-383"></a>blups <span class="ot">&lt;-</span> <span class="fu">ranef</span>(m1)<span class="sc">$</span>Patient[, <span class="dv">1</span>]</span>
+<span id="cb19-384"><a href="#cb19-384"></a><span class="fu">qqnorm</span>(</span>
+<span id="cb19-385"><a href="#cb19-385"></a>  blups,</span>
+<span id="cb19-386"><a href="#cb19-386"></a>  <span class="at">main =</span> <span class="st">"Q-Q Plot: Random Intercepts (BLUPs)"</span>,</span>
+<span id="cb19-387"><a href="#cb19-387"></a>  <span class="at">pch  =</span> <span class="dv">16</span>, <span class="at">cex =</span> <span class="fl">0.7</span>, <span class="at">col =</span> <span class="st">"steelblue"</span></span>
+<span id="cb19-388"><a href="#cb19-388"></a>)</span>
+<span id="cb19-389"><a href="#cb19-389"></a><span class="fu">qqline</span>(blups, <span class="at">col =</span> <span class="st">"tomato"</span>, <span class="at">lwd =</span> <span class="fl">1.5</span>)</span>
+<span id="cb19-390"><a href="#cb19-390"></a></span>
+<span id="cb19-391"><a href="#cb19-391"></a><span class="co"># Panel 4: Scale-Location</span></span>
+<span id="cb19-392"><a href="#cb19-392"></a><span class="fu">plot</span>(</span>
+<span id="cb19-393"><a href="#cb19-393"></a>  <span class="fu">fitted</span>(m1), <span class="fu">sqrt</span>(<span class="fu">abs</span>(<span class="fu">resid</span>(m1))),</span>
+<span id="cb19-394"><a href="#cb19-394"></a>  <span class="at">xlab =</span> <span class="st">"Fitted Values"</span>, <span class="at">ylab =</span> <span class="fu">expression</span>(<span class="fu">sqrt</span>(<span class="st">"|Residuals|"</span>)),</span>
+<span id="cb19-395"><a href="#cb19-395"></a>  <span class="at">main =</span> <span class="st">"Scale-Location"</span>,</span>
+<span id="cb19-396"><a href="#cb19-396"></a>  <span class="at">pch  =</span> <span class="dv">16</span>, <span class="at">cex =</span> <span class="fl">0.6</span>, <span class="at">col =</span> <span class="st">"steelblue"</span></span>
+<span id="cb19-397"><a href="#cb19-397"></a>)</span>
+<span id="cb19-398"><a href="#cb19-398"></a><span class="fu">lines</span>(<span class="fu">lowess</span>(<span class="fu">fitted</span>(m1), <span class="fu">sqrt</span>(<span class="fu">abs</span>(<span class="fu">resid</span>(m1)))), <span class="at">col =</span> <span class="st">"tomato"</span>, <span class="at">lwd =</span> <span class="fl">1.5</span>)</span>
+<span id="cb19-399"><a href="#cb19-399"></a></span>
+<span id="cb19-400"><a href="#cb19-400"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">1</span>))</span>
+<span id="cb19-401"><a href="#cb19-401"></a><span class="in">```</span></span>
 <span id="cb19-402"><a href="#cb19-402"></a></span>
-<span id="cb19-403"><a href="#cb19-403"></a><span class="fu">## Findings</span></span>
+<span id="cb19-403"><a href="#cb19-403"></a>Residual diagnostics show no systematic violations of model assumptions. The Q-Q plots assess normality of marginal residuals (Panel 2) and random-intercept BLUPs (Panel 3); departures from the reference line would suggest distributional misspecification. The residuals vs. fitted and scale-location plots (Panels 1 and 4) assess linearity and homoscedasticity; the loess smoother should track near zero with no fan-shaped pattern.</span>
 <span id="cb19-404"><a href="#cb19-404"></a></span>
-<span id="cb19-405"><a href="#cb19-405"></a>Four hundred patients were assigned to receive control (n=<span class="in">`r sum(baseline_covariates$Group=="Control")`</span>), or Treatment (n=<span class="in">`r sum(baseline_covariates$Group=="Treatment")`</span>). Treatment reduced UPDRS score versus control (treatment 43.35 vs control 46.27; difference <span class="in">`r round(est_yr2, 2)`</span>, 95% CI <span class="in">`r ci_yr2`</span>).</span>
+<span id="cb19-405"><a href="#cb19-405"></a><span class="fu">## Findings</span></span>
 <span id="cb19-406"><a href="#cb19-406"></a></span>
-<span id="cb19-407"><a href="#cb19-407"></a><span class="fu">## Interpretation</span></span>
+<span id="cb19-407"><a href="#cb19-407"></a>Four hundred patients were assigned to receive control (n=<span class="in">`r sum(baseline_covariates$Group=="Control")`</span>), or Treatment (n=<span class="in">`r sum(baseline_covariates$Group=="Treatment")`</span>). Treatment reduced UPDRS score versus control (treatment <span class="in">`r round(emm_trt_yr2, 2)`</span> vs control <span class="in">`r round(emm_ctrl_yr2, 2)`</span>; difference <span class="in">`r round(est_yr2, 2)`</span>, 95% CI <span class="in">`r ci_yr2`</span>).</span>
 <span id="cb19-408"><a href="#cb19-408"></a></span>
-<span id="cb19-409"><a href="#cb19-409"></a>In patients with Parkinson's disease, treatment reduced the UPDRS score at Year 2. These findings are based on simulated data and are intended as a methodological demonstration only.</span>
+<span id="cb19-409"><a href="#cb19-409"></a><span class="fu">## Interpretation</span></span>
 <span id="cb19-410"><a href="#cb19-410"></a></span>
-<span id="cb19-411"><a href="#cb19-411"></a><span class="fu">### Missing Data Analysis</span></span>
+<span id="cb19-411"><a href="#cb19-411"></a>In patients with Parkinson's disease, treatment reduced the UPDRS score at Year 2. These findings are based on simulated data and are intended as a methodological demonstration only.</span>
 <span id="cb19-412"><a href="#cb19-412"></a></span>
-<span id="cb19-413"><a href="#cb19-413"></a>Under a Missing At Random (MAR) assumption, missing UPDRS outcomes are predicted by observed covariates (Age, Sex, Group) and observed UPDRS values at other timepoints. Multiple imputation by chained equations (MICE) with predictive mean matching was used to generate M = 25 completed datasets. Fixed-effect estimates from each dataset were combined using Rubin's Rules to produce a single pooled estimate and standard error that properly accounts for within- and between-imputation uncertainty.</span>
+<span id="cb19-413"><a href="#cb19-413"></a><span class="fu">### Missing Data Analysis</span></span>
 <span id="cb19-414"><a href="#cb19-414"></a></span>
-<span id="cb19-415"><a href="#cb19-415"></a><span class="fu">#### Table 3a. Missingness Summary Prior to Imputation</span></span>
+<span id="cb19-415"><a href="#cb19-415"></a>Under a Missing At Random (MAR) assumption, missing UPDRS outcomes are predicted by observed covariates (Age, Sex, Group) and observed UPDRS values at other timepoints. Multiple imputation by chained equations (MICE) with predictive mean matching was used to generate M = 25 completed datasets. Fixed-effect estimates from each dataset were combined using Rubin's Rules to produce a single pooled estimate and standard error that properly accounts for within- and between-imputation uncertainty.</span>
 <span id="cb19-416"><a href="#cb19-416"></a></span>
-<span id="cb19-419"><a href="#cb19-419"></a><span class="in">```{r}</span></span>
-<span id="cb19-420"><a href="#cb19-420"></a><span class="co">#| label: missingness-summary</span></span>
-<span id="cb19-421"><a href="#cb19-421"></a><span class="co">#| echo: false</span></span>
-<span id="cb19-422"><a href="#cb19-422"></a><span class="co">#| message: false</span></span>
-<span id="cb19-423"><a href="#cb19-423"></a><span class="co">#| warning: false</span></span>
-<span id="cb19-424"><a href="#cb19-424"></a></span>
-<span id="cb19-425"><a href="#cb19-425"></a><span class="co"># Missingness summary table</span></span>
-<span id="cb19-426"><a href="#cb19-426"></a>data_wide <span class="sc">|&gt;</span></span>
-<span id="cb19-427"><a href="#cb19-427"></a>  <span class="fu">summarise</span>(</span>
-<span id="cb19-428"><a href="#cb19-428"></a>    <span class="st">`</span><span class="at">N patients</span><span class="st">`</span>           <span class="ot">=</span> <span class="fu">n</span>(),</span>
-<span id="cb19-429"><a href="#cb19-429"></a>    <span class="st">`</span><span class="at">Missing — Year 1 (n)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">sum</span>(<span class="fu">is.na</span>(UPDRS_t1)),</span>
-<span id="cb19-430"><a href="#cb19-430"></a>    <span class="st">`</span><span class="at">Missing — Year 2 (n)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">sum</span>(<span class="fu">is.na</span>(UPDRS_t2)),</span>
-<span id="cb19-431"><a href="#cb19-431"></a>    <span class="st">`</span><span class="at">% Missing — Year 1</span><span class="st">`</span>   <span class="ot">=</span> <span class="fu">paste0</span>(<span class="fu">round</span>(<span class="dv">100</span> <span class="sc">*</span> <span class="fu">mean</span>(<span class="fu">is.na</span>(UPDRS_t1)), <span class="dv">1</span>), <span class="st">"%"</span>),</span>
-<span id="cb19-432"><a href="#cb19-432"></a>    <span class="st">`</span><span class="at">% Missing — Year 2</span><span class="st">`</span>   <span class="ot">=</span> <span class="fu">paste0</span>(<span class="fu">round</span>(<span class="dv">100</span> <span class="sc">*</span> <span class="fu">mean</span>(<span class="fu">is.na</span>(UPDRS_t2)), <span class="dv">1</span>), <span class="st">"%"</span>)</span>
-<span id="cb19-433"><a href="#cb19-433"></a>  ) <span class="sc">|&gt;</span></span>
-<span id="cb19-434"><a href="#cb19-434"></a>  <span class="fu">gt</span>() <span class="sc">|&gt;</span></span>
-<span id="cb19-435"><a href="#cb19-435"></a>  <span class="fu">tab_header</span>(</span>
-<span id="cb19-436"><a href="#cb19-436"></a>    <span class="at">title    =</span> <span class="st">"Table 3a. Missingness Summary Prior to Imputation"</span>,</span>
-<span id="cb19-437"><a href="#cb19-437"></a>    <span class="at">subtitle =</span> <span class="st">"UPDRS_t0 (baseline) is fully observed by design"</span></span>
-<span id="cb19-438"><a href="#cb19-438"></a>  ) <span class="sc">|&gt;</span></span>
-<span id="cb19-439"><a href="#cb19-439"></a>  <span class="fu">tab_options</span>(</span>
-<span id="cb19-440"><a href="#cb19-440"></a>    <span class="at">table.font.size           =</span> <span class="fu">px</span>(<span class="dv">13</span>),</span>
-<span id="cb19-441"><a href="#cb19-441"></a>    <span class="at">heading.title.font.size   =</span> <span class="fu">px</span>(<span class="dv">14</span>),</span>
-<span id="cb19-442"><a href="#cb19-442"></a>    <span class="at">heading.title.font.weight =</span> <span class="st">"bold"</span>,</span>
-<span id="cb19-443"><a href="#cb19-443"></a>    <span class="at">table.width               =</span> <span class="fu">pct</span>(<span class="dv">100</span>)</span>
-<span id="cb19-444"><a href="#cb19-444"></a>  )</span>
-<span id="cb19-445"><a href="#cb19-445"></a><span class="in">```</span></span>
-<span id="cb19-446"><a href="#cb19-446"></a></span>
-<span id="cb19-447"><a href="#cb19-447"></a><span class="fu">#### Figure 3a</span></span>
+<span id="cb19-417"><a href="#cb19-417"></a><span class="fu">#### Table 3a. Missingness Summary Prior to Imputation</span></span>
+<span id="cb19-418"><a href="#cb19-418"></a></span>
+<span id="cb19-421"><a href="#cb19-421"></a><span class="in">```{r}</span></span>
+<span id="cb19-422"><a href="#cb19-422"></a><span class="co">#| label: missingness-summary</span></span>
+<span id="cb19-423"><a href="#cb19-423"></a><span class="co">#| echo: false</span></span>
+<span id="cb19-424"><a href="#cb19-424"></a><span class="co">#| message: false</span></span>
+<span id="cb19-425"><a href="#cb19-425"></a><span class="co">#| warning: false</span></span>
+<span id="cb19-426"><a href="#cb19-426"></a></span>
+<span id="cb19-427"><a href="#cb19-427"></a><span class="co"># Missingness summary table</span></span>
+<span id="cb19-428"><a href="#cb19-428"></a>data_wide <span class="sc">|&gt;</span></span>
+<span id="cb19-429"><a href="#cb19-429"></a>  <span class="fu">summarise</span>(</span>
+<span id="cb19-430"><a href="#cb19-430"></a>    <span class="st">`</span><span class="at">N patients</span><span class="st">`</span>           <span class="ot">=</span> <span class="fu">n</span>(),</span>
+<span id="cb19-431"><a href="#cb19-431"></a>    <span class="st">`</span><span class="at">Missing — Year 1 (n)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">sum</span>(<span class="fu">is.na</span>(UPDRS_t1)),</span>
+<span id="cb19-432"><a href="#cb19-432"></a>    <span class="st">`</span><span class="at">Missing — Year 2 (n)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">sum</span>(<span class="fu">is.na</span>(UPDRS_t2)),</span>
+<span id="cb19-433"><a href="#cb19-433"></a>    <span class="st">`</span><span class="at">% Missing — Year 1</span><span class="st">`</span>   <span class="ot">=</span> <span class="fu">paste0</span>(<span class="fu">round</span>(<span class="dv">100</span> <span class="sc">*</span> <span class="fu">mean</span>(<span class="fu">is.na</span>(UPDRS_t1)), <span class="dv">1</span>), <span class="st">"%"</span>),</span>
+<span id="cb19-434"><a href="#cb19-434"></a>    <span class="st">`</span><span class="at">% Missing — Year 2</span><span class="st">`</span>   <span class="ot">=</span> <span class="fu">paste0</span>(<span class="fu">round</span>(<span class="dv">100</span> <span class="sc">*</span> <span class="fu">mean</span>(<span class="fu">is.na</span>(UPDRS_t2)), <span class="dv">1</span>), <span class="st">"%"</span>)</span>
+<span id="cb19-435"><a href="#cb19-435"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb19-436"><a href="#cb19-436"></a>  <span class="fu">gt</span>() <span class="sc">|&gt;</span></span>
+<span id="cb19-437"><a href="#cb19-437"></a>  <span class="fu">tab_header</span>(</span>
+<span id="cb19-438"><a href="#cb19-438"></a>    <span class="at">title    =</span> <span class="st">"Table 3a. Missingness Summary Prior to Imputation"</span>,</span>
+<span id="cb19-439"><a href="#cb19-439"></a>    <span class="at">subtitle =</span> <span class="st">"UPDRS_t0 (baseline) is fully observed by design"</span></span>
+<span id="cb19-440"><a href="#cb19-440"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb19-441"><a href="#cb19-441"></a>  <span class="fu">tab_options</span>(</span>
+<span id="cb19-442"><a href="#cb19-442"></a>    <span class="at">table.font.size           =</span> <span class="fu">px</span>(<span class="dv">13</span>),</span>
+<span id="cb19-443"><a href="#cb19-443"></a>    <span class="at">heading.title.font.size   =</span> <span class="fu">px</span>(<span class="dv">14</span>),</span>
+<span id="cb19-444"><a href="#cb19-444"></a>    <span class="at">heading.title.font.weight =</span> <span class="st">"bold"</span>,</span>
+<span id="cb19-445"><a href="#cb19-445"></a>    <span class="at">table.width               =</span> <span class="fu">pct</span>(<span class="dv">100</span>)</span>
+<span id="cb19-446"><a href="#cb19-446"></a>  )</span>
+<span id="cb19-447"><a href="#cb19-447"></a><span class="in">```</span></span>
 <span id="cb19-448"><a href="#cb19-448"></a></span>
-<span id="cb19-451"><a href="#cb19-451"></a><span class="in">```{r}</span></span>
-<span id="cb19-452"><a href="#cb19-452"></a><span class="co">#| label: missingness-pattern</span></span>
-<span id="cb19-453"><a href="#cb19-453"></a><span class="co">#| echo: false</span></span>
-<span id="cb19-454"><a href="#cb19-454"></a><span class="co">#| message: false</span></span>
-<span id="cb19-455"><a href="#cb19-455"></a><span class="co">#| warning: false</span></span>
-<span id="cb19-456"><a href="#cb19-456"></a><span class="co">#| fig-cap: "Figure 3a. Missing data pattern across patients and visits."</span></span>
-<span id="cb19-457"><a href="#cb19-457"></a><span class="co">#| fig-width: 10</span></span>
-<span id="cb19-458"><a href="#cb19-458"></a><span class="co">#| fig-height: 5</span></span>
-<span id="cb19-459"><a href="#cb19-459"></a><span class="co">#| out-width: "90%"</span></span>
-<span id="cb19-460"><a href="#cb19-460"></a><span class="co">#| fig-align: center</span></span>
-<span id="cb19-461"><a href="#cb19-461"></a></span>
-<span id="cb19-462"><a href="#cb19-462"></a>naniar<span class="sc">::</span><span class="fu">vis_miss</span>(</span>
-<span id="cb19-463"><a href="#cb19-463"></a>  data_wide <span class="sc">|&gt;</span> dplyr<span class="sc">::</span><span class="fu">select</span>(<span class="sc">-</span>Patient),</span>
-<span id="cb19-464"><a href="#cb19-464"></a>  <span class="at">warn_large_data =</span> <span class="cn">FALSE</span></span>
-<span id="cb19-465"><a href="#cb19-465"></a>) <span class="sc">+</span></span>
-<span id="cb19-466"><a href="#cb19-466"></a>  <span class="fu">theme</span>(</span>
-<span id="cb19-467"><a href="#cb19-467"></a>    <span class="at">axis.text.x.top =</span> <span class="fu">element_text</span>(<span class="at">angle =</span> <span class="sc">-</span><span class="dv">45</span>, <span class="at">hjust =</span> <span class="dv">0</span>, <span class="at">vjust =</span> <span class="dv">0</span>, <span class="at">size =</span> <span class="dv">9</span>),</span>
-<span id="cb19-468"><a href="#cb19-468"></a>    <span class="at">plot.margin     =</span> <span class="fu">margin</span>(<span class="at">t =</span> <span class="dv">20</span>, <span class="at">r =</span> <span class="dv">10</span>, <span class="at">b =</span> <span class="dv">10</span>, <span class="at">l =</span> <span class="dv">10</span>, <span class="at">unit =</span> <span class="st">"pt"</span>)</span>
-<span id="cb19-469"><a href="#cb19-469"></a>  )</span>
-<span id="cb19-470"><a href="#cb19-470"></a><span class="in">```</span></span>
-<span id="cb19-471"><a href="#cb19-471"></a></span>
-<span id="cb19-474"><a href="#cb19-474"></a><span class="in">```{r}</span></span>
-<span id="cb19-475"><a href="#cb19-475"></a><span class="co">#| label: mice-imputation</span></span>
-<span id="cb19-476"><a href="#cb19-476"></a><span class="co">#| message: false</span></span>
-<span id="cb19-477"><a href="#cb19-477"></a><span class="co">#| warning: false</span></span>
-<span id="cb19-478"><a href="#cb19-478"></a><span class="co">#| cache: true</span></span>
-<span id="cb19-479"><a href="#cb19-479"></a><span class="co">#| cache.extra: !expr list(nrow(data_wide), ncol(data_wide))</span></span>
-<span id="cb19-480"><a href="#cb19-480"></a></span>
-<span id="cb19-481"><a href="#cb19-481"></a><span class="co"># ── 1. Prepare data for mice ──────────────────────────────────────────────────</span></span>
-<span id="cb19-482"><a href="#cb19-482"></a><span class="co"># Remove Patient ID before passing to mice (high-cardinality ID should not</span></span>
-<span id="cb19-483"><a href="#cb19-483"></a><span class="co"># be a predictor). Store IDs separately and re-attach after completion.</span></span>
-<span id="cb19-484"><a href="#cb19-484"></a></span>
-<span id="cb19-485"><a href="#cb19-485"></a>patient_ids <span class="ot">&lt;-</span> data_wide <span class="sc">|&gt;</span> <span class="fu">pull</span>(Patient)</span>
+<span id="cb19-449"><a href="#cb19-449"></a><span class="fu">#### Figure 3a</span></span>
+<span id="cb19-450"><a href="#cb19-450"></a></span>
+<span id="cb19-453"><a href="#cb19-453"></a><span class="in">```{r}</span></span>
+<span id="cb19-454"><a href="#cb19-454"></a><span class="co">#| label: missingness-pattern</span></span>
+<span id="cb19-455"><a href="#cb19-455"></a><span class="co">#| echo: false</span></span>
+<span id="cb19-456"><a href="#cb19-456"></a><span class="co">#| message: false</span></span>
+<span id="cb19-457"><a href="#cb19-457"></a><span class="co">#| warning: false</span></span>
+<span id="cb19-458"><a href="#cb19-458"></a><span class="co">#| fig-cap: "Figure 3a. Missing data pattern across patients and visits."</span></span>
+<span id="cb19-459"><a href="#cb19-459"></a><span class="co">#| fig-width: 10</span></span>
+<span id="cb19-460"><a href="#cb19-460"></a><span class="co">#| fig-height: 5</span></span>
+<span id="cb19-461"><a href="#cb19-461"></a><span class="co">#| out-width: "90%"</span></span>
+<span id="cb19-462"><a href="#cb19-462"></a><span class="co">#| fig-align: center</span></span>
+<span id="cb19-463"><a href="#cb19-463"></a></span>
+<span id="cb19-464"><a href="#cb19-464"></a>naniar<span class="sc">::</span><span class="fu">vis_miss</span>(</span>
+<span id="cb19-465"><a href="#cb19-465"></a>  data_wide <span class="sc">|&gt;</span> dplyr<span class="sc">::</span><span class="fu">select</span>(<span class="sc">-</span>Patient),</span>
+<span id="cb19-466"><a href="#cb19-466"></a>  <span class="at">warn_large_data =</span> <span class="cn">FALSE</span></span>
+<span id="cb19-467"><a href="#cb19-467"></a>) <span class="sc">+</span></span>
+<span id="cb19-468"><a href="#cb19-468"></a>  <span class="fu">theme</span>(</span>
+<span id="cb19-469"><a href="#cb19-469"></a>    <span class="at">axis.text.x.top =</span> <span class="fu">element_text</span>(<span class="at">angle =</span> <span class="sc">-</span><span class="dv">45</span>, <span class="at">hjust =</span> <span class="dv">0</span>, <span class="at">vjust =</span> <span class="dv">0</span>, <span class="at">size =</span> <span class="dv">9</span>),</span>
+<span id="cb19-470"><a href="#cb19-470"></a>    <span class="at">plot.margin     =</span> <span class="fu">margin</span>(<span class="at">t =</span> <span class="dv">20</span>, <span class="at">r =</span> <span class="dv">10</span>, <span class="at">b =</span> <span class="dv">10</span>, <span class="at">l =</span> <span class="dv">10</span>, <span class="at">unit =</span> <span class="st">"pt"</span>)</span>
+<span id="cb19-471"><a href="#cb19-471"></a>  )</span>
+<span id="cb19-472"><a href="#cb19-472"></a><span class="in">```</span></span>
+<span id="cb19-473"><a href="#cb19-473"></a></span>
+<span id="cb19-476"><a href="#cb19-476"></a><span class="in">```{r}</span></span>
+<span id="cb19-477"><a href="#cb19-477"></a><span class="co">#| label: mice-imputation</span></span>
+<span id="cb19-478"><a href="#cb19-478"></a><span class="co">#| message: false</span></span>
+<span id="cb19-479"><a href="#cb19-479"></a><span class="co">#| warning: false</span></span>
+<span id="cb19-480"><a href="#cb19-480"></a><span class="co">#| cache: true</span></span>
+<span id="cb19-481"><a href="#cb19-481"></a><span class="co">#| cache.extra: !expr list(nrow(data_wide), ncol(data_wide))</span></span>
+<span id="cb19-482"><a href="#cb19-482"></a></span>
+<span id="cb19-483"><a href="#cb19-483"></a><span class="co"># ── 1. Prepare data for mice ──────────────────────────────────────────────────</span></span>
+<span id="cb19-484"><a href="#cb19-484"></a><span class="co"># Remove Patient ID before passing to mice (high-cardinality ID should not</span></span>
+<span id="cb19-485"><a href="#cb19-485"></a><span class="co"># be a predictor). Store IDs separately and re-attach after completion.</span></span>
 <span id="cb19-486"><a href="#cb19-486"></a></span>
-<span id="cb19-487"><a href="#cb19-487"></a>data_mice <span class="ot">&lt;-</span> data_wide <span class="sc">|&gt;</span></span>
-<span id="cb19-488"><a href="#cb19-488"></a>  <span class="fu">select</span>(<span class="sc">-</span>Patient) <span class="sc">|&gt;</span></span>
-<span id="cb19-489"><a href="#cb19-489"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb19-490"><a href="#cb19-490"></a>    <span class="at">Sex   =</span> <span class="fu">factor</span>(Sex,   <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"M"</span>, <span class="st">"F"</span>)),</span>
-<span id="cb19-491"><a href="#cb19-491"></a>    <span class="at">Group =</span> <span class="fu">factor</span>(Group, <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"Control"</span>, <span class="st">"Treatment"</span>))</span>
-<span id="cb19-492"><a href="#cb19-492"></a>  )</span>
-<span id="cb19-493"><a href="#cb19-493"></a></span>
-<span id="cb19-494"><a href="#cb19-494"></a><span class="co"># ── 2. Configure predictor matrix and imputation methods ──────────────────────</span></span>
-<span id="cb19-495"><a href="#cb19-495"></a>ini  <span class="ot">&lt;-</span> <span class="fu">mice</span>(data_mice, <span class="at">maxit =</span> <span class="dv">0</span>, <span class="at">print =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb19-496"><a href="#cb19-496"></a>meth <span class="ot">&lt;-</span> ini<span class="sc">$</span>method</span>
-<span id="cb19-497"><a href="#cb19-497"></a>pred <span class="ot">&lt;-</span> ini<span class="sc">$</span>predictorMatrix</span>
-<span id="cb19-498"><a href="#cb19-498"></a></span>
-<span id="cb19-499"><a href="#cb19-499"></a><span class="co"># Baseline UPDRS is fully observed — exclude from imputation target</span></span>
-<span id="cb19-500"><a href="#cb19-500"></a><span class="co"># but retain as a predictor for Year 1 and Year 2 imputation</span></span>
-<span id="cb19-501"><a href="#cb19-501"></a>meth[<span class="st">"UPDRS_t0"</span>] <span class="ot">&lt;-</span> <span class="st">""</span></span>
-<span id="cb19-502"><a href="#cb19-502"></a>pred[<span class="st">"UPDRS_t0"</span>, ] <span class="ot">&lt;-</span> <span class="dv">0</span></span>
-<span id="cb19-503"><a href="#cb19-503"></a></span>
-<span id="cb19-504"><a href="#cb19-504"></a><span class="co"># pmm (predictive mean matching) is appropriate for bounded continuous scores:</span></span>
-<span id="cb19-505"><a href="#cb19-505"></a><span class="co"># it draws observed values close to the linear prediction, preserving the</span></span>
-<span id="cb19-506"><a href="#cb19-506"></a><span class="co"># empirical distribution and avoiding impossible out-of-range imputations</span></span>
-<span id="cb19-507"><a href="#cb19-507"></a>meth[<span class="fu">c</span>(<span class="st">"UPDRS_t1"</span>, <span class="st">"UPDRS_t2"</span>)] <span class="ot">&lt;-</span> <span class="st">"pmm"</span></span>
-<span id="cb19-508"><a href="#cb19-508"></a></span>
-<span id="cb19-509"><a href="#cb19-509"></a><span class="co"># ── 3. Run mice ────────────────────────────────────────────────────────────────</span></span>
-<span id="cb19-510"><a href="#cb19-510"></a><span class="fu">set.seed</span>(<span class="dv">2026</span>)</span>
-<span id="cb19-511"><a href="#cb19-511"></a>imp_mar <span class="ot">&lt;-</span> <span class="fu">mice</span>(</span>
-<span id="cb19-512"><a href="#cb19-512"></a>  data_mice,</span>
-<span id="cb19-513"><a href="#cb19-513"></a>  <span class="at">m               =</span> <span class="dv">25</span>,    <span class="co"># 25 datasets: adequate for ~25% missingness</span></span>
-<span id="cb19-514"><a href="#cb19-514"></a>  <span class="at">method          =</span> meth,</span>
-<span id="cb19-515"><a href="#cb19-515"></a>  <span class="at">predictorMatrix =</span> pred,</span>
-<span id="cb19-516"><a href="#cb19-516"></a>  <span class="at">maxit           =</span> <span class="dv">15</span>,    <span class="co"># iterations per dataset until convergence</span></span>
-<span id="cb19-517"><a href="#cb19-517"></a>  <span class="at">print           =</span> <span class="cn">FALSE</span></span>
-<span id="cb19-518"><a href="#cb19-518"></a>)</span>
-<span id="cb19-519"><a href="#cb19-519"></a><span class="in">```</span></span>
-<span id="cb19-520"><a href="#cb19-520"></a></span>
-<span id="cb19-523"><a href="#cb19-523"></a><span class="in">```{r}</span></span>
-<span id="cb19-524"><a href="#cb19-524"></a><span class="co">#| label: mice-convergence</span></span>
-<span id="cb19-525"><a href="#cb19-525"></a><span class="co">#| fig-cap: "Figure 3b. Convergence diagnostics for mice imputation. Mean and SD of imputed values should mix well (no trend) across iterations."</span></span>
-<span id="cb19-526"><a href="#cb19-526"></a><span class="co">#| fig-width: 8</span></span>
-<span id="cb19-527"><a href="#cb19-527"></a><span class="co">#| fig-height: 4</span></span>
-<span id="cb19-528"><a href="#cb19-528"></a><span class="co">#| message: false</span></span>
-<span id="cb19-529"><a href="#cb19-529"></a><span class="co">#| warning: false</span></span>
-<span id="cb19-530"><a href="#cb19-530"></a></span>
-<span id="cb19-531"><a href="#cb19-531"></a><span class="co"># Trace plots: flat, well-mixed chains indicate convergence</span></span>
-<span id="cb19-532"><a href="#cb19-532"></a><span class="fu">plot</span>(imp_mar, <span class="fu">c</span>(<span class="st">"UPDRS_t1"</span>, <span class="st">"UPDRS_t2"</span>), <span class="at">layout =</span> <span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">2</span>))</span>
-<span id="cb19-533"><a href="#cb19-533"></a><span class="in">```</span></span>
-<span id="cb19-534"><a href="#cb19-534"></a></span>
-<span id="cb19-537"><a href="#cb19-537"></a><span class="in">```{r}</span></span>
-<span id="cb19-538"><a href="#cb19-538"></a><span class="co">#| label: mice-fit-pool</span></span>
-<span id="cb19-539"><a href="#cb19-539"></a><span class="co">#| message: false</span></span>
-<span id="cb19-540"><a href="#cb19-540"></a><span class="co">#| warning: false</span></span>
-<span id="cb19-541"><a href="#cb19-541"></a></span>
-<span id="cb19-542"><a href="#cb19-542"></a><span class="co"># ── 4. Fit LMER on each completed dataset ─────────────────────────────────────</span></span>
-<span id="cb19-543"><a href="#cb19-543"></a><span class="co"># For each of the M imputed wide datasets:</span></span>
-<span id="cb19-544"><a href="#cb19-544"></a><span class="co">#   (a) re-attach Patient IDs</span></span>
-<span id="cb19-545"><a href="#cb19-545"></a><span class="co">#   (b) reshape wide → long</span></span>
-<span id="cb19-546"><a href="#cb19-546"></a><span class="co">#   (c) fit the same LMER specification as the primary analysis</span></span>
-<span id="cb19-547"><a href="#cb19-547"></a></span>
-<span id="cb19-548"><a href="#cb19-548"></a>fit_on_completed <span class="ot">&lt;-</span> <span class="cf">function</span>(i) {</span>
+<span id="cb19-487"><a href="#cb19-487"></a>patient_ids <span class="ot">&lt;-</span> data_wide <span class="sc">|&gt;</span> <span class="fu">pull</span>(Patient)</span>
+<span id="cb19-488"><a href="#cb19-488"></a></span>
+<span id="cb19-489"><a href="#cb19-489"></a>data_mice <span class="ot">&lt;-</span> data_wide <span class="sc">|&gt;</span></span>
+<span id="cb19-490"><a href="#cb19-490"></a>  <span class="fu">select</span>(<span class="sc">-</span>Patient) <span class="sc">|&gt;</span></span>
+<span id="cb19-491"><a href="#cb19-491"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb19-492"><a href="#cb19-492"></a>    <span class="at">Sex   =</span> <span class="fu">factor</span>(Sex,   <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"M"</span>, <span class="st">"F"</span>)),</span>
+<span id="cb19-493"><a href="#cb19-493"></a>    <span class="at">Group =</span> <span class="fu">factor</span>(Group, <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"Control"</span>, <span class="st">"Treatment"</span>))</span>
+<span id="cb19-494"><a href="#cb19-494"></a>  )</span>
+<span id="cb19-495"><a href="#cb19-495"></a></span>
+<span id="cb19-496"><a href="#cb19-496"></a><span class="co"># ── 2. Configure predictor matrix and imputation methods ──────────────────────</span></span>
+<span id="cb19-497"><a href="#cb19-497"></a>ini  <span class="ot">&lt;-</span> <span class="fu">mice</span>(data_mice, <span class="at">maxit =</span> <span class="dv">0</span>, <span class="at">print =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb19-498"><a href="#cb19-498"></a>meth <span class="ot">&lt;-</span> ini<span class="sc">$</span>method</span>
+<span id="cb19-499"><a href="#cb19-499"></a>pred <span class="ot">&lt;-</span> ini<span class="sc">$</span>predictorMatrix</span>
+<span id="cb19-500"><a href="#cb19-500"></a></span>
+<span id="cb19-501"><a href="#cb19-501"></a><span class="co"># Baseline UPDRS is fully observed — exclude from imputation target</span></span>
+<span id="cb19-502"><a href="#cb19-502"></a><span class="co"># but retain as a predictor for Year 1 and Year 2 imputation</span></span>
+<span id="cb19-503"><a href="#cb19-503"></a>meth[<span class="st">"UPDRS_t0"</span>] <span class="ot">&lt;-</span> <span class="st">""</span></span>
+<span id="cb19-504"><a href="#cb19-504"></a>pred[<span class="st">"UPDRS_t0"</span>, ] <span class="ot">&lt;-</span> <span class="dv">0</span></span>
+<span id="cb19-505"><a href="#cb19-505"></a></span>
+<span id="cb19-506"><a href="#cb19-506"></a><span class="co"># pmm (predictive mean matching) is appropriate for bounded continuous scores:</span></span>
+<span id="cb19-507"><a href="#cb19-507"></a><span class="co"># it draws observed values close to the linear prediction, preserving the</span></span>
+<span id="cb19-508"><a href="#cb19-508"></a><span class="co"># empirical distribution and avoiding impossible out-of-range imputations</span></span>
+<span id="cb19-509"><a href="#cb19-509"></a>meth[<span class="fu">c</span>(<span class="st">"UPDRS_t1"</span>, <span class="st">"UPDRS_t2"</span>)] <span class="ot">&lt;-</span> <span class="st">"pmm"</span></span>
+<span id="cb19-510"><a href="#cb19-510"></a></span>
+<span id="cb19-511"><a href="#cb19-511"></a><span class="co"># ── 3. Run mice ────────────────────────────────────────────────────────────────</span></span>
+<span id="cb19-512"><a href="#cb19-512"></a><span class="fu">set.seed</span>(<span class="dv">2026</span>)</span>
+<span id="cb19-513"><a href="#cb19-513"></a>imp_mar <span class="ot">&lt;-</span> <span class="fu">mice</span>(</span>
+<span id="cb19-514"><a href="#cb19-514"></a>  data_mice,</span>
+<span id="cb19-515"><a href="#cb19-515"></a>  <span class="at">m               =</span> <span class="dv">25</span>,    <span class="co"># 25 datasets: adequate for ~25% missingness</span></span>
+<span id="cb19-516"><a href="#cb19-516"></a>  <span class="at">method          =</span> meth,</span>
+<span id="cb19-517"><a href="#cb19-517"></a>  <span class="at">predictorMatrix =</span> pred,</span>
+<span id="cb19-518"><a href="#cb19-518"></a>  <span class="at">maxit           =</span> <span class="dv">15</span>,    <span class="co"># iterations per dataset until convergence</span></span>
+<span id="cb19-519"><a href="#cb19-519"></a>  <span class="at">print           =</span> <span class="cn">FALSE</span></span>
+<span id="cb19-520"><a href="#cb19-520"></a>)</span>
+<span id="cb19-521"><a href="#cb19-521"></a><span class="in">```</span></span>
+<span id="cb19-522"><a href="#cb19-522"></a></span>
+<span id="cb19-525"><a href="#cb19-525"></a><span class="in">```{r}</span></span>
+<span id="cb19-526"><a href="#cb19-526"></a><span class="co">#| label: mice-convergence</span></span>
+<span id="cb19-527"><a href="#cb19-527"></a><span class="co">#| fig-cap: "Figure 3b. Convergence diagnostics for mice imputation. Mean and SD of imputed values should mix well (no trend) across iterations."</span></span>
+<span id="cb19-528"><a href="#cb19-528"></a><span class="co">#| fig-width: 8</span></span>
+<span id="cb19-529"><a href="#cb19-529"></a><span class="co">#| fig-height: 4</span></span>
+<span id="cb19-530"><a href="#cb19-530"></a><span class="co">#| message: false</span></span>
+<span id="cb19-531"><a href="#cb19-531"></a><span class="co">#| warning: false</span></span>
+<span id="cb19-532"><a href="#cb19-532"></a></span>
+<span id="cb19-533"><a href="#cb19-533"></a><span class="co"># Trace plots: flat, well-mixed chains indicate convergence</span></span>
+<span id="cb19-534"><a href="#cb19-534"></a><span class="fu">plot</span>(imp_mar, <span class="fu">c</span>(<span class="st">"UPDRS_t1"</span>, <span class="st">"UPDRS_t2"</span>), <span class="at">layout =</span> <span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">2</span>))</span>
+<span id="cb19-535"><a href="#cb19-535"></a><span class="in">```</span></span>
+<span id="cb19-536"><a href="#cb19-536"></a></span>
+<span id="cb19-539"><a href="#cb19-539"></a><span class="in">```{r}</span></span>
+<span id="cb19-540"><a href="#cb19-540"></a><span class="co">#| label: mice-fit-pool</span></span>
+<span id="cb19-541"><a href="#cb19-541"></a><span class="co">#| message: false</span></span>
+<span id="cb19-542"><a href="#cb19-542"></a><span class="co">#| warning: false</span></span>
+<span id="cb19-543"><a href="#cb19-543"></a></span>
+<span id="cb19-544"><a href="#cb19-544"></a><span class="co"># ── 4. Fit LMER on each completed dataset ─────────────────────────────────────</span></span>
+<span id="cb19-545"><a href="#cb19-545"></a><span class="co"># For each of the M imputed wide datasets:</span></span>
+<span id="cb19-546"><a href="#cb19-546"></a><span class="co">#   (a) re-attach Patient IDs</span></span>
+<span id="cb19-547"><a href="#cb19-547"></a><span class="co">#   (b) reshape wide → long</span></span>
+<span id="cb19-548"><a href="#cb19-548"></a><span class="co">#   (c) fit the same LMER specification as the primary analysis</span></span>
 <span id="cb19-549"><a href="#cb19-549"></a></span>
-<span id="cb19-550"><a href="#cb19-550"></a>  wide_i <span class="ot">&lt;-</span> mice<span class="sc">::</span><span class="fu">complete</span>(imp_mar, <span class="at">action =</span> i) <span class="sc">|&gt;</span></span>
-<span id="cb19-551"><a href="#cb19-551"></a>    <span class="fu">mutate</span>(<span class="at">Patient =</span> patient_ids)                  <span class="co"># restore patient ID</span></span>
-<span id="cb19-552"><a href="#cb19-552"></a></span>
-<span id="cb19-553"><a href="#cb19-553"></a>  long_i <span class="ot">&lt;-</span> wide_i <span class="sc">|&gt;</span></span>
-<span id="cb19-554"><a href="#cb19-554"></a>    <span class="fu">pivot_longer</span>(</span>
-<span id="cb19-555"><a href="#cb19-555"></a>      <span class="at">cols         =</span> <span class="fu">starts_with</span>(<span class="st">"UPDRS_t"</span>),</span>
-<span id="cb19-556"><a href="#cb19-556"></a>      <span class="at">names_to     =</span> <span class="st">"Time"</span>,</span>
-<span id="cb19-557"><a href="#cb19-557"></a>      <span class="at">names_prefix =</span> <span class="st">"UPDRS_t"</span>,</span>
-<span id="cb19-558"><a href="#cb19-558"></a>      <span class="at">values_to    =</span> <span class="st">"UPDRS"</span></span>
-<span id="cb19-559"><a href="#cb19-559"></a>    ) <span class="sc">|&gt;</span></span>
-<span id="cb19-560"><a href="#cb19-560"></a>    <span class="fu">mutate</span>(</span>
-<span id="cb19-561"><a href="#cb19-561"></a>      <span class="at">Time  =</span> <span class="fu">factor</span>(Time,  <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"0"</span>, <span class="st">"1"</span>, <span class="st">"2"</span>)),</span>
-<span id="cb19-562"><a href="#cb19-562"></a>      <span class="at">Group =</span> <span class="fu">factor</span>(Group, <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"Control"</span>, <span class="st">"Treatment"</span>))</span>
-<span id="cb19-563"><a href="#cb19-563"></a>    )</span>
-<span id="cb19-564"><a href="#cb19-564"></a></span>
-<span id="cb19-565"><a href="#cb19-565"></a>  <span class="fu">lmer</span>(UPDRS <span class="sc">~</span> Group <span class="sc">*</span> Time <span class="sc">+</span> Age <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">|</span> Patient), <span class="at">data =</span> long_i)</span>
-<span id="cb19-566"><a href="#cb19-566"></a>}</span>
-<span id="cb19-567"><a href="#cb19-567"></a></span>
-<span id="cb19-568"><a href="#cb19-568"></a>models_mar <span class="ot">&lt;-</span> <span class="fu">lapply</span>(<span class="fu">seq_len</span>(imp_mar<span class="sc">$</span>m), fit_on_completed)</span>
+<span id="cb19-550"><a href="#cb19-550"></a>fit_on_completed <span class="ot">&lt;-</span> <span class="cf">function</span>(i) {</span>
+<span id="cb19-551"><a href="#cb19-551"></a></span>
+<span id="cb19-552"><a href="#cb19-552"></a>  wide_i <span class="ot">&lt;-</span> mice<span class="sc">::</span><span class="fu">complete</span>(imp_mar, <span class="at">action =</span> i) <span class="sc">|&gt;</span></span>
+<span id="cb19-553"><a href="#cb19-553"></a>    <span class="fu">mutate</span>(<span class="at">Patient =</span> patient_ids)                  <span class="co"># restore patient ID</span></span>
+<span id="cb19-554"><a href="#cb19-554"></a></span>
+<span id="cb19-555"><a href="#cb19-555"></a>  long_i <span class="ot">&lt;-</span> wide_i <span class="sc">|&gt;</span></span>
+<span id="cb19-556"><a href="#cb19-556"></a>    <span class="fu">pivot_longer</span>(</span>
+<span id="cb19-557"><a href="#cb19-557"></a>      <span class="at">cols         =</span> <span class="fu">starts_with</span>(<span class="st">"UPDRS_t"</span>),</span>
+<span id="cb19-558"><a href="#cb19-558"></a>      <span class="at">names_to     =</span> <span class="st">"Time"</span>,</span>
+<span id="cb19-559"><a href="#cb19-559"></a>      <span class="at">names_prefix =</span> <span class="st">"UPDRS_t"</span>,</span>
+<span id="cb19-560"><a href="#cb19-560"></a>      <span class="at">values_to    =</span> <span class="st">"UPDRS"</span></span>
+<span id="cb19-561"><a href="#cb19-561"></a>    ) <span class="sc">|&gt;</span></span>
+<span id="cb19-562"><a href="#cb19-562"></a>    <span class="fu">mutate</span>(</span>
+<span id="cb19-563"><a href="#cb19-563"></a>      <span class="at">Time  =</span> <span class="fu">factor</span>(Time,  <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"0"</span>, <span class="st">"1"</span>, <span class="st">"2"</span>)),</span>
+<span id="cb19-564"><a href="#cb19-564"></a>      <span class="at">Group =</span> <span class="fu">factor</span>(Group, <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"Control"</span>, <span class="st">"Treatment"</span>))</span>
+<span id="cb19-565"><a href="#cb19-565"></a>    )</span>
+<span id="cb19-566"><a href="#cb19-566"></a></span>
+<span id="cb19-567"><a href="#cb19-567"></a>  <span class="fu">lmer</span>(UPDRS <span class="sc">~</span> Group <span class="sc">*</span> Time <span class="sc">+</span> Age <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">|</span> Patient), <span class="at">data =</span> long_i)</span>
+<span id="cb19-568"><a href="#cb19-568"></a>}</span>
 <span id="cb19-569"><a href="#cb19-569"></a></span>
-<span id="cb19-570"><a href="#cb19-570"></a><span class="co"># ── 5. Pool fixed effects via Rubin's Rules ───────────────────────────────────</span></span>
-<span id="cb19-571"><a href="#cb19-571"></a><span class="co"># mice::pool() uses broom.mixed::tidy() to extract estimates from each lmerMod</span></span>
-<span id="cb19-572"><a href="#cb19-572"></a>pooled_mar  <span class="ot">&lt;-</span> mice<span class="sc">::</span><span class="fu">as.mira</span>(models_mar) <span class="sc">|&gt;</span> mice<span class="sc">::</span><span class="fu">pool</span>()</span>
-<span id="cb19-573"><a href="#cb19-573"></a>pooled_summ <span class="ot">&lt;-</span> <span class="fu">summary</span>(pooled_mar, <span class="at">conf.int =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb19-574"><a href="#cb19-574"></a></span>
-<span id="cb19-575"><a href="#cb19-575"></a><span class="co"># ── 6. Display pooled fixed effects table ─────────────────────────────────────</span></span>
-<span id="cb19-576"><a href="#cb19-576"></a>pooled_summ <span class="sc">|&gt;</span></span>
-<span id="cb19-577"><a href="#cb19-577"></a>  <span class="fu">as_tibble</span>() <span class="sc">|&gt;</span></span>
-<span id="cb19-578"><a href="#cb19-578"></a>  <span class="fu">rename</span>(</span>
-<span id="cb19-579"><a href="#cb19-579"></a>    <span class="at">Parameter =</span> term,</span>
-<span id="cb19-580"><a href="#cb19-580"></a>    <span class="at">Estimate  =</span> estimate,</span>
-<span id="cb19-581"><a href="#cb19-581"></a>    <span class="at">SE        =</span> std.error,</span>
-<span id="cb19-582"><a href="#cb19-582"></a>    <span class="at">df        =</span> df,</span>
-<span id="cb19-583"><a href="#cb19-583"></a>    <span class="at">p         =</span> p.value,</span>
-<span id="cb19-584"><a href="#cb19-584"></a>    <span class="at">Lower     =</span> <span class="st">`</span><span class="at">2.5 %</span><span class="st">`</span>,</span>
-<span id="cb19-585"><a href="#cb19-585"></a>    <span class="at">Upper     =</span> <span class="st">`</span><span class="at">97.5 %</span><span class="st">`</span></span>
-<span id="cb19-586"><a href="#cb19-586"></a>  ) <span class="sc">|&gt;</span></span>
-<span id="cb19-587"><a href="#cb19-587"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb19-588"><a href="#cb19-588"></a>    <span class="fu">across</span>(<span class="fu">c</span>(Estimate, SE, Lower, Upper), \(x) <span class="fu">round</span>(x, <span class="dv">3</span>)),</span>
-<span id="cb19-589"><a href="#cb19-589"></a>    <span class="at">CI =</span> <span class="fu">paste0</span>(<span class="st">"("</span>, <span class="fu">round</span>(Lower, <span class="dv">2</span>), <span class="st">", "</span>, <span class="fu">round</span>(Upper, <span class="dv">2</span>), <span class="st">")"</span>),</span>
-<span id="cb19-590"><a href="#cb19-590"></a>    <span class="at">p  =</span> <span class="fu">case_when</span>(</span>
-<span id="cb19-591"><a href="#cb19-591"></a>           p <span class="sc">&lt;</span> <span class="fl">0.001</span> <span class="sc">~</span> <span class="st">"&lt; 0.001"</span>,</span>
-<span id="cb19-592"><a href="#cb19-592"></a>           <span class="cn">TRUE</span>      <span class="sc">~</span> <span class="fu">as.character</span>(<span class="fu">round</span>(p, <span class="dv">3</span>))</span>
-<span id="cb19-593"><a href="#cb19-593"></a>         )</span>
-<span id="cb19-594"><a href="#cb19-594"></a>  ) <span class="sc">|&gt;</span></span>
-<span id="cb19-595"><a href="#cb19-595"></a>  <span class="fu">select</span>(Parameter, Estimate, SE, CI, df, p) <span class="sc">|&gt;</span></span>
-<span id="cb19-596"><a href="#cb19-596"></a>  <span class="fu">gt</span>() <span class="sc">|&gt;</span></span>
-<span id="cb19-597"><a href="#cb19-597"></a>  <span class="fu">tab_header</span>(</span>
-<span id="cb19-598"><a href="#cb19-598"></a>    <span class="at">title    =</span> <span class="st">"Table 3b. Pooled Fixed Effects — MAR Sensitivity Analysis"</span>,</span>
-<span id="cb19-599"><a href="#cb19-599"></a>    <span class="at">subtitle =</span> <span class="st">"MICE with Predictive Mean Matching; m = 25; Rubin's Rules"</span></span>
-<span id="cb19-600"><a href="#cb19-600"></a>  ) <span class="sc">|&gt;</span></span>
-<span id="cb19-601"><a href="#cb19-601"></a>  <span class="fu">cols_label</span>(</span>
-<span id="cb19-602"><a href="#cb19-602"></a>    <span class="at">Parameter =</span> <span class="st">"Parameter"</span>,</span>
-<span id="cb19-603"><a href="#cb19-603"></a>    <span class="at">Estimate  =</span> <span class="st">"Estimate"</span>,</span>
-<span id="cb19-604"><a href="#cb19-604"></a>    <span class="at">SE        =</span> <span class="st">"Std. Error"</span>,</span>
-<span id="cb19-605"><a href="#cb19-605"></a>    <span class="at">CI        =</span> <span class="st">"95% CI"</span>,</span>
-<span id="cb19-606"><a href="#cb19-606"></a>    <span class="at">df        =</span> <span class="st">"Pooled df"</span>,</span>
-<span id="cb19-607"><a href="#cb19-607"></a>    <span class="at">p         =</span> <span class="st">"p-value"</span></span>
-<span id="cb19-608"><a href="#cb19-608"></a>  ) <span class="sc">|&gt;</span></span>
-<span id="cb19-609"><a href="#cb19-609"></a>  <span class="fu">tab_style</span>(</span>
-<span id="cb19-610"><a href="#cb19-610"></a>    <span class="at">style     =</span> <span class="fu">cell_text</span>(<span class="at">weight =</span> <span class="st">"bold"</span>),</span>
-<span id="cb19-611"><a href="#cb19-611"></a>    <span class="at">locations =</span> <span class="fu">cells_column_labels</span>()</span>
-<span id="cb19-612"><a href="#cb19-612"></a>  ) <span class="sc">|&gt;</span></span>
-<span id="cb19-613"><a href="#cb19-613"></a>  <span class="fu">tab_footnote</span>(</span>
-<span id="cb19-614"><a href="#cb19-614"></a>    <span class="at">footnote =</span> <span class="st">"Pooled using Rubin's Rules. Formula: UPDRS ~ Group × Time + Age + (1 | Patient). FMI reported in Table 3c."</span></span>
-<span id="cb19-615"><a href="#cb19-615"></a>  ) <span class="sc">|&gt;</span></span>
-<span id="cb19-616"><a href="#cb19-616"></a>  <span class="fu">tab_options</span>(</span>
-<span id="cb19-617"><a href="#cb19-617"></a>    <span class="at">table.font.size           =</span> <span class="fu">px</span>(<span class="dv">13</span>),</span>
-<span id="cb19-618"><a href="#cb19-618"></a>    <span class="at">heading.title.font.size   =</span> <span class="fu">px</span>(<span class="dv">14</span>),</span>
-<span id="cb19-619"><a href="#cb19-619"></a>    <span class="at">heading.title.font.weight =</span> <span class="st">"bold"</span>,</span>
-<span id="cb19-620"><a href="#cb19-620"></a>    <span class="at">table.width               =</span> <span class="fu">pct</span>(<span class="dv">100</span>)</span>
-<span id="cb19-621"><a href="#cb19-621"></a>  )</span>
-<span id="cb19-622"><a href="#cb19-622"></a><span class="in">```</span></span>
-<span id="cb19-623"><a href="#cb19-623"></a></span>
-<span id="cb19-626"><a href="#cb19-626"></a><span class="in">```{r}</span></span>
-<span id="cb19-627"><a href="#cb19-627"></a><span class="co">#| label: mice-emmeans-pool</span></span>
-<span id="cb19-628"><a href="#cb19-628"></a><span class="co">#| message: false</span></span>
-<span id="cb19-629"><a href="#cb19-629"></a><span class="co">#| warning: false</span></span>
-<span id="cb19-630"><a href="#cb19-630"></a></span>
-<span id="cb19-631"><a href="#cb19-631"></a><span class="co"># ── 7. Pooled treatment effect at Year 2 formatted like primary analysis ──────</span></span>
-<span id="cb19-632"><a href="#cb19-632"></a><span class="co"># emmeans is computed for each imputed model, then estimates and SEs are</span></span>
-<span id="cb19-633"><a href="#cb19-633"></a><span class="co"># combined using Rubin's Rules. The Satterthwaite df from emmeans is used</span></span>
-<span id="cb19-634"><a href="#cb19-634"></a><span class="co"># in the Barnard-Rubin (1999) degrees-of-freedom approximation.</span></span>
-<span id="cb19-635"><a href="#cb19-635"></a></span>
-<span id="cb19-636"><a href="#cb19-636"></a>pool_emmeans_contrast <span class="ot">&lt;-</span> <span class="cf">function</span>(models, <span class="at">time_level =</span> <span class="st">"2"</span>) {</span>
+<span id="cb19-570"><a href="#cb19-570"></a>models_mar <span class="ot">&lt;-</span> <span class="fu">lapply</span>(<span class="fu">seq_len</span>(imp_mar<span class="sc">$</span>m), fit_on_completed)</span>
+<span id="cb19-571"><a href="#cb19-571"></a></span>
+<span id="cb19-572"><a href="#cb19-572"></a><span class="co"># ── 5. Pool fixed effects via Rubin's Rules ───────────────────────────────────</span></span>
+<span id="cb19-573"><a href="#cb19-573"></a><span class="co"># mice::pool() uses broom.mixed::tidy() to extract estimates from each lmerMod</span></span>
+<span id="cb19-574"><a href="#cb19-574"></a>pooled_mar  <span class="ot">&lt;-</span> mice<span class="sc">::</span><span class="fu">as.mira</span>(models_mar) <span class="sc">|&gt;</span> mice<span class="sc">::</span><span class="fu">pool</span>()</span>
+<span id="cb19-575"><a href="#cb19-575"></a>pooled_summ <span class="ot">&lt;-</span> <span class="fu">summary</span>(pooled_mar, <span class="at">conf.int =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb19-576"><a href="#cb19-576"></a></span>
+<span id="cb19-577"><a href="#cb19-577"></a><span class="co"># ── 6. Display pooled fixed effects table ─────────────────────────────────────</span></span>
+<span id="cb19-578"><a href="#cb19-578"></a>pooled_summ <span class="sc">|&gt;</span></span>
+<span id="cb19-579"><a href="#cb19-579"></a>  <span class="fu">as_tibble</span>() <span class="sc">|&gt;</span></span>
+<span id="cb19-580"><a href="#cb19-580"></a>  <span class="fu">rename</span>(</span>
+<span id="cb19-581"><a href="#cb19-581"></a>    <span class="at">Parameter =</span> term,</span>
+<span id="cb19-582"><a href="#cb19-582"></a>    <span class="at">Estimate  =</span> estimate,</span>
+<span id="cb19-583"><a href="#cb19-583"></a>    <span class="at">SE        =</span> std.error,</span>
+<span id="cb19-584"><a href="#cb19-584"></a>    <span class="at">df        =</span> df,</span>
+<span id="cb19-585"><a href="#cb19-585"></a>    <span class="at">p         =</span> p.value,</span>
+<span id="cb19-586"><a href="#cb19-586"></a>    <span class="at">Lower     =</span> <span class="st">`</span><span class="at">2.5 %</span><span class="st">`</span>,</span>
+<span id="cb19-587"><a href="#cb19-587"></a>    <span class="at">Upper     =</span> <span class="st">`</span><span class="at">97.5 %</span><span class="st">`</span></span>
+<span id="cb19-588"><a href="#cb19-588"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb19-589"><a href="#cb19-589"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb19-590"><a href="#cb19-590"></a>    <span class="fu">across</span>(<span class="fu">c</span>(Estimate, SE, Lower, Upper), \(x) <span class="fu">round</span>(x, <span class="dv">3</span>)),</span>
+<span id="cb19-591"><a href="#cb19-591"></a>    <span class="at">CI =</span> <span class="fu">paste0</span>(<span class="st">"("</span>, <span class="fu">round</span>(Lower, <span class="dv">2</span>), <span class="st">", "</span>, <span class="fu">round</span>(Upper, <span class="dv">2</span>), <span class="st">")"</span>),</span>
+<span id="cb19-592"><a href="#cb19-592"></a>    <span class="at">p  =</span> <span class="fu">case_when</span>(</span>
+<span id="cb19-593"><a href="#cb19-593"></a>           p <span class="sc">&lt;</span> <span class="fl">0.001</span> <span class="sc">~</span> <span class="st">"&lt; 0.001"</span>,</span>
+<span id="cb19-594"><a href="#cb19-594"></a>           <span class="cn">TRUE</span>      <span class="sc">~</span> <span class="fu">as.character</span>(<span class="fu">round</span>(p, <span class="dv">3</span>))</span>
+<span id="cb19-595"><a href="#cb19-595"></a>         )</span>
+<span id="cb19-596"><a href="#cb19-596"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb19-597"><a href="#cb19-597"></a>  <span class="fu">select</span>(Parameter, Estimate, SE, CI, df, p) <span class="sc">|&gt;</span></span>
+<span id="cb19-598"><a href="#cb19-598"></a>  <span class="fu">gt</span>() <span class="sc">|&gt;</span></span>
+<span id="cb19-599"><a href="#cb19-599"></a>  <span class="fu">tab_header</span>(</span>
+<span id="cb19-600"><a href="#cb19-600"></a>    <span class="at">title    =</span> <span class="st">"Table 3b. Pooled Fixed Effects — MAR Sensitivity Analysis"</span>,</span>
+<span id="cb19-601"><a href="#cb19-601"></a>    <span class="at">subtitle =</span> <span class="st">"MICE with Predictive Mean Matching; m = 25; Rubin's Rules"</span></span>
+<span id="cb19-602"><a href="#cb19-602"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb19-603"><a href="#cb19-603"></a>  <span class="fu">cols_label</span>(</span>
+<span id="cb19-604"><a href="#cb19-604"></a>    <span class="at">Parameter =</span> <span class="st">"Parameter"</span>,</span>
+<span id="cb19-605"><a href="#cb19-605"></a>    <span class="at">Estimate  =</span> <span class="st">"Estimate"</span>,</span>
+<span id="cb19-606"><a href="#cb19-606"></a>    <span class="at">SE        =</span> <span class="st">"Std. Error"</span>,</span>
+<span id="cb19-607"><a href="#cb19-607"></a>    <span class="at">CI        =</span> <span class="st">"95% CI"</span>,</span>
+<span id="cb19-608"><a href="#cb19-608"></a>    <span class="at">df        =</span> <span class="st">"Pooled df"</span>,</span>
+<span id="cb19-609"><a href="#cb19-609"></a>    <span class="at">p         =</span> <span class="st">"p-value"</span></span>
+<span id="cb19-610"><a href="#cb19-610"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb19-611"><a href="#cb19-611"></a>  <span class="fu">tab_style</span>(</span>
+<span id="cb19-612"><a href="#cb19-612"></a>    <span class="at">style     =</span> <span class="fu">cell_text</span>(<span class="at">weight =</span> <span class="st">"bold"</span>),</span>
+<span id="cb19-613"><a href="#cb19-613"></a>    <span class="at">locations =</span> <span class="fu">cells_column_labels</span>()</span>
+<span id="cb19-614"><a href="#cb19-614"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb19-615"><a href="#cb19-615"></a>  <span class="fu">tab_footnote</span>(</span>
+<span id="cb19-616"><a href="#cb19-616"></a>    <span class="at">footnote =</span> <span class="st">"Pooled using Rubin's Rules. Formula: UPDRS ~ Group × Time + Age + (1 | Patient). FMI reported in Table 3c."</span></span>
+<span id="cb19-617"><a href="#cb19-617"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb19-618"><a href="#cb19-618"></a>  <span class="fu">tab_options</span>(</span>
+<span id="cb19-619"><a href="#cb19-619"></a>    <span class="at">table.font.size           =</span> <span class="fu">px</span>(<span class="dv">13</span>),</span>
+<span id="cb19-620"><a href="#cb19-620"></a>    <span class="at">heading.title.font.size   =</span> <span class="fu">px</span>(<span class="dv">14</span>),</span>
+<span id="cb19-621"><a href="#cb19-621"></a>    <span class="at">heading.title.font.weight =</span> <span class="st">"bold"</span>,</span>
+<span id="cb19-622"><a href="#cb19-622"></a>    <span class="at">table.width               =</span> <span class="fu">pct</span>(<span class="dv">100</span>)</span>
+<span id="cb19-623"><a href="#cb19-623"></a>  )</span>
+<span id="cb19-624"><a href="#cb19-624"></a><span class="in">```</span></span>
+<span id="cb19-625"><a href="#cb19-625"></a></span>
+<span id="cb19-628"><a href="#cb19-628"></a><span class="in">```{r}</span></span>
+<span id="cb19-629"><a href="#cb19-629"></a><span class="co">#| label: mice-emmeans-pool</span></span>
+<span id="cb19-630"><a href="#cb19-630"></a><span class="co">#| message: false</span></span>
+<span id="cb19-631"><a href="#cb19-631"></a><span class="co">#| warning: false</span></span>
+<span id="cb19-632"><a href="#cb19-632"></a></span>
+<span id="cb19-633"><a href="#cb19-633"></a><span class="co"># ── 7. Pooled treatment effect at Year 2 formatted like primary analysis ──────</span></span>
+<span id="cb19-634"><a href="#cb19-634"></a><span class="co"># emmeans is computed for each imputed model, then estimates and SEs are</span></span>
+<span id="cb19-635"><a href="#cb19-635"></a><span class="co"># combined using Rubin's Rules. The Satterthwaite df from emmeans is used</span></span>
+<span id="cb19-636"><a href="#cb19-636"></a><span class="co"># in the Barnard-Rubin (1999) degrees-of-freedom approximation.</span></span>
 <span id="cb19-637"><a href="#cb19-637"></a></span>
-<span id="cb19-638"><a href="#cb19-638"></a>  <span class="co"># Extract Treatment - Control contrast at the requested timepoint</span></span>
-<span id="cb19-639"><a href="#cb19-639"></a>  extract_one <span class="ot">&lt;-</span> <span class="cf">function</span>(mod) {</span>
-<span id="cb19-640"><a href="#cb19-640"></a>    em  <span class="ot">&lt;-</span> <span class="fu">emmeans</span>(mod, <span class="sc">~</span> Group <span class="sc">|</span> Time)</span>
-<span id="cb19-641"><a href="#cb19-641"></a>    ct  <span class="ot">&lt;-</span> <span class="fu">contrast</span>(em, <span class="at">method =</span> <span class="st">"trt.vs.ctrl"</span>, <span class="at">ref =</span> <span class="st">"Control"</span>)</span>
-<span id="cb19-642"><a href="#cb19-642"></a>    row <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(ct) <span class="sc">|&gt;</span> <span class="fu">filter</span>(Time <span class="sc">==</span> time_level)</span>
-<span id="cb19-643"><a href="#cb19-643"></a>    <span class="fu">list</span>(</span>
-<span id="cb19-644"><a href="#cb19-644"></a>      <span class="at">est =</span> row<span class="sc">$</span>estimate,</span>
-<span id="cb19-645"><a href="#cb19-645"></a>      <span class="at">se  =</span> row<span class="sc">$</span>SE,</span>
-<span id="cb19-646"><a href="#cb19-646"></a>      <span class="at">df  =</span> row<span class="sc">$</span>df      <span class="co"># Satterthwaite df</span></span>
-<span id="cb19-647"><a href="#cb19-647"></a>    )</span>
-<span id="cb19-648"><a href="#cb19-648"></a>  }</span>
-<span id="cb19-649"><a href="#cb19-649"></a></span>
-<span id="cb19-650"><a href="#cb19-650"></a>  res   <span class="ot">&lt;-</span> <span class="fu">lapply</span>(models, extract_one)</span>
-<span id="cb19-651"><a href="#cb19-651"></a>  M     <span class="ot">&lt;-</span> <span class="fu">length</span>(res)</span>
-<span id="cb19-652"><a href="#cb19-652"></a>  ests  <span class="ot">&lt;-</span> <span class="fu">sapply</span>(res, <span class="st">`</span><span class="at">[[</span><span class="st">`</span>, <span class="st">"est"</span>)</span>
-<span id="cb19-653"><a href="#cb19-653"></a>  ses   <span class="ot">&lt;-</span> <span class="fu">sapply</span>(res, <span class="st">`</span><span class="at">[[</span><span class="st">`</span>, <span class="st">"se"</span>)</span>
-<span id="cb19-654"><a href="#cb19-654"></a>  dfs   <span class="ot">&lt;-</span> <span class="fu">sapply</span>(res, <span class="st">`</span><span class="at">[[</span><span class="st">`</span>, <span class="st">"df"</span>)</span>
-<span id="cb19-655"><a href="#cb19-655"></a></span>
-<span id="cb19-656"><a href="#cb19-656"></a>  <span class="co"># Rubin's Rules</span></span>
-<span id="cb19-657"><a href="#cb19-657"></a>  Q_bar <span class="ot">&lt;-</span> <span class="fu">mean</span>(ests)                          <span class="co"># pooled estimate</span></span>
-<span id="cb19-658"><a href="#cb19-658"></a>  U_bar <span class="ot">&lt;-</span> <span class="fu">mean</span>(ses<span class="sc">^</span><span class="dv">2</span>)                         <span class="co"># average within-imputation variance</span></span>
-<span id="cb19-659"><a href="#cb19-659"></a>  B     <span class="ot">&lt;-</span> <span class="fu">var</span>(ests)                           <span class="co"># between-imputation variance</span></span>
-<span id="cb19-660"><a href="#cb19-660"></a>  T_var <span class="ot">&lt;-</span> U_bar <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">+</span> <span class="dv">1</span> <span class="sc">/</span> M) <span class="sc">*</span> B            <span class="co"># total variance</span></span>
-<span id="cb19-661"><a href="#cb19-661"></a>  SE_p  <span class="ot">&lt;-</span> <span class="fu">sqrt</span>(T_var)</span>
-<span id="cb19-662"><a href="#cb19-662"></a></span>
-<span id="cb19-663"><a href="#cb19-663"></a>  <span class="co"># Fraction of missing information (FMI)</span></span>
-<span id="cb19-664"><a href="#cb19-664"></a>  r   <span class="ot">&lt;-</span> (<span class="dv">1</span> <span class="sc">+</span> <span class="dv">1</span> <span class="sc">/</span> M) <span class="sc">*</span> B <span class="sc">/</span> U_bar</span>
-<span id="cb19-665"><a href="#cb19-665"></a>  fmi <span class="ot">&lt;-</span> r <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">+</span> r)</span>
-<span id="cb19-666"><a href="#cb19-666"></a></span>
-<span id="cb19-667"><a href="#cb19-667"></a>  <span class="co"># Barnard-Rubin (1999) pooled degrees of freedom</span></span>
-<span id="cb19-668"><a href="#cb19-668"></a>  df_old <span class="ot">&lt;-</span> <span class="fu">mean</span>(dfs)</span>
-<span id="cb19-669"><a href="#cb19-669"></a>  df_m   <span class="ot">&lt;-</span> (M <span class="sc">-</span> <span class="dv">1</span>) <span class="sc">/</span> r<span class="sc">^</span><span class="dv">2</span></span>
-<span id="cb19-670"><a href="#cb19-670"></a>  df_obs <span class="ot">&lt;-</span> (df_old <span class="sc">+</span> <span class="dv">1</span>) <span class="sc">/</span> (df_old <span class="sc">+</span> <span class="dv">3</span>) <span class="sc">*</span> df_old <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">-</span> r)</span>
-<span id="cb19-671"><a href="#cb19-671"></a>  df_p   <span class="ot">&lt;-</span> <span class="dv">1</span> <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">/</span> df_m <span class="sc">+</span> <span class="dv">1</span> <span class="sc">/</span> df_obs)</span>
-<span id="cb19-672"><a href="#cb19-672"></a></span>
-<span id="cb19-673"><a href="#cb19-673"></a>  ci <span class="ot">&lt;-</span> Q_bar <span class="sc">+</span> <span class="fu">qt</span>(<span class="fu">c</span>(<span class="fl">0.025</span>, <span class="fl">0.975</span>), <span class="at">df =</span> df_p) <span class="sc">*</span> SE_p</span>
+<span id="cb19-638"><a href="#cb19-638"></a>pool_emmeans_contrast <span class="ot">&lt;-</span> <span class="cf">function</span>(models, <span class="at">time_level =</span> <span class="st">"2"</span>) {</span>
+<span id="cb19-639"><a href="#cb19-639"></a></span>
+<span id="cb19-640"><a href="#cb19-640"></a>  <span class="co"># Extract Treatment - Control contrast at the requested timepoint</span></span>
+<span id="cb19-641"><a href="#cb19-641"></a>  extract_one <span class="ot">&lt;-</span> <span class="cf">function</span>(mod) {</span>
+<span id="cb19-642"><a href="#cb19-642"></a>    em  <span class="ot">&lt;-</span> <span class="fu">emmeans</span>(mod, <span class="sc">~</span> Group <span class="sc">|</span> Time)</span>
+<span id="cb19-643"><a href="#cb19-643"></a>    ct  <span class="ot">&lt;-</span> <span class="fu">contrast</span>(em, <span class="at">method =</span> <span class="st">"trt.vs.ctrl"</span>, <span class="at">ref =</span> <span class="st">"Control"</span>)</span>
+<span id="cb19-644"><a href="#cb19-644"></a>    row <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(ct) <span class="sc">|&gt;</span> <span class="fu">filter</span>(Time <span class="sc">==</span> time_level)</span>
+<span id="cb19-645"><a href="#cb19-645"></a>    <span class="fu">list</span>(</span>
+<span id="cb19-646"><a href="#cb19-646"></a>      <span class="at">est =</span> row<span class="sc">$</span>estimate,</span>
+<span id="cb19-647"><a href="#cb19-647"></a>      <span class="at">se  =</span> row<span class="sc">$</span>SE,</span>
+<span id="cb19-648"><a href="#cb19-648"></a>      <span class="at">df  =</span> row<span class="sc">$</span>df      <span class="co"># Satterthwaite df</span></span>
+<span id="cb19-649"><a href="#cb19-649"></a>    )</span>
+<span id="cb19-650"><a href="#cb19-650"></a>  }</span>
+<span id="cb19-651"><a href="#cb19-651"></a></span>
+<span id="cb19-652"><a href="#cb19-652"></a>  res   <span class="ot">&lt;-</span> <span class="fu">lapply</span>(models, extract_one)</span>
+<span id="cb19-653"><a href="#cb19-653"></a>  M     <span class="ot">&lt;-</span> <span class="fu">length</span>(res)</span>
+<span id="cb19-654"><a href="#cb19-654"></a>  ests  <span class="ot">&lt;-</span> <span class="fu">sapply</span>(res, <span class="st">`</span><span class="at">[[</span><span class="st">`</span>, <span class="st">"est"</span>)</span>
+<span id="cb19-655"><a href="#cb19-655"></a>  ses   <span class="ot">&lt;-</span> <span class="fu">sapply</span>(res, <span class="st">`</span><span class="at">[[</span><span class="st">`</span>, <span class="st">"se"</span>)</span>
+<span id="cb19-656"><a href="#cb19-656"></a>  dfs   <span class="ot">&lt;-</span> <span class="fu">sapply</span>(res, <span class="st">`</span><span class="at">[[</span><span class="st">`</span>, <span class="st">"df"</span>)</span>
+<span id="cb19-657"><a href="#cb19-657"></a></span>
+<span id="cb19-658"><a href="#cb19-658"></a>  <span class="co"># Rubin's Rules</span></span>
+<span id="cb19-659"><a href="#cb19-659"></a>  Q_bar <span class="ot">&lt;-</span> <span class="fu">mean</span>(ests)                          <span class="co"># pooled estimate</span></span>
+<span id="cb19-660"><a href="#cb19-660"></a>  U_bar <span class="ot">&lt;-</span> <span class="fu">mean</span>(ses<span class="sc">^</span><span class="dv">2</span>)                         <span class="co"># average within-imputation variance</span></span>
+<span id="cb19-661"><a href="#cb19-661"></a>  B     <span class="ot">&lt;-</span> <span class="fu">var</span>(ests)                           <span class="co"># between-imputation variance</span></span>
+<span id="cb19-662"><a href="#cb19-662"></a>  T_var <span class="ot">&lt;-</span> U_bar <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">+</span> <span class="dv">1</span> <span class="sc">/</span> M) <span class="sc">*</span> B            <span class="co"># total variance</span></span>
+<span id="cb19-663"><a href="#cb19-663"></a>  SE_p  <span class="ot">&lt;-</span> <span class="fu">sqrt</span>(T_var)</span>
+<span id="cb19-664"><a href="#cb19-664"></a></span>
+<span id="cb19-665"><a href="#cb19-665"></a>  <span class="co"># Fraction of missing information (FMI)</span></span>
+<span id="cb19-666"><a href="#cb19-666"></a>  r   <span class="ot">&lt;-</span> (<span class="dv">1</span> <span class="sc">+</span> <span class="dv">1</span> <span class="sc">/</span> M) <span class="sc">*</span> B <span class="sc">/</span> U_bar</span>
+<span id="cb19-667"><a href="#cb19-667"></a>  fmi <span class="ot">&lt;-</span> r <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">+</span> r)</span>
+<span id="cb19-668"><a href="#cb19-668"></a></span>
+<span id="cb19-669"><a href="#cb19-669"></a>  <span class="co"># Barnard-Rubin (1999) pooled degrees of freedom</span></span>
+<span id="cb19-670"><a href="#cb19-670"></a>  df_old <span class="ot">&lt;-</span> <span class="fu">mean</span>(dfs)</span>
+<span id="cb19-671"><a href="#cb19-671"></a>  df_m   <span class="ot">&lt;-</span> (M <span class="sc">-</span> <span class="dv">1</span>) <span class="sc">/</span> r<span class="sc">^</span><span class="dv">2</span></span>
+<span id="cb19-672"><a href="#cb19-672"></a>  df_obs <span class="ot">&lt;-</span> (df_old <span class="sc">+</span> <span class="dv">1</span>) <span class="sc">/</span> (df_old <span class="sc">+</span> <span class="dv">3</span>) <span class="sc">*</span> df_old <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">-</span> r)</span>
+<span id="cb19-673"><a href="#cb19-673"></a>  df_p   <span class="ot">&lt;-</span> <span class="dv">1</span> <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">/</span> df_m <span class="sc">+</span> <span class="dv">1</span> <span class="sc">/</span> df_obs)</span>
 <span id="cb19-674"><a href="#cb19-674"></a></span>
-<span id="cb19-675"><a href="#cb19-675"></a>  <span class="fu">tibble</span>(</span>
-<span id="cb19-676"><a href="#cb19-676"></a>    <span class="at">Contrast    =</span> <span class="st">"Treatment − Control"</span>,</span>
-<span id="cb19-677"><a href="#cb19-677"></a>    <span class="at">Time        =</span> <span class="fu">paste0</span>(<span class="st">"Year "</span>, time_level),</span>
-<span id="cb19-678"><a href="#cb19-678"></a>    <span class="at">Estimate    =</span> <span class="fu">round</span>(Q_bar, <span class="dv">3</span>),</span>
-<span id="cb19-679"><a href="#cb19-679"></a>    <span class="at">SE          =</span> <span class="fu">round</span>(SE_p,  <span class="dv">3</span>),</span>
-<span id="cb19-680"><a href="#cb19-680"></a>    <span class="at">CI          =</span> <span class="fu">paste0</span>(<span class="st">"("</span>, <span class="fu">round</span>(ci[<span class="dv">1</span>], <span class="dv">2</span>), <span class="st">", "</span>, <span class="fu">round</span>(ci[<span class="dv">2</span>], <span class="dv">2</span>), <span class="st">")"</span>),</span>
-<span id="cb19-681"><a href="#cb19-681"></a>    <span class="at">FMI         =</span> <span class="fu">round</span>(fmi, <span class="dv">3</span>)</span>
-<span id="cb19-682"><a href="#cb19-682"></a>  )</span>
-<span id="cb19-683"><a href="#cb19-683"></a>}</span>
-<span id="cb19-684"><a href="#cb19-684"></a></span>
-<span id="cb19-685"><a href="#cb19-685"></a>contrast_pooled <span class="ot">&lt;-</span> <span class="fu">pool_emmeans_contrast</span>(models_mar, <span class="at">time_level =</span> <span class="st">"2"</span>)</span>
+<span id="cb19-675"><a href="#cb19-675"></a>  ci <span class="ot">&lt;-</span> Q_bar <span class="sc">+</span> <span class="fu">qt</span>(<span class="fu">c</span>(<span class="fl">0.025</span>, <span class="fl">0.975</span>), <span class="at">df =</span> df_p) <span class="sc">*</span> SE_p</span>
+<span id="cb19-676"><a href="#cb19-676"></a></span>
+<span id="cb19-677"><a href="#cb19-677"></a>  <span class="fu">tibble</span>(</span>
+<span id="cb19-678"><a href="#cb19-678"></a>    <span class="at">Contrast    =</span> <span class="st">"Treatment − Control"</span>,</span>
+<span id="cb19-679"><a href="#cb19-679"></a>    <span class="at">Time        =</span> <span class="fu">paste0</span>(<span class="st">"Year "</span>, time_level),</span>
+<span id="cb19-680"><a href="#cb19-680"></a>    <span class="at">Estimate    =</span> <span class="fu">round</span>(Q_bar, <span class="dv">3</span>),</span>
+<span id="cb19-681"><a href="#cb19-681"></a>    <span class="at">SE          =</span> <span class="fu">round</span>(SE_p,  <span class="dv">3</span>),</span>
+<span id="cb19-682"><a href="#cb19-682"></a>    <span class="at">CI          =</span> <span class="fu">paste0</span>(<span class="st">"("</span>, <span class="fu">round</span>(ci[<span class="dv">1</span>], <span class="dv">2</span>), <span class="st">", "</span>, <span class="fu">round</span>(ci[<span class="dv">2</span>], <span class="dv">2</span>), <span class="st">")"</span>),</span>
+<span id="cb19-683"><a href="#cb19-683"></a>    <span class="at">FMI         =</span> <span class="fu">round</span>(fmi, <span class="dv">3</span>)</span>
+<span id="cb19-684"><a href="#cb19-684"></a>  )</span>
+<span id="cb19-685"><a href="#cb19-685"></a>}</span>
 <span id="cb19-686"><a href="#cb19-686"></a></span>
-<span id="cb19-687"><a href="#cb19-687"></a>contrast_pooled <span class="sc">|&gt;</span></span>
-<span id="cb19-688"><a href="#cb19-688"></a>  <span class="fu">gt</span>() <span class="sc">|&gt;</span></span>
-<span id="cb19-689"><a href="#cb19-689"></a>  <span class="fu">tab_header</span>(</span>
-<span id="cb19-690"><a href="#cb19-690"></a>    <span class="at">title    =</span> <span class="st">"Table 3c. Pooled Treatment Effect at Year 2 — MAR Sensitivity Analysis"</span>,</span>
-<span id="cb19-691"><a href="#cb19-691"></a>    <span class="at">subtitle =</span> <span class="st">"MICE / Predictive Mean Matching; m = 25; Rubin's Rules"</span></span>
-<span id="cb19-692"><a href="#cb19-692"></a>  ) <span class="sc">|&gt;</span></span>
-<span id="cb19-693"><a href="#cb19-693"></a>  <span class="fu">cols_label</span>(</span>
-<span id="cb19-694"><a href="#cb19-694"></a>    <span class="at">Contrast =</span> <span class="st">"Contrast"</span>,</span>
-<span id="cb19-695"><a href="#cb19-695"></a>    <span class="at">Time     =</span> <span class="st">"Timepoint"</span>,</span>
-<span id="cb19-696"><a href="#cb19-696"></a>    <span class="at">Estimate =</span> <span class="st">"Estimate"</span>,</span>
-<span id="cb19-697"><a href="#cb19-697"></a>    <span class="at">SE       =</span> <span class="st">"Std. Error"</span>,</span>
-<span id="cb19-698"><a href="#cb19-698"></a>    <span class="at">CI       =</span> <span class="st">"95% CI"</span>,</span>
-<span id="cb19-699"><a href="#cb19-699"></a>    <span class="at">FMI      =</span> <span class="st">"FMI"</span></span>
-<span id="cb19-700"><a href="#cb19-700"></a>  ) <span class="sc">|&gt;</span></span>
-<span id="cb19-701"><a href="#cb19-701"></a>  <span class="fu">tab_style</span>(</span>
-<span id="cb19-702"><a href="#cb19-702"></a>    <span class="at">style     =</span> <span class="fu">cell_text</span>(<span class="at">weight =</span> <span class="st">"bold"</span>),</span>
-<span id="cb19-703"><a href="#cb19-703"></a>    <span class="at">locations =</span> <span class="fu">cells_column_labels</span>()</span>
-<span id="cb19-704"><a href="#cb19-704"></a>  ) <span class="sc">|&gt;</span></span>
-<span id="cb19-705"><a href="#cb19-705"></a>  <span class="fu">tab_footnote</span>(</span>
-<span id="cb19-706"><a href="#cb19-706"></a>    <span class="at">footnote =</span> <span class="fu">paste0</span>(</span>
-<span id="cb19-707"><a href="#cb19-707"></a>      <span class="st">"FMI: Fraction of Missing Information — proportion of total variance "</span>,</span>
-<span id="cb19-708"><a href="#cb19-708"></a>      <span class="st">"attributable to missing data. Higher values indicate stronger sensitivity "</span>,</span>
-<span id="cb19-709"><a href="#cb19-709"></a>      <span class="st">"to the MAR assumption. df computed via Barnard-Rubin (1999) approximation."</span></span>
-<span id="cb19-710"><a href="#cb19-710"></a>    )</span>
-<span id="cb19-711"><a href="#cb19-711"></a>  ) <span class="sc">|&gt;</span></span>
-<span id="cb19-712"><a href="#cb19-712"></a>  <span class="fu">tab_options</span>(</span>
-<span id="cb19-713"><a href="#cb19-713"></a>    <span class="at">table.font.size           =</span> <span class="fu">px</span>(<span class="dv">13</span>),</span>
-<span id="cb19-714"><a href="#cb19-714"></a>    <span class="at">heading.title.font.size   =</span> <span class="fu">px</span>(<span class="dv">14</span>),</span>
-<span id="cb19-715"><a href="#cb19-715"></a>    <span class="at">heading.title.font.weight =</span> <span class="st">"bold"</span>,</span>
-<span id="cb19-716"><a href="#cb19-716"></a>    <span class="at">table.width               =</span> <span class="fu">pct</span>(<span class="dv">100</span>)</span>
-<span id="cb19-717"><a href="#cb19-717"></a>  )</span>
-<span id="cb19-718"><a href="#cb19-718"></a><span class="in">```</span></span>
-<span id="cb19-719"><a href="#cb19-719"></a></span>
-<span id="cb19-720"><a href="#cb19-720"></a>Results from the MAR multiple imputation sensitivity analysis are presented in Tables 3b and 3c. Consistency with the primary analysis estimates would support robustness of the primary findings to the missing-at-random assumption. The Fraction of Missing Information (FMI) quantifies the proportion of uncertainty attributable to missing data; values below 0.10 are generally considered low.</span>
+<span id="cb19-687"><a href="#cb19-687"></a>contrast_pooled <span class="ot">&lt;-</span> <span class="fu">pool_emmeans_contrast</span>(models_mar, <span class="at">time_level =</span> <span class="st">"2"</span>)</span>
+<span id="cb19-688"><a href="#cb19-688"></a></span>
+<span id="cb19-689"><a href="#cb19-689"></a>contrast_pooled <span class="sc">|&gt;</span></span>
+<span id="cb19-690"><a href="#cb19-690"></a>  <span class="fu">gt</span>() <span class="sc">|&gt;</span></span>
+<span id="cb19-691"><a href="#cb19-691"></a>  <span class="fu">tab_header</span>(</span>
+<span id="cb19-692"><a href="#cb19-692"></a>    <span class="at">title    =</span> <span class="st">"Table 3c. Pooled Treatment Effect at Year 2 — MAR Sensitivity Analysis"</span>,</span>
+<span id="cb19-693"><a href="#cb19-693"></a>    <span class="at">subtitle =</span> <span class="st">"MICE / Predictive Mean Matching; m = 25; Rubin's Rules"</span></span>
+<span id="cb19-694"><a href="#cb19-694"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb19-695"><a href="#cb19-695"></a>  <span class="fu">cols_label</span>(</span>
+<span id="cb19-696"><a href="#cb19-696"></a>    <span class="at">Contrast =</span> <span class="st">"Contrast"</span>,</span>
+<span id="cb19-697"><a href="#cb19-697"></a>    <span class="at">Time     =</span> <span class="st">"Timepoint"</span>,</span>
+<span id="cb19-698"><a href="#cb19-698"></a>    <span class="at">Estimate =</span> <span class="st">"Estimate"</span>,</span>
+<span id="cb19-699"><a href="#cb19-699"></a>    <span class="at">SE       =</span> <span class="st">"Std. Error"</span>,</span>
+<span id="cb19-700"><a href="#cb19-700"></a>    <span class="at">CI       =</span> <span class="st">"95% CI"</span>,</span>
+<span id="cb19-701"><a href="#cb19-701"></a>    <span class="at">FMI      =</span> <span class="st">"FMI"</span></span>
+<span id="cb19-702"><a href="#cb19-702"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb19-703"><a href="#cb19-703"></a>  <span class="fu">tab_style</span>(</span>
+<span id="cb19-704"><a href="#cb19-704"></a>    <span class="at">style     =</span> <span class="fu">cell_text</span>(<span class="at">weight =</span> <span class="st">"bold"</span>),</span>
+<span id="cb19-705"><a href="#cb19-705"></a>    <span class="at">locations =</span> <span class="fu">cells_column_labels</span>()</span>
+<span id="cb19-706"><a href="#cb19-706"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb19-707"><a href="#cb19-707"></a>  <span class="fu">tab_footnote</span>(</span>
+<span id="cb19-708"><a href="#cb19-708"></a>    <span class="at">footnote =</span> <span class="fu">paste0</span>(</span>
+<span id="cb19-709"><a href="#cb19-709"></a>      <span class="st">"FMI: Fraction of Missing Information — proportion of total variance "</span>,</span>
+<span id="cb19-710"><a href="#cb19-710"></a>      <span class="st">"attributable to missing data. Higher values indicate stronger sensitivity "</span>,</span>
+<span id="cb19-711"><a href="#cb19-711"></a>      <span class="st">"to the MAR assumption. df computed via Barnard-Rubin (1999) approximation."</span></span>
+<span id="cb19-712"><a href="#cb19-712"></a>    )</span>
+<span id="cb19-713"><a href="#cb19-713"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb19-714"><a href="#cb19-714"></a>  <span class="fu">tab_options</span>(</span>
+<span id="cb19-715"><a href="#cb19-715"></a>    <span class="at">table.font.size           =</span> <span class="fu">px</span>(<span class="dv">13</span>),</span>
+<span id="cb19-716"><a href="#cb19-716"></a>    <span class="at">heading.title.font.size   =</span> <span class="fu">px</span>(<span class="dv">14</span>),</span>
+<span id="cb19-717"><a href="#cb19-717"></a>    <span class="at">heading.title.font.weight =</span> <span class="st">"bold"</span>,</span>
+<span id="cb19-718"><a href="#cb19-718"></a>    <span class="at">table.width               =</span> <span class="fu">pct</span>(<span class="dv">100</span>)</span>
+<span id="cb19-719"><a href="#cb19-719"></a>  )</span>
+<span id="cb19-720"><a href="#cb19-720"></a><span class="in">```</span></span>
 <span id="cb19-721"><a href="#cb19-721"></a></span>
-<span id="cb19-722"><a href="#cb19-722"></a><span class="fu">### Propensity Score Matching</span></span>
+<span id="cb19-722"><a href="#cb19-722"></a>Results from the MAR multiple imputation sensitivity analysis are presented in Tables 3b and 3c. Consistency with the primary analysis estimates would support robustness of the primary findings to the missing-at-random assumption. The Fraction of Missing Information (FMI) quantifies the proportion of uncertainty attributable to missing data; values below 0.10 are generally considered low.</span>
 <span id="cb19-723"><a href="#cb19-723"></a></span>
-<span id="cb19-724"><a href="#cb19-724"></a>Assuming the groups are not randomized, use propensity score matching to balance covariates of age and sex. Based on the matched data, fit the longitudinal mixed-effects model and estimate least squares means differences between treatment groups at year 2.</span>
+<span id="cb19-724"><a href="#cb19-724"></a><span class="fu">### Propensity Score Matching</span></span>
 <span id="cb19-725"><a href="#cb19-725"></a></span>
-<span id="cb19-728"><a href="#cb19-728"></a><span class="in">```{r}</span></span>
-<span id="cb19-729"><a href="#cb19-729"></a><span class="co">#| label: lme-psm</span></span>
-<span id="cb19-730"><a href="#cb19-730"></a><span class="fu">set.seed</span>(<span class="dv">2026</span>)</span>
-<span id="cb19-731"><a href="#cb19-731"></a></span>
-<span id="cb19-732"><a href="#cb19-732"></a><span class="co"># Propensity score matching and evaluation</span></span>
-<span id="cb19-733"><a href="#cb19-733"></a>vars <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"Age"</span>, <span class="st">"Sex"</span>)</span>
-<span id="cb19-734"><a href="#cb19-734"></a>table_before <span class="ot">&lt;-</span> <span class="fu">CreateTableOne</span>(<span class="at">vars =</span> vars,</span>
-<span id="cb19-735"><a href="#cb19-735"></a>                               <span class="at">strata =</span> <span class="st">"Group"</span>,</span>
-<span id="cb19-736"><a href="#cb19-736"></a>                               <span class="at">data =</span> baseline_covariates,</span>
-<span id="cb19-737"><a href="#cb19-737"></a>                               <span class="at">test =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb19-738"><a href="#cb19-738"></a></span>
-<span id="cb19-739"><a href="#cb19-739"></a><span class="co">#print(table_before, smd = TRUE)</span></span>
+<span id="cb19-726"><a href="#cb19-726"></a>Assuming the groups are not randomized, use propensity score matching to balance covariates of age and sex. Based on the matched data, fit the longitudinal mixed-effects model and estimate least squares means differences between treatment groups at year 2.</span>
+<span id="cb19-727"><a href="#cb19-727"></a></span>
+<span id="cb19-730"><a href="#cb19-730"></a><span class="in">```{r}</span></span>
+<span id="cb19-731"><a href="#cb19-731"></a><span class="co">#| label: lme-psm</span></span>
+<span id="cb19-732"><a href="#cb19-732"></a><span class="fu">set.seed</span>(<span class="dv">2026</span>)</span>
+<span id="cb19-733"><a href="#cb19-733"></a></span>
+<span id="cb19-734"><a href="#cb19-734"></a><span class="co"># Propensity score matching and evaluation</span></span>
+<span id="cb19-735"><a href="#cb19-735"></a>vars <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"Age"</span>, <span class="st">"Sex"</span>)</span>
+<span id="cb19-736"><a href="#cb19-736"></a>table_before <span class="ot">&lt;-</span> <span class="fu">CreateTableOne</span>(<span class="at">vars =</span> vars,</span>
+<span id="cb19-737"><a href="#cb19-737"></a>                               <span class="at">strata =</span> <span class="st">"Group"</span>,</span>
+<span id="cb19-738"><a href="#cb19-738"></a>                               <span class="at">data =</span> baseline_covariates,</span>
+<span id="cb19-739"><a href="#cb19-739"></a>                               <span class="at">test =</span> <span class="cn">FALSE</span>)</span>
 <span id="cb19-740"><a href="#cb19-740"></a></span>
-<span id="cb19-741"><a href="#cb19-741"></a><span class="fu">print</span>(table_before, <span class="at">smd =</span> <span class="cn">TRUE</span>, <span class="at">printToggle =</span> <span class="cn">FALSE</span>) <span class="sc">|&gt;</span></span>
-<span id="cb19-742"><a href="#cb19-742"></a>  <span class="fu">as.data.frame</span>() <span class="sc">|&gt;</span></span>
-<span id="cb19-743"><a href="#cb19-743"></a>  tibble<span class="sc">::</span><span class="fu">rownames_to_column</span>(<span class="st">"Characteristic"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb19-744"><a href="#cb19-744"></a>  <span class="fu">gt</span>() <span class="sc">|&gt;</span></span>
-<span id="cb19-745"><a href="#cb19-745"></a>  <span class="fu">format_gt_table</span>() <span class="sc">|&gt;</span>           <span class="co"># your existing utility</span></span>
-<span id="cb19-746"><a href="#cb19-746"></a>  <span class="fu">tab_header</span>(<span class="at">title =</span> <span class="st">"Table 4. Balance Before Matching"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb19-747"><a href="#cb19-747"></a>  <span class="fu">tab_footnote</span>(<span class="st">"SMD &lt; 0.10 indicates acceptable balance."</span>)</span>
-<span id="cb19-748"><a href="#cb19-748"></a></span>
-<span id="cb19-749"><a href="#cb19-749"></a></span>
+<span id="cb19-741"><a href="#cb19-741"></a><span class="co">#print(table_before, smd = TRUE)</span></span>
+<span id="cb19-742"><a href="#cb19-742"></a></span>
+<span id="cb19-743"><a href="#cb19-743"></a><span class="fu">print</span>(table_before, <span class="at">smd =</span> <span class="cn">TRUE</span>, <span class="at">printToggle =</span> <span class="cn">FALSE</span>) <span class="sc">|&gt;</span></span>
+<span id="cb19-744"><a href="#cb19-744"></a>  <span class="fu">as.data.frame</span>() <span class="sc">|&gt;</span></span>
+<span id="cb19-745"><a href="#cb19-745"></a>  tibble<span class="sc">::</span><span class="fu">rownames_to_column</span>(<span class="st">"Characteristic"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb19-746"><a href="#cb19-746"></a>  <span class="fu">gt</span>() <span class="sc">|&gt;</span></span>
+<span id="cb19-747"><a href="#cb19-747"></a>  <span class="fu">format_gt_table</span>() <span class="sc">|&gt;</span>           <span class="co"># your existing utility</span></span>
+<span id="cb19-748"><a href="#cb19-748"></a>  <span class="fu">tab_header</span>(<span class="at">title =</span> <span class="st">"Table 4. Balance Before Matching"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb19-749"><a href="#cb19-749"></a>  <span class="fu">tab_footnote</span>(<span class="st">"SMD &lt; 0.10 indicates acceptable balance."</span>)</span>
 <span id="cb19-750"><a href="#cb19-750"></a></span>
-<span id="cb19-751"><a href="#cb19-751"></a>match_model2 <span class="ot">&lt;-</span> <span class="fu">matchit</span>(Group <span class="sc">~</span> Age <span class="sc">+</span> Sex,</span>
-<span id="cb19-752"><a href="#cb19-752"></a>                        <span class="at">data =</span> baseline_covariates,</span>
-<span id="cb19-753"><a href="#cb19-753"></a>                        <span class="at">method =</span> <span class="st">"nearest"</span>,</span>
-<span id="cb19-754"><a href="#cb19-754"></a>                        <span class="at">link=</span><span class="st">"logit"</span>,</span>
-<span id="cb19-755"><a href="#cb19-755"></a>                        <span class="at">distance=</span><span class="st">"glm"</span>)</span>
-<span id="cb19-756"><a href="#cb19-756"></a></span>
-<span id="cb19-757"><a href="#cb19-757"></a>matched_data2 <span class="ot">&lt;-</span> <span class="fu">match.data</span>(match_model2)</span>
-<span id="cb19-758"><a href="#cb19-758"></a><span class="co">#table(matched_data2$Group)</span></span>
-<span id="cb19-759"><a href="#cb19-759"></a></span>
-<span id="cb19-760"><a href="#cb19-760"></a></span>
-<span id="cb19-761"><a href="#cb19-761"></a>table_after <span class="ot">&lt;-</span> <span class="fu">CreateTableOne</span>(<span class="at">vars =</span> vars,</span>
-<span id="cb19-762"><a href="#cb19-762"></a>                              <span class="at">strata =</span> <span class="st">"Group"</span>,</span>
-<span id="cb19-763"><a href="#cb19-763"></a>                              <span class="at">data =</span> matched_data2,</span>
-<span id="cb19-764"><a href="#cb19-764"></a>                              <span class="at">test =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb19-765"><a href="#cb19-765"></a></span>
-<span id="cb19-766"><a href="#cb19-766"></a><span class="co">#print(table_after, smd = TRUE)</span></span>
+<span id="cb19-751"><a href="#cb19-751"></a></span>
+<span id="cb19-752"><a href="#cb19-752"></a></span>
+<span id="cb19-753"><a href="#cb19-753"></a>match_model2 <span class="ot">&lt;-</span> <span class="fu">matchit</span>(Group <span class="sc">~</span> Age <span class="sc">+</span> Sex,</span>
+<span id="cb19-754"><a href="#cb19-754"></a>                        <span class="at">data =</span> baseline_covariates,</span>
+<span id="cb19-755"><a href="#cb19-755"></a>                        <span class="at">method =</span> <span class="st">"nearest"</span>,</span>
+<span id="cb19-756"><a href="#cb19-756"></a>                        <span class="at">link=</span><span class="st">"logit"</span>,</span>
+<span id="cb19-757"><a href="#cb19-757"></a>                        <span class="at">distance=</span><span class="st">"glm"</span>)</span>
+<span id="cb19-758"><a href="#cb19-758"></a></span>
+<span id="cb19-759"><a href="#cb19-759"></a>matched_data2 <span class="ot">&lt;-</span> <span class="fu">match.data</span>(match_model2)</span>
+<span id="cb19-760"><a href="#cb19-760"></a><span class="co">#table(matched_data2$Group)</span></span>
+<span id="cb19-761"><a href="#cb19-761"></a></span>
+<span id="cb19-762"><a href="#cb19-762"></a></span>
+<span id="cb19-763"><a href="#cb19-763"></a>table_after <span class="ot">&lt;-</span> <span class="fu">CreateTableOne</span>(<span class="at">vars =</span> vars,</span>
+<span id="cb19-764"><a href="#cb19-764"></a>                              <span class="at">strata =</span> <span class="st">"Group"</span>,</span>
+<span id="cb19-765"><a href="#cb19-765"></a>                              <span class="at">data =</span> matched_data2,</span>
+<span id="cb19-766"><a href="#cb19-766"></a>                              <span class="at">test =</span> <span class="cn">FALSE</span>)</span>
 <span id="cb19-767"><a href="#cb19-767"></a></span>
-<span id="cb19-768"><a href="#cb19-768"></a><span class="fu">print</span>(table_after, <span class="at">smd =</span> <span class="cn">TRUE</span>, <span class="at">printToggle =</span> <span class="cn">FALSE</span>) <span class="sc">|&gt;</span></span>
-<span id="cb19-769"><a href="#cb19-769"></a>  <span class="fu">as.data.frame</span>() <span class="sc">|&gt;</span></span>
-<span id="cb19-770"><a href="#cb19-770"></a>  tibble<span class="sc">::</span><span class="fu">rownames_to_column</span>(<span class="st">"Characteristic"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb19-771"><a href="#cb19-771"></a>  <span class="fu">gt</span>() <span class="sc">|&gt;</span></span>
-<span id="cb19-772"><a href="#cb19-772"></a>  <span class="fu">format_gt_table</span>() <span class="sc">|&gt;</span>           <span class="co"># your existing utility</span></span>
-<span id="cb19-773"><a href="#cb19-773"></a>  <span class="fu">tab_header</span>(<span class="at">title =</span> <span class="st">"Table 5. Balance After Matching"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb19-774"><a href="#cb19-774"></a>  <span class="fu">tab_footnote</span>(<span class="st">"SMD &lt; 0.10 indicates acceptable balance."</span>)</span>
-<span id="cb19-775"><a href="#cb19-775"></a></span>
-<span id="cb19-776"><a href="#cb19-776"></a><span class="co"># Subset orginal data based on patients identified by Propensity score matching</span></span>
-<span id="cb19-777"><a href="#cb19-777"></a>matched_pid <span class="ot">&lt;-</span> matched_data2 <span class="sc">|&gt;</span> <span class="fu">select</span>(Patient)</span>
-<span id="cb19-778"><a href="#cb19-778"></a>matched_data_final <span class="ot">&lt;-</span> <span class="fu">left_join</span>(matched_pid, data, <span class="at">by =</span> <span class="st">"Patient"</span>)</span>
-<span id="cb19-779"><a href="#cb19-779"></a></span>
-<span id="cb19-780"><a href="#cb19-780"></a></span>
-<span id="cb19-781"><a href="#cb19-781"></a><span class="co"># Generate linear mixed effects model on matched population</span></span>
-<span id="cb19-782"><a href="#cb19-782"></a>matched_data_final<span class="sc">$</span>Group <span class="ot">&lt;-</span> <span class="fu">factor</span>(</span>
-<span id="cb19-783"><a href="#cb19-783"></a>    matched_data_final<span class="sc">$</span>Group,</span>
-<span id="cb19-784"><a href="#cb19-784"></a>    <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"Control"</span>, <span class="st">"Treatment"</span>))</span>
-<span id="cb19-785"><a href="#cb19-785"></a></span>
-<span id="cb19-786"><a href="#cb19-786"></a>m3 <span class="ot">&lt;-</span> <span class="fu">lmer</span>(UPDRS <span class="sc">~</span> Group<span class="sc">*</span>Time <span class="sc">+</span> Age <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>Patient), <span class="at">data=</span>matched_data_final)</span>
+<span id="cb19-768"><a href="#cb19-768"></a><span class="co">#print(table_after, smd = TRUE)</span></span>
+<span id="cb19-769"><a href="#cb19-769"></a></span>
+<span id="cb19-770"><a href="#cb19-770"></a><span class="fu">print</span>(table_after, <span class="at">smd =</span> <span class="cn">TRUE</span>, <span class="at">printToggle =</span> <span class="cn">FALSE</span>) <span class="sc">|&gt;</span></span>
+<span id="cb19-771"><a href="#cb19-771"></a>  <span class="fu">as.data.frame</span>() <span class="sc">|&gt;</span></span>
+<span id="cb19-772"><a href="#cb19-772"></a>  tibble<span class="sc">::</span><span class="fu">rownames_to_column</span>(<span class="st">"Characteristic"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb19-773"><a href="#cb19-773"></a>  <span class="fu">gt</span>() <span class="sc">|&gt;</span></span>
+<span id="cb19-774"><a href="#cb19-774"></a>  <span class="fu">format_gt_table</span>() <span class="sc">|&gt;</span>           <span class="co"># your existing utility</span></span>
+<span id="cb19-775"><a href="#cb19-775"></a>  <span class="fu">tab_header</span>(<span class="at">title =</span> <span class="st">"Table 5. Balance After Matching"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb19-776"><a href="#cb19-776"></a>  <span class="fu">tab_footnote</span>(<span class="st">"SMD &lt; 0.10 indicates acceptable balance."</span>)</span>
+<span id="cb19-777"><a href="#cb19-777"></a></span>
+<span id="cb19-778"><a href="#cb19-778"></a><span class="co"># Subset orginal data based on patients identified by Propensity score matching</span></span>
+<span id="cb19-779"><a href="#cb19-779"></a>matched_pid <span class="ot">&lt;-</span> matched_data2 <span class="sc">|&gt;</span> <span class="fu">select</span>(Patient)</span>
+<span id="cb19-780"><a href="#cb19-780"></a>matched_data_final <span class="ot">&lt;-</span> <span class="fu">left_join</span>(matched_pid, data, <span class="at">by =</span> <span class="st">"Patient"</span>)</span>
+<span id="cb19-781"><a href="#cb19-781"></a></span>
+<span id="cb19-782"><a href="#cb19-782"></a></span>
+<span id="cb19-783"><a href="#cb19-783"></a><span class="co"># Generate linear mixed effects model on matched population</span></span>
+<span id="cb19-784"><a href="#cb19-784"></a>matched_data_final<span class="sc">$</span>Group <span class="ot">&lt;-</span> <span class="fu">factor</span>(</span>
+<span id="cb19-785"><a href="#cb19-785"></a>    matched_data_final<span class="sc">$</span>Group,</span>
+<span id="cb19-786"><a href="#cb19-786"></a>    <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"Control"</span>, <span class="st">"Treatment"</span>))</span>
 <span id="cb19-787"><a href="#cb19-787"></a></span>
-<span id="cb19-788"><a href="#cb19-788"></a>w4 <span class="ot">&lt;-</span> <span class="fu">extract_emm_table</span>(m3)</span>
-<span id="cb19-789"><a href="#cb19-789"></a>w4 <span class="sc">|&gt;</span></span>
-<span id="cb19-790"><a href="#cb19-790"></a>  <span class="fu">gt</span>() <span class="sc">|&gt;</span></span>
-<span id="cb19-791"><a href="#cb19-791"></a>  <span class="fu">format_gt_table</span>() <span class="sc">|&gt;</span></span>
-<span id="cb19-792"><a href="#cb19-792"></a>  <span class="fu">tab_header</span>(</span>
-<span id="cb19-793"><a href="#cb19-793"></a>    <span class="at">title =</span> <span class="st">"Table 6. Summary of Linear Mixed-Effects Model Predicting UPDRS by Treatment and Age at Year 2"</span>,</span>
-<span id="cb19-794"><a href="#cb19-794"></a>    <span class="at">subtitle =</span> <span class="st">"Propensity Score Matching"</span></span>
-<span id="cb19-795"><a href="#cb19-795"></a>  ) <span class="sc">|&gt;</span></span>
-<span id="cb19-796"><a href="#cb19-796"></a>  <span class="fu">tab_footnote</span>(</span>
-<span id="cb19-797"><a href="#cb19-797"></a>    <span class="at">footnote =</span> <span class="st">"CI: 95% Confidence Interval; Formula: UPDRS ~ Group * Time + Age + (1 | Patient)"</span></span>
-<span id="cb19-798"><a href="#cb19-798"></a>  )</span>
-<span id="cb19-799"><a href="#cb19-799"></a><span class="in">```</span></span>
-<span id="cb19-800"><a href="#cb19-800"></a></span>
-<span id="cb19-801"><a href="#cb19-801"></a>Propensity score matching improved baseline covariate balance between treatment groups while preserving estimated treatment differences at Year 2.</span>
+<span id="cb19-788"><a href="#cb19-788"></a>m3 <span class="ot">&lt;-</span> <span class="fu">lmer</span>(UPDRS <span class="sc">~</span> Group<span class="sc">*</span>Time <span class="sc">+</span> Age <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>Patient), <span class="at">data=</span>matched_data_final)</span>
+<span id="cb19-789"><a href="#cb19-789"></a></span>
+<span id="cb19-790"><a href="#cb19-790"></a>w4 <span class="ot">&lt;-</span> <span class="fu">extract_emm_table</span>(m3)</span>
+<span id="cb19-791"><a href="#cb19-791"></a>w4 <span class="sc">|&gt;</span></span>
+<span id="cb19-792"><a href="#cb19-792"></a>  <span class="fu">gt</span>() <span class="sc">|&gt;</span></span>
+<span id="cb19-793"><a href="#cb19-793"></a>  <span class="fu">format_gt_table</span>() <span class="sc">|&gt;</span></span>
+<span id="cb19-794"><a href="#cb19-794"></a>  <span class="fu">tab_header</span>(</span>
+<span id="cb19-795"><a href="#cb19-795"></a>    <span class="at">title =</span> <span class="st">"Table 6. Summary of Linear Mixed-Effects Model Predicting UPDRS by Treatment and Age at Year 2"</span>,</span>
+<span id="cb19-796"><a href="#cb19-796"></a>    <span class="at">subtitle =</span> <span class="st">"Propensity Score Matching"</span></span>
+<span id="cb19-797"><a href="#cb19-797"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb19-798"><a href="#cb19-798"></a>  <span class="fu">tab_footnote</span>(</span>
+<span id="cb19-799"><a href="#cb19-799"></a>    <span class="at">footnote =</span> <span class="st">"CI: 95% Confidence Interval; Formula: UPDRS ~ Group * Time + Age + (1 | Patient)"</span></span>
+<span id="cb19-800"><a href="#cb19-800"></a>  )</span>
+<span id="cb19-801"><a href="#cb19-801"></a><span class="in">```</span></span>
 <span id="cb19-802"><a href="#cb19-802"></a></span>
-<span id="cb19-805"><a href="#cb19-805"></a><span class="in">```{r}</span></span>
-<span id="cb19-806"><a href="#cb19-806"></a><span class="co">#| label: covbal-plot</span></span>
-<span id="cb19-807"><a href="#cb19-807"></a><span class="co">#| fig-cap: "Figure 4. Covariate balance before and after propensity score matching."</span></span>
-<span id="cb19-808"><a href="#cb19-808"></a><span class="co">#| fig-width: 8</span></span>
-<span id="cb19-809"><a href="#cb19-809"></a><span class="co">#| fig-height: 5</span></span>
-<span id="cb19-810"><a href="#cb19-810"></a><span class="co">#| warning: false</span></span>
-<span id="cb19-811"><a href="#cb19-811"></a><span class="co">#| message: false</span></span>
-<span id="cb19-812"><a href="#cb19-812"></a><span class="co"># Love Plot</span></span>
-<span id="cb19-813"><a href="#cb19-813"></a><span class="fu">love.plot</span>(</span>
-<span id="cb19-814"><a href="#cb19-814"></a>  match_model2,</span>
-<span id="cb19-815"><a href="#cb19-815"></a>  <span class="at">binary =</span> <span class="st">"std"</span>,</span>
-<span id="cb19-816"><a href="#cb19-816"></a>  <span class="at">thresholds =</span> <span class="fu">c</span>(<span class="at">m =</span> <span class="fl">0.1</span>),</span>
-<span id="cb19-817"><a href="#cb19-817"></a>  <span class="at">abs =</span> <span class="cn">TRUE</span>,</span>
-<span id="cb19-818"><a href="#cb19-818"></a>  <span class="at">var.order =</span> <span class="st">"unadjusted"</span>,</span>
-<span id="cb19-819"><a href="#cb19-819"></a>  <span class="at">stars =</span> <span class="st">"raw"</span></span>
-<span id="cb19-820"><a href="#cb19-820"></a>)</span>
-<span id="cb19-821"><a href="#cb19-821"></a><span class="in">```</span></span>
-<span id="cb19-822"><a href="#cb19-822"></a></span>
-<span id="cb19-823"><a href="#cb19-823"></a><span class="fu">## Conclusions</span></span>
+<span id="cb19-803"><a href="#cb19-803"></a>Propensity score matching improved baseline covariate balance between treatment groups while preserving estimated treatment differences at Year 2.</span>
+<span id="cb19-804"><a href="#cb19-804"></a></span>
+<span id="cb19-807"><a href="#cb19-807"></a><span class="in">```{r}</span></span>
+<span id="cb19-808"><a href="#cb19-808"></a><span class="co">#| label: covbal-plot</span></span>
+<span id="cb19-809"><a href="#cb19-809"></a><span class="co">#| fig-cap: "Figure 4. Covariate balance before and after propensity score matching."</span></span>
+<span id="cb19-810"><a href="#cb19-810"></a><span class="co">#| fig-width: 8</span></span>
+<span id="cb19-811"><a href="#cb19-811"></a><span class="co">#| fig-height: 5</span></span>
+<span id="cb19-812"><a href="#cb19-812"></a><span class="co">#| warning: false</span></span>
+<span id="cb19-813"><a href="#cb19-813"></a><span class="co">#| message: false</span></span>
+<span id="cb19-814"><a href="#cb19-814"></a><span class="co"># Love Plot</span></span>
+<span id="cb19-815"><a href="#cb19-815"></a><span class="fu">love.plot</span>(</span>
+<span id="cb19-816"><a href="#cb19-816"></a>  match_model2,</span>
+<span id="cb19-817"><a href="#cb19-817"></a>  <span class="at">binary =</span> <span class="st">"std"</span>,</span>
+<span id="cb19-818"><a href="#cb19-818"></a>  <span class="at">thresholds =</span> <span class="fu">c</span>(<span class="at">m =</span> <span class="fl">0.1</span>),</span>
+<span id="cb19-819"><a href="#cb19-819"></a>  <span class="at">abs =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb19-820"><a href="#cb19-820"></a>  <span class="at">var.order =</span> <span class="st">"unadjusted"</span>,</span>
+<span id="cb19-821"><a href="#cb19-821"></a>  <span class="at">stars =</span> <span class="st">"raw"</span></span>
+<span id="cb19-822"><a href="#cb19-822"></a>)</span>
+<span id="cb19-823"><a href="#cb19-823"></a><span class="in">```</span></span>
 <span id="cb19-824"><a href="#cb19-824"></a></span>
-<span id="cb19-825"><a href="#cb19-825"></a>This report demonstrates a reproducible and automated longitudinal clinical reporting workflow using modern R and Quarto methodologies. The analysis integrates mixed-effects modeling, missing data sensitivity analyses, and propensity score matching within a publication-style HTML reporting framework suitable for exploratory clinical and real-world evidence applications.</span>
+<span id="cb19-825"><a href="#cb19-825"></a><span class="fu">## Conclusions</span></span>
 <span id="cb19-826"><a href="#cb19-826"></a></span>
-<span id="cb19-827"><a href="#cb19-827"></a>The workflow illustrates approaches commonly used in pharmaceutical and biotechnology clinical development environments for statistical analysis, reproducibility, and reporting automation.</span>
+<span id="cb19-827"><a href="#cb19-827"></a>This report demonstrates a reproducible and automated longitudinal clinical reporting workflow using modern R and Quarto methodologies. The analysis integrates mixed-effects modeling, missing data sensitivity analyses, and propensity score matching within a publication-style HTML reporting framework suitable for exploratory clinical and real-world evidence applications.</span>
 <span id="cb19-828"><a href="#cb19-828"></a></span>
-<span id="cb19-829"><a href="#cb19-829"></a><span class="fu">## Limitations</span></span>
+<span id="cb19-829"><a href="#cb19-829"></a>The workflow illustrates approaches commonly used in pharmaceutical and biotechnology clinical development environments for statistical analysis, reproducibility, and reporting automation.</span>
 <span id="cb19-830"><a href="#cb19-830"></a></span>
-<span id="cb19-831"><a href="#cb19-831"></a>This report uses simulated observational data for methodological demonstration purposes. Results should not be interpreted clinically. Missing data sensitivity analyses use MICE with predictive mean matching under a missing-at-random (MAR) assumption. Whether the MAR assumption holds cannot be verified from the observed data alone; MNAR sensitivity analyses (e.g., reference-based methods using the rbmi package) would be required for regulatory-grade submissions.</span>
+<span id="cb19-831"><a href="#cb19-831"></a><span class="fu">## Limitations</span></span>
 <span id="cb19-832"><a href="#cb19-832"></a></span>
-<span id="cb19-833"><a href="#cb19-833"></a><span class="fu">## Reproducibility</span></span>
+<span id="cb19-833"><a href="#cb19-833"></a>This report uses simulated observational data for methodological demonstration purposes. Results should not be interpreted clinically. Missing data sensitivity analyses use MICE with predictive mean matching under a missing-at-random (MAR) assumption. Whether the MAR assumption holds cannot be verified from the observed data alone; MNAR sensitivity analyses (e.g., reference-based methods using the rbmi package) would be required for regulatory-grade submissions.</span>
 <span id="cb19-834"><a href="#cb19-834"></a></span>
-<span id="cb19-835"><a href="#cb19-835"></a>This report was generated using a reproducible Quarto workflow in R.\</span>
-<span id="cb19-836"><a href="#cb19-836"></a>All analyses, figures, tables, and statistical outputs were generated programmatically from simulated source data.</span>
-<span id="cb19-837"><a href="#cb19-837"></a></span>
-<span id="cb19-838"><a href="#cb19-838"></a>Key components include:</span>
+<span id="cb19-835"><a href="#cb19-835"></a><span class="fu">## Reproducibility</span></span>
+<span id="cb19-836"><a href="#cb19-836"></a></span>
+<span id="cb19-837"><a href="#cb19-837"></a>This report was generated using a reproducible Quarto workflow in R.\</span>
+<span id="cb19-838"><a href="#cb19-838"></a>All analyses, figures, tables, and statistical outputs were generated programmatically from simulated source data.</span>
 <span id="cb19-839"><a href="#cb19-839"></a></span>
-<span id="cb19-840"><a href="#cb19-840"></a><span class="ss">- </span>automated data simulation,</span>
-<span id="cb19-841"><a href="#cb19-841"></a><span class="ss">- </span>longitudinal mixed-effects modeling,</span>
-<span id="cb19-842"><a href="#cb19-842"></a><span class="ss">- </span>MAR multiple imputation using MICE (m = 25, Rubin's Rules),</span>
-<span id="cb19-843"><a href="#cb19-843"></a><span class="ss">- </span>propensity score matching,</span>
-<span id="cb19-844"><a href="#cb19-844"></a><span class="ss">- </span>reproducible statistical reporting,</span>
-<span id="cb19-845"><a href="#cb19-845"></a><span class="ss">- </span>and parameterized report generation.</span>
-<span id="cb19-846"><a href="#cb19-846"></a></span>
-<span id="cb19-847"><a href="#cb19-847"></a>The workflow is designed to reflect modern clinical reporting and real-world evidence analysis practices used in pharmaceutical and biotechnology settings.</span>
+<span id="cb19-840"><a href="#cb19-840"></a>Key components include:</span>
+<span id="cb19-841"><a href="#cb19-841"></a></span>
+<span id="cb19-842"><a href="#cb19-842"></a><span class="ss">- </span>automated data simulation,</span>
+<span id="cb19-843"><a href="#cb19-843"></a><span class="ss">- </span>longitudinal mixed-effects modeling,</span>
+<span id="cb19-844"><a href="#cb19-844"></a><span class="ss">- </span>MAR multiple imputation using MICE (m = 25, Rubin's Rules),</span>
+<span id="cb19-845"><a href="#cb19-845"></a><span class="ss">- </span>propensity score matching,</span>
+<span id="cb19-846"><a href="#cb19-846"></a><span class="ss">- </span>reproducible statistical reporting,</span>
+<span id="cb19-847"><a href="#cb19-847"></a><span class="ss">- </span>and parameterized report generation.</span>
 <span id="cb19-848"><a href="#cb19-848"></a></span>
-<span id="cb19-849"><a href="#cb19-849"></a><span class="fu">## Appendix</span></span>
+<span id="cb19-849"><a href="#cb19-849"></a>The workflow is designed to reflect modern clinical reporting and real-world evidence analysis practices used in pharmaceutical and biotechnology settings.</span>
 <span id="cb19-850"><a href="#cb19-850"></a></span>
-<span id="cb19-853"><a href="#cb19-853"></a><span class="in">```{r}</span></span>
-<span id="cb19-854"><a href="#cb19-854"></a><span class="co">#| label: appendix</span></span>
-<span id="cb19-855"><a href="#cb19-855"></a><span class="fu">sessionInfo</span>()</span>
-<span id="cb19-856"><a href="#cb19-856"></a><span class="in">```</span></span>
+<span id="cb19-851"><a href="#cb19-851"></a><span class="fu">## Appendix</span></span>
+<span id="cb19-852"><a href="#cb19-852"></a></span>
+<span id="cb19-855"><a href="#cb19-855"></a><span class="in">```{r}</span></span>
+<span id="cb19-856"><a href="#cb19-856"></a><span class="co">#| label: appendix</span></span>
+<span id="cb19-857"><a href="#cb19-857"></a><span class="fu">sessionInfo</span>()</span>
+<span id="cb19-858"><a href="#cb19-858"></a><span class="in">```</span></span>
 </code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
