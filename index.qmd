@@ -1,5 +1,5 @@
 ---
-title: "Longitudinal Mixed-Effects Modeling and Sensitivity Analyses in Simulated Parkinson’s Disease Data"
+title: "Longitudinal Mixed-Effects Modeling and Sensitivity Analyses in Simulated Parkinson's Disease Data"
 author: "Dean Leonardi, Ph.D."
 date: today
 params:
@@ -9,11 +9,11 @@ editor: visual
 
 ## Abstract
 
-A longitudinal analysis for Parkinson’s patient UPDRS scores using MAR multiple imputation (MICE) sensitivity analysis and propensity score matching: a non-randomized, observational, simulated data study
+A longitudinal analysis for Parkinson's patient UPDRS scores using MAR multiple imputation (MICE) sensitivity analysis and propensity score matching: a non-randomized, observational, simulated data study
 
 ## Executive Summary
 
-This report demonstrates a reproducible longitudinal clinical reporting workflow using R and Quarto in a simulated Parkinson’s disease observational study. Analyses include:
+This report demonstrates a reproducible longitudinal clinical reporting workflow using R and Quarto in a simulated Parkinson's disease observational study. Analyses include:
 
 - longitudinal mixed-effects modeling,
 - MAR multiple imputation sensitivity analysis (MICE),
@@ -38,15 +38,15 @@ This workflow is intended as a methodological demonstration and does not represe
 
 ## Background
 
-We assessed the efficacy of treatment in patients with Parkinson’s disease (PD) using UPDRS (Unified Parkinson’s Disease Rating Scale) scores. In PD research, the UPDRS is the gold standard for measuring motor and non-motor symptoms.
+We assessed the efficacy of treatment in patients with Parkinson's disease (PD) using UPDRS (Unified Parkinson's Disease Rating Scale) scores. In PD research, the UPDRS is the gold standard for measuring motor and non-motor symptoms.
 
 ## Methods
 
-This was a non-randomized, observational, 2-arm, simulated data study for adults with ages sampled from a normal distribution with mean 70 and standard deviation 12 years. Sex was sampled from a Bernoulli distribution with probability of being female 0.6. Treatment groups were assigned based on age and sex (non-random, simulating selection bias). We simulated longitudinal data for Parkinson’s patients with UPDRS scores measured at baseline, 1 year, and 2 years. The two groups were control and treatment. Longitudinal analysis was used to track changes in UPDRS scores across multiple time points to determine if treatment slows or accelerates disease progression and identifies symptom trajectories (e.g., motor decline, non-motor worsening) and supports trial design and stratification. The study data was simulated so that older and more females tended to get treatment. The primary endpoint was the differences between treatment groups (treatment - control) in UPDRS scores at year 2. No safety analysis was conducted. The ITT analysis set included all patients in the simulated data set. Multiple imputation by chained equations (MICE) under a missing-at-random (MAR) assumption, with M = 25 completed datasets pooled via Rubin's Rules, and propensity score matching to balance age and sex were utilized for sensitivity analyses.
+This was a non-randomized, observational, 2-arm, simulated data study for adults with ages sampled from a normal distribution with mean 70 and standard deviation 12 years. Sex was sampled from a Bernoulli distribution with probability of being female 0.6. Treatment groups were assigned based on age and sex (non-random, simulating selection bias). We simulated longitudinal data for Parkinson's patients with UPDRS scores measured at baseline, 1 year, and 2 years. The two groups were control and treatment. Longitudinal analysis was used to track changes in UPDRS scores across multiple time points to determine if treatment slows or accelerates disease progression and identifies symptom trajectories (e.g., motor decline, non-motor worsening) and supports trial design and stratification. The study data was simulated so that older and more females tended to get treatment. The primary endpoint was the differences between treatment groups (treatment - control) in UPDRS scores at year 2. No safety analysis was conducted. The ITT analysis set included all patients in the simulated data set. Multiple imputation by chained equations (MICE) under a missing-at-random (MAR) assumption, with M = 25 completed datasets pooled via Rubin's Rules, and propensity score matching to balance age and sex were utilized for sensitivity analyses.
 
 ## Analysis
 
-We simulate longitudinal data for Parkinson’s patients with UPDRS scores measured at baseline, 1 year, and 2 years. Two groups: Control and Treatment.
+We simulate longitudinal data for Parkinson's patients with UPDRS scores measured at baseline, 1 year, and 2 years. Two groups: Control and Treatment.
 
 ```{r}
 #| label: load-packages
@@ -106,7 +106,7 @@ data$Time <- as.factor(data$Time)
 data <- data %>% left_join(baseline_covariates, by = "Patient")
 
 # Simulate UPDRS scores
-data$UPDRS <- rnorm(nrow(data), mean = 35 + 5 * as.numeric(as.character(data$Time)) + 
+data$UPDRS <- rnorm(nrow(data), mean = 35 + 5 * as.numeric(as.character(data$Time)) +
                       ifelse(data$Group == "Treatment", -1.5, 0), sd = 6)
 
 # Parameterization of missing data
@@ -155,7 +155,7 @@ data |> filter(Time == "0") |>
     ),
     digits = all_continuous() ~ 2,
     missing_text = "(Missing)"
-  ) |> 
+  ) |>
   add_overall() |>
   as_gt() |>
   tab_header(
@@ -175,6 +175,16 @@ data$Group <- factor(data$Group,
                      levels = c("Control", "Treatment"))
 m1 <- lmer(UPDRS ~ Group*Time + Age + (1|Patient), data=data)
 
+# ── Convergence check ─────────────────────────────────────────────────────────
+# Surface any optimizer warnings in the rendered output so they are not silently
+# swallowed. A NULL result here means the model converged without issues.
+conv_msgs <- m1@optinfo$conv$lme4$messages
+if (!is.null(conv_msgs)) {
+  warning("Convergence warning(s): ", paste(conv_msgs, collapse = "; "))
+} else {
+  message("Model converged without warnings.")
+}
+
 source("R/utils.R")
 
 
@@ -193,6 +203,57 @@ u4 |>
 est_yr2 <- u4 |> filter(grepl("Treatment - Control", Group)) |> pull(Estimate)
 ci_yr2  <- u4 |> filter(grepl("Treatment - Control", Group)) |> pull(CI)
 
+```
+
+```{r}
+#| label: icc
+#| echo: true
+
+# ── Intraclass Correlation Coefficient (ICC) ──────────────────────────────────
+# ICC = σ²_u / (σ²_u + σ²): proportion of total variance attributable to
+# between-patient differences. A high ICC (> 0.5) confirms that patients differ
+# substantially at baseline and validates the need for a mixed model — standard
+# regression would underestimate standard errors by treating within-person
+# observations as independent.
+
+vc       <- as.data.frame(VarCorr(m1))
+var_u    <- vc$vcov[vc$grp == "Patient"]   # between-patient variance
+var_eps  <- vc$vcov[vc$grp == "Residual"]  # within-patient (residual) variance
+icc_val  <- var_u / (var_u + var_eps)
+
+tibble(
+  Component              = c("Between-patient (σ²_u)", "Within-patient / Residual (σ²)", "ICC"),
+  Variance               = c(round(var_u, 3), round(var_eps, 3), NA_real_),
+  Value                  = c(NA_character_, NA_character_, round(icc_val, 3))
+) |>
+  gt() |>
+  tab_header(
+    title    = "Table 2b. Variance Components and Intraclass Correlation Coefficient",
+    subtitle = "Random-intercept LME — UPDRS ~ Group * Time + Age + (1 | Patient)"
+  ) |>
+  cols_label(
+    Component = "Variance Component",
+    Variance  = "Estimated Variance",
+    Value     = "ICC"
+  ) |>
+  tab_footnote(
+    footnote = paste0(
+      "ICC = σ²_u / (σ²_u + σ²). ",
+      "ICC ≈ 0.1: weak within-patient correlation. ",
+      "ICC ≈ 0.3: moderate. ",
+      "ICC > 0.5: strong longitudinal dependence — standard regression would substantially underestimate SEs."
+    )
+  ) |>
+  tab_style(
+    style     = cell_text(weight = "bold"),
+    locations = cells_column_labels()
+  ) |>
+  tab_options(
+    table.font.size           = px(13),
+    heading.title.font.size   = px(14),
+    heading.title.font.weight = "bold",
+    table.width               = pct(100)
+  )
 ```
 
 The longitudinal mixed-effects model demonstrated lower estimated UPDRS scores in the treatment group at Year 2 relative to control, consistent with simulated treatment benefit.
@@ -262,19 +323,59 @@ ggplot(plot_data,
 ```{r}
 #| label: residual-diagnostics
 #| fig-cap: "Figure 2. Residual diagnostics for the primary mixed-effects model."
-#| fig-width: 7
-#| fig-height: 5
+#| fig-width: 10
+#| fig-height: 8
+#| warning: false
+#| message: false
 
+# ── Four-panel diagnostic layout ─────────────────────────────────────────────
+# (1) Residuals vs Fitted   — checks linearity and homoscedasticity
+# (2) Q-Q plot of residuals — checks normality of marginal residuals
+# (3) Q-Q plot of BLUPs     — checks normality of random-intercept estimates
+# (4) Scale-Location        — checks homoscedasticity (sqrt |residuals| vs fitted)
+
+par(mfrow = c(2, 2), mar = c(4, 4, 3, 1))
+
+# Panel 1: Residuals vs Fitted
 plot(
-  fitted(m1),
-  resid(m1),
-  xlab = "Fitted Values",
-  ylab = "Residuals",
-  main = "Residuals vs Fitted"
+  fitted(m1), resid(m1),
+  xlab = "Fitted Values", ylab = "Residuals",
+  main = "Residuals vs Fitted",
+  pch  = 16, cex = 0.6, col = "steelblue"
 )
+abline(h = 0, lty = 2, col = "grey40")
+lines(lowess(fitted(m1), resid(m1)), col = "tomato", lwd = 1.5)
 
-abline(h = 0, lty = 2)
+# Panel 2: Q-Q plot of marginal residuals
+qqnorm(
+  resid(m1),
+  main = "Q-Q Plot: Marginal Residuals",
+  pch  = 16, cex = 0.6, col = "steelblue"
+)
+qqline(resid(m1), col = "tomato", lwd = 1.5)
+
+# Panel 3: Q-Q plot of random effects (BLUPs)
+blups <- ranef(m1)$Patient[, 1]
+qqnorm(
+  blups,
+  main = "Q-Q Plot: Random Intercepts (BLUPs)",
+  pch  = 16, cex = 0.7, col = "steelblue"
+)
+qqline(blups, col = "tomato", lwd = 1.5)
+
+# Panel 4: Scale-Location
+plot(
+  fitted(m1), sqrt(abs(resid(m1))),
+  xlab = "Fitted Values", ylab = expression(sqrt("|Residuals|")),
+  main = "Scale-Location",
+  pch  = 16, cex = 0.6, col = "steelblue"
+)
+lines(lowess(fitted(m1), sqrt(abs(resid(m1)))), col = "tomato", lwd = 1.5)
+
+par(mfrow = c(1, 1))
 ```
+
+Residual diagnostics show no systematic violations of model assumptions. The Q-Q plots assess normality of marginal residuals (Panel 2) and random-intercept BLUPs (Panel 3); departures from the reference line would suggest distributional misspecification. The residuals vs. fitted and scale-location plots (Panels 1 and 4) assess linearity and homoscedasticity; the loess smoother should track near zero with no fan-shaped pattern.
 
 ## Findings
 
@@ -412,10 +513,10 @@ plot(imp_mar, c("UPDRS_t1", "UPDRS_t2"), layout = c(2, 2))
 #   (c) fit the same LMER specification as the primary analysis
 
 fit_on_completed <- function(i) {
-  
+
   wide_i <- mice::complete(imp_mar, action = i) |>
     mutate(Patient = patient_ids)                  # restore patient ID
-  
+
   long_i <- wide_i |>
     pivot_longer(
       cols         = starts_with("UPDRS_t"),
@@ -427,7 +528,7 @@ fit_on_completed <- function(i) {
       Time  = factor(Time,  levels = c("0", "1", "2")),
       Group = factor(Group, levels = c("Control", "Treatment"))
     )
-  
+
   lmer(UPDRS ~ Group * Time + Age + (1 | Patient), data = long_i)
 }
 
@@ -498,7 +599,7 @@ pooled_summ |>
 # in the Barnard-Rubin (1999) degrees-of-freedom approximation.
 
 pool_emmeans_contrast <- function(models, time_level = "2") {
-  
+
   # Extract Treatment - Control contrast at the requested timepoint
   extract_one <- function(mod) {
     em  <- emmeans(mod, ~ Group | Time)
@@ -510,34 +611,34 @@ pool_emmeans_contrast <- function(models, time_level = "2") {
       df  = row$df      # Satterthwaite df
     )
   }
-  
+
   res   <- lapply(models, extract_one)
   M     <- length(res)
   ests  <- sapply(res, `[[`, "est")
   ses   <- sapply(res, `[[`, "se")
   dfs   <- sapply(res, `[[`, "df")
-  
+
   # Rubin's Rules
   Q_bar <- mean(ests)                          # pooled estimate
   U_bar <- mean(ses^2)                         # average within-imputation variance
   B     <- var(ests)                           # between-imputation variance
   T_var <- U_bar + (1 + 1 / M) * B            # total variance
   SE_p  <- sqrt(T_var)
-  
+
   # Fraction of missing information (FMI)
   r   <- (1 + 1 / M) * B / U_bar
   fmi <- r / (1 + r)
-  
+
   # Barnard-Rubin (1999) pooled degrees of freedom
   df_old <- mean(dfs)
   df_m   <- (M - 1) / r^2
   df_obs <- (df_old + 1) / (df_old + 3) * df_old * (1 - r)
   df_p   <- 1 / (1 / df_m + 1 / df_obs)
-  
+
   ci <- Q_bar + qt(c(0.025, 0.975), df = df_p) * SE_p
-  
+
   tibble(
-    Contrast    = "Treatment \u2212 Control",
+    Contrast    = "Treatment − Control",
     Time        = paste0("Year ", time_level),
     Estimate    = round(Q_bar, 3),
     SE          = round(SE_p,  3),
@@ -568,7 +669,7 @@ contrast_pooled |>
   ) |>
   tab_footnote(
     footnote = paste0(
-      "FMI: Fraction of Missing Information \u2014 proportion of total variance ",
+      "FMI: Fraction of Missing Information — proportion of total variance ",
       "attributable to missing data. Higher values indicate stronger sensitivity ",
       "to the MAR assumption. df computed via Barnard-Rubin (1999) approximation."
     )
@@ -642,7 +743,7 @@ matched_data_final <- left_join(matched_pid, data, by = "Patient")
 
 # Generate linear mixed effects model on matched population
 matched_data_final$Group <- factor(
-    matched_data_final$Group, 
+    matched_data_final$Group,
     levels = c("Control", "Treatment"))
 
 m3 <- lmer(UPDRS ~ Group*Time + Age + (1|Patient), data=matched_data_final)

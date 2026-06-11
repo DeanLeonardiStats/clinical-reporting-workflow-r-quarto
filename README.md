@@ -21,7 +21,9 @@ The workflow integrates rigorous statistical methodology, reporting automation, 
 - Linear mixed-effects models using `lme4` and `lmerTest`
 - Repeated measures analysis with treatment-by-time interaction
 - Estimated marginal means and treatment contrasts at Year 2 using `emmeans`
-- Residual diagnostics for model assessment
+- Intraclass correlation coefficient (ICC) computed from variance components (`VarCorr`) to quantify between-patient vs. within-patient variance and validate the mixed-model specification
+- Convergence diagnostics: optimizer warnings surfaced in rendered output via `@optinfo$conv$lme4$messages`
+- Four-panel residual diagnostics: residuals vs. fitted, Q-Q plot of marginal residuals, Q-Q plot of random-intercept BLUPs, and scale-location plot with loess smoother
 
 #### Missing Data — MAR Multiple Imputation (MICE)
 
@@ -86,6 +88,7 @@ The workflow integrates rigorous statistical methodology, reporting automation, 
 |--------|-------------|
 | Table 1 | Demographics and baseline characteristics by treatment group |
 | Table 2 | Primary LMER — estimated marginal means at Year 2 |
+| Table 2b | Variance components and intraclass correlation coefficient (ICC) |
 | Table 3a | Missingness summary prior to imputation |
 | Table 3b | Pooled fixed effects from MICE (Rubin's Rules) |
 | Table 3c | Pooled treatment effect at Year 2 with FMI |
@@ -93,7 +96,7 @@ The workflow integrates rigorous statistical methodology, reporting automation, 
 | Table 5 | Covariate balance after propensity score matching |
 | Table 6 | LMER on matched cohort — estimated marginal means at Year 2 |
 | Figure 1 | Longitudinal mean UPDRS profiles with 95% CIs by group |
-| Figure 2 | Residual diagnostics for primary mixed-effects model |
+| Figure 2 | Four-panel residual diagnostics: residuals vs. fitted, Q-Q of marginal residuals, Q-Q of random-intercept BLUPs, scale-location |
 | Figure 3a | Missing data pattern (naniar vis_miss) |
 | Figure 3b | MICE convergence trace plots |
 | Figure 4 | Love plot — covariate balance before and after matching |
